@@ -11,8 +11,11 @@
         "start": "npm run build && node lib/src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "dependencies": {},
+    "dependencies": {
+        "inversify": "5.0.1"
+    },
     "devDependencies": {
-        "rimraf": "2.6.2"
+        "rimraf": "2.6.2",
+        "@types/node": "10.12.18"
     }
 }
