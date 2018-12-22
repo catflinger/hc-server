@@ -1,10 +1,9 @@
 import { IDeviceState } from "./types";
 
-
-let ds: IDeviceState = {
-    id: "hw", 
+const ds: IDeviceState = {
     description: "hot water",
-    state: true
+    id: "hw",
+    state: true,
 };
 
 console.log("hello world " + JSON.stringify(ds));

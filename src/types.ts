@@ -1,10 +1,10 @@
 
-export const Injectables = {
-    Controller: Symbol(),
-    System: Symbol(),
-    SensorManager: Symbol(),
+export const INJECTABLES = {
     ConfigManager: Symbol(),
-}
+    Controller: Symbol(),
+    SensorManager: Symbol(),
+    System: Symbol(),
+};
 
 // entry point for the app
 export interface IController {
@@ -25,13 +25,13 @@ export interface ISwitchable {
 }
 
 // models the 1-wire sensor network
-export interface sensorManager {
+export interface ISensorManager {
     getReadings(): IReading[];
 }
 
 // manages the application configuratiom
 export interface IConfigManager {
-    config: IConfiguration; 
+    config: IConfiguration;
 }
 
 /**

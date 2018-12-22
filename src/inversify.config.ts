@@ -1,8 +1,8 @@
 import { Container } from "inversify";
 
-import { IController, Injectables } from "./types";
 import { Controller } from "./app/controller/controller";
+import { IController, INJECTABLES } from "./types";
 
-const container = new Container(); 
+const container = new Container();
 
-container.bind<IController>(Injectables.Controller).to(Controller);
+container.bind<IController>(INJECTABLES.Controller).to(Controller);
