@@ -1,0 +1,11 @@
+{
+  "name": "hc-server",
+  "version": "0.1.1",
+  "description": "Home heating controller",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul Drury",
+  "license": "ISC"
+}
