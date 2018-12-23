@@ -1,0 +1,12 @@
+{
+    "programConfig": [],
+    "namedConfig": {
+        "weekdayProgramId": "21",
+        "saturdayProgramId": "23456",
+        "sundayProgramId": "dr4edfgf"
+    },
+    "datedConfig": [
+        { "programId": "abcde", "date": "2018-11-23T12:12:12" }
+    ],
+    "sensorConfig": []
+}

@@ -1,9 +1,13 @@
-import { IDeviceState } from "./types";
+import { container } from "./inversify.config";
+import { IConfigManager, IController, INJECTABLES } from "./types";
 
-const ds: IDeviceState = {
-    description: "hot water",
-    id: "hw",
-    state: true,
-};
+const controller: IController = container.get<IController>(INJECTABLES.Controller);
+const configManager: IConfigManager = container.get<IConfigManager>(INJECTABLES.ConfigManager);
 
-console.log("hello world " + JSON.stringify(ds));
+configManager.getConfig()
+.then((config) => {
+    console.log("hello world " + JSON.stringify(config, null, 4));
+})
+.catch((reason) => {
+    console.log("goodbye cruel world " + JSON.stringify(reason));
+});

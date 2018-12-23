@@ -1,9 +1,10 @@
 
 export const INJECTABLES = {
-    ConfigManager: Symbol(),
-    Controller: Symbol(),
-    SensorManager: Symbol(),
-    System: Symbol(),
+    ConfigManager: Symbol("ConfigManager"),
+    ConfigRootDir: Symbol("ConfigRootDir"),
+    Controller: Symbol("Controller"),
+    SensorManager: Symbol("SensorManager"),
+    System: Symbol("SystemSystem"),
 };
 
 // entry point for the app
@@ -31,7 +32,7 @@ export interface ISensorManager {
 
 // manages the application configuratiom
 export interface IConfigManager {
-    config: IConfiguration;
+    getConfig(): Promise<IConfiguration>;
 }
 
 /**
@@ -48,7 +49,7 @@ export interface IProgram {
     name: string;
     minHwTemp: number;
     maxHwTemp: number;
-    rules: IRule[];
+    getRules(): ReadonlyArray<IRule>;
 }
 
 export interface IRule {
@@ -80,10 +81,10 @@ export interface IReading {
 }
 
 export interface IConfiguration {
-    programs: IProgram[];
-    namedConfig: INamedConfig;
-    datedConfig: IDatedConfig;
-    sensors: ISensorConfig[];
+    getProgramConfig(): ReadonlyArray<IProgram>;
+    getNamedConfig(): INamedConfig;
+    getDatedConfig(): ReadonlyArray<IDatedConfig>;
+    getSensorConfig(): ReadonlyArray<ISensorConfig>;
 }
 
 export interface INamedConfig {
