@@ -1,4 +1,5 @@
 import { ITimeOfDay } from "../../types";
+import { ConfigValidation } from "../configuration/config-validation";
 
 export class TimeOfDay implements ITimeOfDay {
     public readonly hour: number;
@@ -6,21 +7,8 @@ export class TimeOfDay implements ITimeOfDay {
     public readonly second: number;
 
     constructor(data: any) {
-        if (data.hour) {
-            this.hour = data.hour;
-        } else {
-            throw new Error("hour not found in rule config");
-        }
-        if (data.minute) {
-            // TO DO VALIDATE NUMERIC
-            this.minute = data.minute;
-        } else {
-            throw new Error("minute not found in rule config");
-        }
-        if (data.second) {
-            this.second = data.second;
-        } else {
-            throw new Error("second not found in rule config");
-        }
+        this.hour = ConfigValidation.getNumber(data.hour, "timeOfDayConfig:hour");
+        this.minute = ConfigValidation.getNumber(data.minute, "timeOfDayConfig:minute");
+        this.second = ConfigValidation.getNumber(data.second, "timeOfDayConfig:second");
     }
 }

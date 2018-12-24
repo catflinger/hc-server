@@ -4,6 +4,7 @@
     "name": "hc-server",
     "version": "0.1.1",
     "description": "Home heating controller",
+    "private": true,
     "main": "index.js",
     "scripts": {
         "clean": "rimraf lib",
@@ -13,7 +14,8 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
-        "inversify": "5.0.1"
+        "inversify": "5.0.1",
+        "reflect-metadata": "0.1.12"
     },
     "devDependencies": {
         "rimraf": "2.6.2",

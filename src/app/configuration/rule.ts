@@ -1,5 +1,6 @@
 import { IControlState, IReading, IRule, IRuleResult, ITimeOfDay } from "../../types";
 import { TimeOfDay } from "../controller/time-of-day";
+import { ConfigValidation } from "./config-validation";
 
 export class Rule implements IRule {
     public readonly id: string;
@@ -7,11 +8,7 @@ export class Rule implements IRule {
     public readonly endTime: ITimeOfDay;
 
     constructor(data: any) {
-        if (data.id) {
-            this.id = data.id;
-        } else {
-            throw new Error("id not found in rule config");
-        }
+        this.id = ConfigValidation.getString(data.id, "ruleConfig:id");
 
         if (data.startTime) {
             this.startTime = new TimeOfDay(data.startTime);

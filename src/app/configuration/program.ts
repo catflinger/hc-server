@@ -1,4 +1,5 @@
 import { IProgram, IRule } from "../../types";
+import { ConfigValidation } from "./config-validation";
 import { Rule } from "./rule";
 
 export class Program implements IProgram {
@@ -10,29 +11,10 @@ export class Program implements IProgram {
     private rules: IRule[];
 
     constructor(data: any) {
-        if (data.id) {
-            this.id = data.id;
-        } else {
-            throw new Error("id not found in program config");
-        }
-
-        if (data.name) {
-            this.name = data.name;
-        } else {
-            throw new Error("name not found in program config");
-        }
-
-        if (data.minHwTemp) {
-            this.minHwTemp = data.minHwTemp;
-        } else {
-            throw new Error("minHwTemp not found in program config");
-        }
-
-        if (data.maxHwTemp) {
-            this.maxHwTemp = data.maxHwTemp;
-        } else {
-            throw new Error("maxHwTemp not found in program config");
-        }
+        this.id = ConfigValidation.getString(data.id, "programConfig:id");
+        this.name = ConfigValidation.getString(data.name, "programConfig:name");
+        this.minHwTemp = ConfigValidation.getNumber(data.minHwTemp, "programConfig:minHwTemp");
+        this.maxHwTemp = ConfigValidation.getNumber(data.maxHwTemp, "programConfig:maxHwTemp");
 
         if (data.rules) {
             if (Array.isArray(data.rules)) {
@@ -43,7 +25,6 @@ export class Program implements IProgram {
                 throw new Error("invalid config: datedConfig not an array");
             }
         }
-
     }
 
     public getRules(): ReadonlyArray<IRule> {
