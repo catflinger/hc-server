@@ -33,6 +33,7 @@ export interface ISensorManager {
 // manages the application configuratiom
 export interface IConfigManager {
     getConfig(): Promise<IConfiguration>;
+    setConfig(config: IConfiguration): Promise<any>;
 }
 
 /**

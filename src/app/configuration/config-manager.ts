@@ -24,6 +24,18 @@ export class ConfigManager implements IConfigManager {
         });
     }
 
+    public setConfig(config: IConfiguration): Promise<any> {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(this.configfile(), JSON.stringify(config), { encoding: "utf-8" },  (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    }
+
     private configfile(): string {
         return path.join(this.rootDir, "hc-config.json");
     }
