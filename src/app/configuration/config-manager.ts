@@ -17,8 +17,12 @@ export class ConfigManager implements IConfigManager {
                 if (error) {
                     reject(error);
                 } else {
-                    const config: IConfiguration = new Configuration(JSON.parse(data));
-                    resolve(config);
+                    try {
+                        const config: IConfiguration = new Configuration(JSON.parse(data));
+                        resolve(config);
+                    } catch(e) {
+                        reject(e);
+                    }
                 }
             });
         });
