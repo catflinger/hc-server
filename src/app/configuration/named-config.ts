@@ -1,6 +1,9 @@
+import { injectable } from "inversify";
+
 import { INamedConfig } from "../../types";
 import { ConfigValidation } from "./config-validation";
 
+@injectable()
 export class NamedConfig implements INamedConfig {
     public readonly weekdayProgramId: string;
     public readonly saturdayProgramId: string;

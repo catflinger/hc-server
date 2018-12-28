@@ -1,7 +1,10 @@
+import { injectable } from "inversify";
+
 import { IControlState, IReading, IRule, IRuleResult, ITimeOfDay } from "../../types";
 import { TimeOfDay } from "../controller/time-of-day";
 import { ConfigValidation } from "./config-validation";
 
+@injectable()
 export class Rule implements IRule {
     public readonly id: string;
     public readonly startTime: ITimeOfDay;

@@ -1,6 +1,9 @@
+import { injectable } from "inversify";
+
 import { IDatedConfig } from "../../types";
 import { ConfigValidation } from "./config-validation";
 
+@injectable()
 export class DatedConfig implements IDatedConfig {
     public readonly programId: string;
     public readonly date: Date;

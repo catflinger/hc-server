@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { inject, injectable } from "inversify";
+import { inject, injectable, interfaces } from "inversify";
 import * as path from "path";
 
 import { IConfigManager, IConfiguration, INJECTABLES } from "../../types";
@@ -11,6 +11,9 @@ export class ConfigManager implements IConfigManager {
     @inject(INJECTABLES.ConfigRootDir)
     private rootDir: string;
 
+    @inject(INJECTABLES.Configuration)
+    private configuration: interfaces.Newable<Configuration>;
+
     public getConfig(): Promise<IConfiguration> {
         return new Promise((resolve, reject) => {
             fs.readFile(this.configfile(), "utf-8", (error, data) => {
@@ -18,9 +21,9 @@ export class ConfigManager implements IConfigManager {
                     reject(error);
                 } else {
                     try {
-                        const config: IConfiguration = new Configuration(JSON.parse(data));
+                        const config: IConfiguration = new this.configuration(JSON.parse(data));
                         resolve(config);
-                    } catch(e) {
+                    } catch (e) {
                         reject(e);
                     }
                 }

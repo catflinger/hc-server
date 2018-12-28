@@ -11,7 +11,6 @@ const expect = chai.expect;
 import { container } from "./inversify-test.config";
 import { IConfigManager, INJECTABLES, IConfiguration } from "../../../../src/types";
 import { Configuration } from "../../../../src/app/configuration/configuration";
-import { resolve } from "url";
 
 const writeFileP = util.promisify(fs.writeFile);
 const readFileP = util.promisify(fs.readFile);

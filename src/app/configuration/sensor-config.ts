@@ -1,6 +1,9 @@
+import { injectable } from "inversify";
+
 import { ISensorConfig } from "../../types";
 import { ConfigValidation } from "./config-validation";
 
+@injectable()
 export class SensorConfig implements ISensorConfig {
     public readonly id: string;
     public readonly description: string;

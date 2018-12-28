@@ -7,6 +7,6 @@ export class Controller implements IController {
 
     public start(): void {
         // TO DO...
-        console.log("Controller started");
+        // console.log("Controller started");
     }
 }

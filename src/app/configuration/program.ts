@@ -1,7 +1,10 @@
+import { injectable } from "inversify";
+
 import { IProgram, IRule } from "../../types";
 import { ConfigValidation } from "./config-validation";
 import { Rule } from "./rule";
 
+@injectable()
 export class Program implements IProgram {
     public readonly id: string;
     public readonly name: string;

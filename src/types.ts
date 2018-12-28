@@ -2,7 +2,13 @@
 export const INJECTABLES = {
     ConfigManager: Symbol("ConfigManager"),
     ConfigRootDir: Symbol("ConfigRootDir"),
+    Configuration: Symbol("Configuration"),
     Controller: Symbol("Controller"),
+    DatedConfig: Symbol("DatedConfig"),
+    NamedConfig: Symbol("NamedConfig"),
+    Program: Symbol("Program"),
+    Rule: Symbol("Rule"),
+    SensorConfig: Symbol("SensorConfig"),
     SensorManager: Symbol("SensorManager"),
     System: Symbol("SystemSystem"),
 };

@@ -32,7 +32,7 @@ export class ConfigValidation {
         return getValue("number", val, message, defaultValue);
     }
 
-    public static getDate(val: any, message: string, defaultValue?: Date) {
+    public static getDate(val: any, message: string, defaultValue?: Date): Date {
         let result: Date;
         const dateExpression: RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}");
 
@@ -50,7 +50,10 @@ export class ConfigValidation {
             result = defaultValue;
         } else {
             // value must be present and OK
-            result = val;
+            result = new Date(val);
+            if (isNaN(result.valueOf())) {
+                throw new Error(`Config validation, value for ${message} is an invalid date string`);
+            }
         }
 
         return result;

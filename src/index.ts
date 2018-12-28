@@ -6,8 +6,8 @@ const configManager: IConfigManager = container.get<IConfigManager>(INJECTABLES.
 
 configManager.getConfig()
 .then((config) => {
-    console.log("hello world " + JSON.stringify(config, null, 4));
+    // console.log("hello world " + JSON.stringify(config, null, 4));
 })
 .catch((reason) => {
-    console.log("goodbye cruel world " + JSON.stringify(reason));
+    // console.log("goodbye cruel world " + JSON.stringify(reason));
 });
