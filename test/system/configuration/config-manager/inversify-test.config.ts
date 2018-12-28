@@ -2,8 +2,8 @@ import { Container, injectable } from "inversify";
 import * as path from "path";
 import "reflect-metadata";
 
-import { INJECTABLES, IConfigManager } from "../../../../../src/types";
-import { ConfigManager } from "../../../../../src/app/configuration/config-manager";
+import { INJECTABLES, IConfigManager } from "../../../../src/types";
+import { ConfigManager } from "../../../../src/app/configuration/config-manager";
 
 export const container = new Container();
 
