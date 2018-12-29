@@ -4,15 +4,14 @@ import { IControlState, IReading, IRule, IRuleResult, ITimeOfDay } from "../../t
 import { TimeOfDay } from "../controller/time-of-day";
 import { ConfigValidation } from "./config-validation";
 
+/* Base class for implementing rules */
+
 @injectable()
 export class Rule implements IRule {
-    public readonly id: string;
     public readonly startTime: ITimeOfDay;
     public readonly endTime: ITimeOfDay;
 
     constructor(data: any) {
-        this.id = ConfigValidation.getString(data.id, "ruleConfig:id");
-
         if (data.startTime) {
             this.startTime = new TimeOfDay(data.startTime);
         } else {
@@ -26,7 +25,7 @@ export class Rule implements IRule {
         }
     }
 
-    public apply(currentState: IControlState, readings: IReading[], time: ITimeOfDay): IRuleResult {
+    public applyRule(currentState: IControlState, readings: IReading[], time: ITimeOfDay): IRuleResult {
         throw new Error("Method not implemented.");
     }
 }

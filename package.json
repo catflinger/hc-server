@@ -15,7 +15,8 @@
     },
     "dependencies": {
         "inversify": "5.0.1",
-        "reflect-metadata": "0.1.12"
+        "reflect-metadata": "0.1.12",
+        "uuid": "3.3.2"
     },
     "devDependencies": {
         "rimraf": "2.6.2",
@@ -29,6 +30,7 @@
         "chai-as-promised": "7.1.1",
         "@types/chai-as-promised": " 7.1.0",
         "@types/chai": "4.1.7",
-        "coffeescript": "2.3.2"
+        "coffeescript": "2.3.2",
+        "@types/uuid": "3.4.4"
     }
 }

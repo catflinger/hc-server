@@ -60,10 +60,9 @@ export interface IProgram {
 }
 
 export interface IRule {
-    id: string;
     startTime: ITimeOfDay;
     endTime: ITimeOfDay;
-    apply(currentState: IControlState, readings: IReading[], time: ITimeOfDay): IRuleResult;
+    applyRule(currentState: IControlState, readings: IReading[], time: ITimeOfDay): IRuleResult;
 }
 
 export interface IRuleResult {
@@ -75,6 +74,9 @@ export interface ITimeOfDay {
     hour: number;
     minute: number;
     second: number;
+    isLaterThan(other: ITimeOfDay): boolean;
+    isSameAs(other: ITimeOfDay): boolean;
+    isEarlierThan(other: ITimeOfDay): boolean;
 }
 
 export interface IControlState {

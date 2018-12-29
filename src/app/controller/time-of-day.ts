@@ -23,4 +23,32 @@ export class TimeOfDay implements ITimeOfDay {
             throw new Error("TimeOfDay: value for second outside range");
         }
     }
+
+    public isLaterThan(other: ITimeOfDay): boolean {
+        let result: boolean;
+
+        if (this.hour > other.hour) {
+            result = true;
+        } else if (this.hour < other.hour) {
+            result = false;
+        } else if (this.minute > other.minute) {
+            result = true;
+        } else if (this.minute < other.minute) {
+            result = false;
+        } else if (this.second > other.second) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
+    }
+    public isSameAs(other: ITimeOfDay): boolean {
+        return this.hour === other.hour &&
+            this.minute === other.minute &&
+            this.second === other.second;
+    }
+    public isEarlierThan(other: ITimeOfDay): boolean {
+        return !this.isSameAs(other) && !this.isLaterThan(other);
+    }
 }
