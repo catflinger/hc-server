@@ -7,8 +7,20 @@ export class TimeOfDay implements ITimeOfDay {
     public readonly second: number;
 
     constructor(data: any) {
-        this.hour = ConfigValidation.getNumber(data.hour, "timeOfDayConfig:hour");
-        this.minute = ConfigValidation.getNumber(data.minute, "timeOfDayConfig:minute");
-        this.second = ConfigValidation.getNumber(data.second, "timeOfDayConfig:second");
+        this.hour = Math.floor(ConfigValidation.getNumber(data.hour, "timeOfDayConfig:hour"));
+        this.minute = Math.floor(ConfigValidation.getNumber(data.minute, "timeOfDayConfig:minute"));
+        this.second = Math.floor(ConfigValidation.getNumber(data.second, "timeOfDayConfig:second", 0));
+
+        if (this.hour < 0 || this.hour > 23) {
+            throw new Error("TimeOfDay: value for hour outside range");
+        }
+
+        if (this.minute < 0 || this.minute > 59) {
+            throw new Error("TimeOfDay: value for minute outside range");
+        }
+
+        if (this.second < 0 || this.second > 59) {
+            throw new Error("TimeOfDay: value for second outside range");
+        }
     }
 }
