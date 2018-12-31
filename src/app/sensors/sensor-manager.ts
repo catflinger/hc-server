@@ -15,7 +15,7 @@ import * as fsu from "../../utils/fs-utils";
 @injectable()
 export class SensorManager implements ISensorManager {
 
-    @inject(INJECTABLES.OneWireDir)
+    @inject(INJECTABLES.OneWireRootDir)
     private oneWireRoot: string;
 
     @inject(INJECTABLES.ConfigManager)
@@ -35,7 +35,6 @@ export class SensorManager implements ISensorManager {
         });
 
         return Promise.all(readings);
-
     }
 
     public async readConfiguredSensors(): Promise<IReading[]> {

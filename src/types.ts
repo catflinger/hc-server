@@ -5,8 +5,10 @@ export const INJECTABLES = {
     Configuration: Symbol("Configuration"),
     Controller: Symbol("Controller"),
     DatedConfig: Symbol("DatedConfig"),
+    Device: Symbol("Device"),
+    GpioRootDir: Symbol("GpioRootDir"),
     NamedConfig: Symbol("NamedConfig"),
-    OneWireDir: Symbol("OneWireDir"),
+    OneWireRootDir: Symbol("OneWireRootDir"),
     Program: Symbol("Program"),
     Rule: Symbol("Rule"),
     SensorConfig: Symbol("SensorConfig"),
@@ -28,8 +30,10 @@ export interface ISystem {
 
 // models a device in the system
 export interface ISwitchable {
-    getState(): IDeviceState;
-    switch(state: boolean): void;
+    id: string;
+    description: string;
+    getState(): Promise<IDeviceState>;
+    switch(state: boolean): Promise<void>;
 }
 
 // models the 1-wire sensor network

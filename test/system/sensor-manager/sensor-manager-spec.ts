@@ -10,7 +10,7 @@ import { container } from "./inversify-test.config";
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-const oneWireDir = container.get<string>(INJECTABLES.OneWireDir);
+const oneWireDir = container.get<string>(INJECTABLES.OneWireRootDir);
 const sensorManager: ISensorManager = container.get<ISensorManager>(INJECTABLES.SensorManager);
 
 describe("sensor-manager", () => {
