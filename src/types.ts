@@ -6,6 +6,7 @@ export const INJECTABLES = {
     Controller: Symbol("Controller"),
     DatedConfig: Symbol("DatedConfig"),
     NamedConfig: Symbol("NamedConfig"),
+    OneWireDir: Symbol("OneWireDir"),
     Program: Symbol("Program"),
     Rule: Symbol("Rule"),
     SensorConfig: Symbol("SensorConfig"),
@@ -33,7 +34,8 @@ export interface ISwitchable {
 
 // models the 1-wire sensor network
 export interface ISensorManager {
-    getReadings(): IReading[];
+    readAvailableSensors(): Promise<IReading[]>;
+    readConfiguredSensors(): Promise<IReading[]>;
 }
 
 // manages the application configuratiom
@@ -85,8 +87,10 @@ export interface IControlState {
 }
 
 export interface IReading {
-    value: number;
+    id: string;
+    description: string;
     role: string;
+    value: number;
 }
 
 export interface IConfiguration {
