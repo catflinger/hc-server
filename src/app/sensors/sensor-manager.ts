@@ -51,14 +51,17 @@ export class SensorManager implements ISensorManager {
         return Promise.all(readings);
     }
 
-    private async readSensor(config: ISensorConfig): Promise<IReading> {
-        const val: string = await fsu.readFileP(path.join(this.oneWireRoot, config.id, "temperature"), "utf-8");
-
-        return Promise.resolve({
-            description: config.description,
-            id: config.id,
-            role: config.role,
-            value: Number.parseFloat(val),
+    private readSensor(config: ISensorConfig): Promise<IReading> {
+        return new Promise((resolve) => {
+            fsu.readFileP(path.join(this.oneWireRoot, config.id, "temperature"), "utf-8")
+            .then((val) => {
+                resolve({
+                    description: config.description,
+                    id: config.id,
+                    role: config.role,
+                    value: Number.parseFloat(val),
+                });
+            });
         });
     }
 }
