@@ -4,6 +4,8 @@ import { IDeviceState, ISwitchable } from "../../types";
 import * as fsu from "../../utils/fs-utils";
 import { DeviceState } from "./device-state";
 
+export type DeviceConstructor = new(id: string, description: string, devicePath: string) => Device;
+
 @injectable()
 export class Device implements ISwitchable {
 

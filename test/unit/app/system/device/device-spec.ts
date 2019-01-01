@@ -3,6 +3,7 @@ import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import * as fsu from "../../../../../src/utils/fs-utils";
 import * as path from "path";
+import * as fs from "fs";
 
 import { ISwitchable, INJECTABLES, IDeviceState } from "../../../../../src/types";
 import { Device } from "../../../../../src/app/system/device";
@@ -12,20 +13,16 @@ import { interfaces } from "inversify";
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-const gpioRoot = container.get<string>(INJECTABLES.OneWireRootDir);
+const gpioRoot = container.get<string>(INJECTABLES.GpioRootDir);
 const deviceConstructor = container.get<interfaces.Newable<Device>>(INJECTABLES.Device);
 
 const devicePath: string = path.join(gpioRoot, "gpio16", "value");
 const device: ISwitchable = new deviceConstructor("A", "B", devicePath);
 
-async function setTestState(state: boolean): Promise<void> {
-    await fsu.writeFileP(devicePath, state? "1": "0");
+function setTestState(state: boolean): void {
+    fs.writeFileSync(devicePath, state ? "1" : "0", "utf-8");
 }
 describe("device", () => {
-
-    before(async () => {
-        setTestState(true);
-   });
 
     describe("constructor", () => {
         
@@ -49,9 +46,9 @@ describe("device", () => {
 
         it("should set state", () => {
             setTestState(true);
-            device.switch(false);
+            (async () => await device.switch(false))();
 
-            expect(fsu.readFileP(devicePath)).to.eventually.equal("0");
+            expect(fsu.readFileP(devicePath, "utf-8")).to.eventually.equal("0");
 
             let state: Promise<IDeviceState> = device.getState();
             return Promise.all([
