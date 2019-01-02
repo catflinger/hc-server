@@ -10,7 +10,9 @@ import { MockSystem } from "./mocks/mock-system";
 
 export const container = new Container();
 
-container.bind<IController>(INJECTABLES.Controller).to(Controller).inSingletonScope();
+// controller in request scope so thatindividual tests are independent of each other
+container.bind<IController>(INJECTABLES.Controller).to(Controller);
+
 container.bind<ISensorManager>(INJECTABLES.SensorManager).to(MockSensorManager).inSingletonScope();
 container.bind<IConfigManager>(INJECTABLES.ConfigManager).to(MockConfigManager).inSingletonScope();
 container.bind<ISystem>(INJECTABLES.System).to(MockSystem).inSingletonScope();

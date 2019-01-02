@@ -20,6 +20,7 @@ export const INJECTABLES = {
 export interface IController {
     start(): void;
     getActiveProgram(now: Date): IProgram;
+    getControlState(): IControlState;
 }
 
 // models the physical boiler and pumps

@@ -23,9 +23,14 @@ export class Controller implements IController {
         @inject(INJECTABLES.ConfigManager) private configManager: IConfigManager,
         @inject(INJECTABLES.SensorManager) private sensorManager: ISensorManager,
         @inject(INJECTABLES.System) private system: ISystem,
-    ) {
-    }
+    ) {}
 
+    public getControlState(): IControlState {
+        return {
+            heating: this.controlState.heating,
+            hotWater: this.controlState.hotWater,
+        };
+    }
     public async start(): Promise<void> {
         await this.configManager.start();
 
@@ -37,14 +42,10 @@ export class Controller implements IController {
         // console.log("Controller started");
     }
 
-    public refresh(now: Date) {
-        Promise.all([
-            this.configManager.getConfig(),
-            this.sensorManager.readConfiguredSensors(),
-        ])
-        .then((results) => {
-            const config: IConfiguration = results[0];
-            const sensorReadings: IReading[] = results[1];
+    public async refresh(now: Date): Promise<any> {
+        return this.sensorManager.readConfiguredSensors()
+        .then((sensorReadings) => {
+            const config: IConfiguration = this.configManager.getConfig();
 
             // find the active program
             const program = this.getActiveProgram(now);

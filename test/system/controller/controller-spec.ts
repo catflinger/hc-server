@@ -3,7 +3,7 @@ import * as chai from "chai";
 
 import { Controller } from "../../../src/app/controller/controller";
 import { container } from "./inversify-test.config";
-import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IProgram } from "../../../src/types";
+import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IProgram, IControlState } from "../../../src/types";
 import { MockSystem } from "./mocks/mock-system";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";
@@ -11,7 +11,6 @@ import { Configuration } from "../../../src/app/configuration/configuration";
 
 const expect = chai.expect;
 
-const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 const mockSystem: MockSystem = container.get<ISystem>(INJECTABLES.System) as MockSystem;
 const mockSensorManager: MockSensorManager = container.get<ISensorManager>(INJECTABLES.SensorManager) as MockSensorManager;
 const mockConfigManager: MockConfigManager = container.get<IConfigManager>(INJECTABLES.ConfigManager) as MockConfigManager;
@@ -19,9 +18,16 @@ const mockConfigManager: MockConfigManager = container.get<IConfigManager>(INJEC
 describe("Controller", () => {
 
     describe("getActiveProgram", () => {
+        const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
         before (() => {
             controller.start();
+        });
+
+        it("should start with everything off", () => {
+            const cs: IControlState = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
         });
 
         it("should return default if nothing configured", async () => {
@@ -71,8 +77,75 @@ describe("Controller", () => {
             expect(program.id).to.equal("foo");
             expect(program.name).to.equal("dated");
         });
-
     });
+
+    describe("refresh", () => {
+        const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
+
+        before (() => {
+            controller.start();
+        });
+
+        it("should refresh with empty config", async () => {
+            mockConfigManager.config = new Configuration(configA);
+            let cs: IControlState = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
+
+            controller.refresh(new Date("2019-01-06T01:01:01"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
+        });
+
+        it("should refresh with rules configured", async () => {
+            mockConfigManager.config = new Configuration(configD);
+            let cs: IControlState = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
+
+            // too early
+            await controller.refresh(new Date("2019-01-06T01:01:01"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
+
+            // on time for 1st rule
+            await controller.refresh(new Date("2019-01-06T13:00:00"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(true);
+            expect(cs.hotWater).to.equal(false);
+
+            // between the two rules
+            await controller.refresh(new Date("2019-01-06T14:01:01"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
+
+            // on time for 2nd rule
+            await controller.refresh(new Date("2019-01-06T14:55:55"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(true);
+            expect(cs.hotWater).to.equal(false);
+        });
+    });
+
+    describe("device switching", () => {
+        const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
+
+        before (() => {
+            controller.start();
+        });
+
+        it("should have tests writeen", async () => {
+        });
+    });
+
 });
 
 const configA: any = {
@@ -159,4 +232,51 @@ const configC: any = {
     "sensorConfig": [
         { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }
     ]
+};
+
+const configD: any = {
+    "programConfig": [
+        {
+            id: "foo",
+            name: "one rule",
+            minHwTemp: 12,
+            maxHwTemp: 14,
+            rules: [
+                {
+                    startTime: {
+                        hour: 12,
+                        minute: 12,
+                        second: 12
+                    },
+                    endTime: {
+                        hour: 13,
+                        minute: 13,
+                        second: 13
+                    },
+                },
+                {
+                    startTime: {
+                        hour: 14,
+                        minute: 14,
+                        second: 15
+                    },
+                    endTime: {
+                        hour: 15,
+                        minute: 15,
+                        second: 15
+                    },
+                }
+
+            ]
+        },
+    ],
+    "namedConfig": {
+        "weekdayProgramId": "",
+        "saturdayProgramId": "",
+        "sundayProgramId": ""
+    },
+    "datedConfig": [
+        { "programId": "foo", "date": "2019-01-06T02:00:00" }
+    ],
+    "sensorConfig": []
 };
