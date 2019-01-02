@@ -53,7 +53,18 @@ export class Controller implements IController {
             // apply the rules to get new control state
             const newControlState: IControlState = { heating: false, hotWater: false };
 
-            // set the hot water based on teh program threshold values
+            // set the hot water based on the program threshold values
+            const hwReading: IReading = sensorReadings.find((r) => r.role === "hw");
+            if (hwReading !== undefined) {
+                if (hwReading.value < program.minHwTemp) {
+                    newControlState.hotWater = true;
+                } else if (hwReading.value < program.maxHwTemp && this.controlState.hotWater) {
+                    // keep the hw on until the upper threshold is reached
+                    // if the hw is off then we are on theway back down again so keep it off
+                    // this behaviour is to prevent the HW continually cycling around the upper threshold value
+                    newControlState.hotWater = true;
+                }
+            }
 
             program.getRules().forEach((rule: IRule) => {
                 const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);

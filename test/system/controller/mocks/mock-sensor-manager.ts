@@ -3,8 +3,24 @@ import { injectable } from "inversify";
 
 @injectable()
 export class MockSensorManager implements ISensorManager {
-    public readings: IReading[] = [];
+    public readings: IReading[] = [
+        {
+            id: "A",
+            description: "Sensor A",
+            role: "hw",
+            value: 30,
+        },
+        {
+            id: "B",
+            description: "Sensor B",
+            role: "something",
+            value: 30,
+        }
+    ];
 
+    public setHwTemp(val: number): void {
+        this.readings[0].value = val;
+    }
     public readAvailableSensors(): Promise<IReading[]> {
         return Promise.resolve(this.readings);
     }    

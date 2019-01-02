@@ -90,59 +90,88 @@ describe("Controller", () => {
             mockConfigManager.config = new Configuration(configA);
             let cs: IControlState = controller.getControlState();
             expect(cs.heating).to.equal(false);
-            expect(cs.hotWater).to.equal(false);
 
             controller.refresh(new Date("2019-01-06T01:01:01"));
 
             cs = controller.getControlState();
             expect(cs.heating).to.equal(false);
-            expect(cs.hotWater).to.equal(false);
         });
 
         it("should refresh with rules configured", async () => {
             mockConfigManager.config = new Configuration(configD);
             let cs: IControlState = controller.getControlState();
             expect(cs.heating).to.equal(false);
-            expect(cs.hotWater).to.equal(false);
 
             // too early
             await controller.refresh(new Date("2019-01-06T01:01:01"));
 
             cs = controller.getControlState();
             expect(cs.heating).to.equal(false);
-            expect(cs.hotWater).to.equal(false);
 
             // on time for 1st rule
             await controller.refresh(new Date("2019-01-06T13:00:00"));
 
             cs = controller.getControlState();
             expect(cs.heating).to.equal(true);
-            expect(cs.hotWater).to.equal(false);
 
             // between the two rules
             await controller.refresh(new Date("2019-01-06T14:01:01"));
 
             cs = controller.getControlState();
             expect(cs.heating).to.equal(false);
-            expect(cs.hotWater).to.equal(false);
 
             // on time for 2nd rule
             await controller.refresh(new Date("2019-01-06T14:55:55"));
 
             cs = controller.getControlState();
             expect(cs.heating).to.equal(true);
-            expect(cs.hotWater).to.equal(false);
         });
     });
 
-    describe("device switching", () => {
+    describe("hot water", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
         before (() => {
             controller.start();
+            mockConfigManager.config = new Configuration(configE);
         });
 
-        it("should have tests written", async () => {
+        it("should control hw temperature", async () => {
+            mockSensorManager.setHwTemp(10);
+
+            // should start with hw off
+            let cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(false);
+
+            // turn on when below threshold
+            await controller.refresh(new Date("2019-01-06T02:00:00"));
+            cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(true);
+
+            // remain on when inside threshold
+            mockSensorManager.setHwTemp(20);
+            await controller.refresh(new Date("2019-01-06T02:00:00"));
+            cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(true);
+            
+            // turn off when above threshold
+            mockSensorManager.setHwTemp(40);
+            await controller.refresh(new Date("2019-01-06T02:00:00"));
+            cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(false);
+            
+            // remain off when inside threshold
+            mockSensorManager.setHwTemp(40);
+            await controller.refresh(new Date("2019-01-06T02:00:00"));
+            cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(false);
+            
+            // turn on again off when below threshold
+            mockSensorManager.setHwTemp(10);
+            await controller.refresh(new Date("2019-01-06T02:00:00"));
+            cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(true);
+            
         });
     });
 
@@ -280,3 +309,24 @@ const configD: any = {
     ],
     "sensorConfig": []
 };
+const configE: any = {
+    "programConfig": [
+        {
+            id: "foo",
+            name: "one rule",
+            minHwTemp: 12,
+            maxHwTemp: 30,
+            rules: []
+        },
+    ],
+    "namedConfig": {
+        "weekdayProgramId": "",
+        "saturdayProgramId": "",
+        "sundayProgramId": ""
+    },
+    "datedConfig": [
+        { "programId": "foo", "date": "2019-01-06T02:00:00" }
+    ],
+    "sensorConfig": []
+};
+
