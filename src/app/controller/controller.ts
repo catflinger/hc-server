@@ -1,4 +1,5 @@
 import { inject, injectable } from "inversify";
+import { setInterval } from "timers";
 
 import {
     IConfigManager,
@@ -31,13 +32,20 @@ export class Controller implements IController {
             hotWater: this.controlState.hotWater,
         };
     }
-    public async start(): Promise<void> {
+    public async start(refreshInterval?: number): Promise<void> {
         await this.configManager.start();
 
         this.controlState = {
             heating: false,
             hotWater: false,
         };
+
+        if (refreshInterval !== undefined && refreshInterval > 5) {
+            setInterval(() => {
+                this.refresh(new Date());
+            },
+            refreshInterval * 1000);
+        }
         // TO DO...
         // console.log("Controller started");
     }
