@@ -54,12 +54,12 @@ const goodData: any = {
         {
             name: "P1",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30
         },
         {
             name: "P2",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30
         }
 
     ],

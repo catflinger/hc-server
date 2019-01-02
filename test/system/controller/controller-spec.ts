@@ -142,7 +142,7 @@ describe("Controller", () => {
             controller.start();
         });
 
-        it("should have tests writeen", async () => {
+        it("should have tests written", async () => {
         });
     });
 
@@ -165,19 +165,19 @@ const configB: any = {
             id: "21",
             name: "weekday",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         },
         {
             id: "23456",
             name: "saturday",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         },
         {
             id: "dr4edfgf",
             name: "sunday",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         }
     ],
     "namedConfig": {
@@ -199,25 +199,25 @@ const configC: any = {
             id: "21",
             name: "weekday",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         },
         {
             id: "23456",
             name: "saturday",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         },
         {
             id: "dr4edfgf",
             name: "sunday",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         },
         {
             id: "foo",
             name: "dated",
             minHwTemp: 12,
-            maxHwTemp: 14
+            maxHwTemp: 30,
         }
 
     ],
@@ -240,7 +240,7 @@ const configD: any = {
             id: "foo",
             name: "one rule",
             minHwTemp: 12,
-            maxHwTemp: 14,
+            maxHwTemp: 30,
             rules: [
                 {
                     startTime: {

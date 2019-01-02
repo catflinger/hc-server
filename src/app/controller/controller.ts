@@ -53,6 +53,8 @@ export class Controller implements IController {
             // apply the rules to get new control state
             const newControlState: IControlState = { heating: false, hotWater: false };
 
+            // set the hot water based on teh program threshold values
+
             program.getRules().forEach((rule: IRule) => {
                 const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
                 if (result.heating !== null) {
@@ -62,6 +64,7 @@ export class Controller implements IController {
                     newControlState.hotWater =  result.hotWater;
                 }
             });
+
             this.controlState = newControlState;
 
             // switch the devices based on new control state
