@@ -2,7 +2,7 @@ import "mocha";
 import * as chai from "chai";
 
 import { Program } from "../../../../../src/app/configuration/program";
-import { Rule } from "../../../../../src/app/configuration/rule";
+import { BasicHeatingRule } from "../../../../../src/app/configuration/basic-heating-rule";
 import { TimeOfDay } from "../../../../../src/app/controller/time-of-day";
 
 const expect = chai.expect;

@@ -40,6 +40,7 @@ export interface ISwitchable {
 export interface ISensorManager {
     readAvailableSensors(): Promise<IReading[]>;
     readConfiguredSensors(): Promise<IReading[]>;
+    // readSesnor(id: string): Promise<IReading>;
 }
 
 // manages the application configuratiom
@@ -68,7 +69,7 @@ export interface IProgram {
 export interface IRule {
     startTime: ITimeOfDay;
     endTime: ITimeOfDay;
-    applyRule(currentState: IControlState, readings: IReading[], time: ITimeOfDay): IRuleResult;
+    applyRule(currentState: IControlState, readings: IReading[], time: ITimeOfDay | Date): IRuleResult;
 }
 
 export interface IRuleResult {

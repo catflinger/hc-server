@@ -1,15 +1,15 @@
 import "mocha";
 import * as chai from "chai";
 
-import { Rule } from "../../../../../src/app/configuration/rule";
+import { BasicHeatingRule } from "../../../../../src/app/configuration/basic-heating-rule";
 import { TimeOfDay } from "../../../../../src/app/controller/time-of-day";
 
 const expect = chai.expect;
 
-describe("Rule", () => {
+describe("BasicHeatingRule", () => {
 
     it("should load with valid data", () => {
-        let r: Rule = new Rule(goodData); 
+        let r: BasicHeatingRule = new BasicHeatingRule(goodData); 
         expect(r.startTime.hour).to.equal(12);
         expect(r.endTime.hour).to.equal(13);
     });
@@ -17,15 +17,15 @@ describe("Rule", () => {
     it("should fail to load with bad data", () => {
         let badData = Object.assign({}, goodData);
         badData.endTime = undefined;
-        expect(() => { new Rule(badData) }).to.throw; 
+        expect(() => { new BasicHeatingRule(badData) }).to.throw; 
 
         badData = Object.assign({}, goodData);
         badData.startTime = undefined;
-        expect(() => { new Rule(badData) }).to.throw; 
+        expect(() => { new BasicHeatingRule(badData) }).to.throw; 
     });
 
     it("should not implement applyRule", () => {
-        let r: Rule = new Rule(goodData); 
+        let r: BasicHeatingRule = new BasicHeatingRule(goodData); 
         expect(() => { r.applyRule(null, [], new TimeOfDay(goodData.startTime)) }).to.throw; 
     });
 });

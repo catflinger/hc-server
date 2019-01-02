@@ -2,8 +2,8 @@ import { injectable } from "inversify";
 import { v4 as guid } from "uuid";
 
 import { IProgram, IRule } from "../../types";
+import { BasicHeatingRule } from "./basic-heating-rule";
 import { ConfigValidation } from "./config-validation";
-import { Rule } from "./rule";
 
 @injectable()
 export class Program implements IProgram {
@@ -23,7 +23,7 @@ export class Program implements IProgram {
         if (data.rules) {
             if (Array.isArray(data.rules)) {
                 data.rules.forEach((r: any) => {
-                    this.rules.push(new Rule(r));
+                    this.rules.push(new BasicHeatingRule(r));
                 });
             } else {
                 throw new Error("invalid config: datedConfig not an array");
