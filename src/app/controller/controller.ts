@@ -19,16 +19,16 @@ export class Controller implements IController {
 
     private controlState: IControlState;
 
-    @inject(INJECTABLES.ConfigManager)
-    private configManager: IConfigManager;
+    constructor(
+        @inject(INJECTABLES.ConfigManager) private configManager: IConfigManager,
+        @inject(INJECTABLES.SensorManager) private sensorManager: ISensorManager,
+        @inject(INJECTABLES.System) private system: ISystem,
+    ) {
+    }
 
-    @inject(INJECTABLES.SensorManager)
-    private sensorManager: ISensorManager;
+    public async start(): Promise<void> {
+        await this.configManager.start();
 
-    @inject(INJECTABLES.System)
-    private system: ISystem;
-
-    public start(): void {
         this.controlState = {
             heating: false,
             hotWater: false,
@@ -47,7 +47,7 @@ export class Controller implements IController {
             const sensorReadings: IReading[] = results[1];
 
             // find the active program
-            const program = this.getActiveProgram(config, now);
+            const program = this.getActiveProgram(now);
 
             // apply the rules to get new control state
             const newControlState: IControlState = { heating: false, hotWater: false };
@@ -73,8 +73,10 @@ export class Controller implements IController {
         });
     }
 
-    private getActiveProgram(config: IConfiguration, now: Date): IProgram {
+    public getActiveProgram(now: Date): IProgram {
         let activeProgram: IProgram = null;
+        const config: IConfiguration = this.configManager.getConfig();
+
         const datedConfig = config.getDatedConfig();
         const namedConfig = config.getNamedConfig();
         const programs = config.getProgramConfig();
@@ -110,8 +112,8 @@ export class Controller implements IController {
         if (activeProgram === null) {
             activeProgram = {
                 id: "",
-                maxHwTemp: 45,
-                minHwTemp: 50,
+                maxHwTemp: 50,
+                minHwTemp: 45,
                 name: "",
                 getRules(): ReadonlyArray<IRule> {
                     return [] as ReadonlyArray<IRule>;

@@ -1,12 +1,9 @@
-import { injectable } from "inversify";
-
 import { IConfiguration, IDatedConfig, INamedConfig, IProgram, ISensorConfig } from "../../types";
 import { DatedConfig } from "./dated-config";
 import { NamedConfig } from "./named-config";
 import { Program } from "./program";
 import { SensorConfig } from "./sensor-config";
 
-@injectable()
 export class Configuration implements IConfiguration {
 
     private programs: IProgram[] = [];

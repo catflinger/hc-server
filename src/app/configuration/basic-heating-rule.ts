@@ -6,7 +6,7 @@ import { ConfigValidation } from "./config-validation";
 
 /* Base class for implementing rules */
 
-@injectable()
+// @injectable()
 export class BasicHeatingRule implements IRule {
     public readonly startTime: ITimeOfDay;
     public readonly endTime: ITimeOfDay;

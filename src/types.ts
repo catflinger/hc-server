@@ -19,6 +19,7 @@ export const INJECTABLES = {
 // entry point for the app
 export interface IController {
     start(): void;
+    getActiveProgram(now: Date): IProgram;
 }
 
 // models the physical boiler and pumps
@@ -45,7 +46,8 @@ export interface ISensorManager {
 
 // manages the application configuratiom
 export interface IConfigManager {
-    getConfig(): Promise<IConfiguration>;
+    start(): Promise<any>;
+    getConfig(): IConfiguration;
     setConfig(config: IConfiguration): Promise<any>;
 }
 

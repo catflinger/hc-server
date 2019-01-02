@@ -4,10 +4,14 @@ import { IConfigManager, IProgram, IDatedConfig, IConfiguration } from "../../..
 
 @injectable()
 export class MockConfigManager implements IConfigManager {
+    
+    start(): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
 
-    public getConfig(): Promise<IConfiguration> {
+    public getConfig(): IConfiguration {
 
-        return Promise.resolve({
+        return {
             getSensorConfig: () => {
                 return [
                     {
@@ -43,7 +47,7 @@ export class MockConfigManager implements IConfigManager {
             getProgramConfig: () => {
                 return [] as ReadonlyArray<IProgram>;
             }
-        });
+        };
     }
 
     public setConfig(config: IConfiguration): Promise<any> {

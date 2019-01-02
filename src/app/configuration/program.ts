@@ -5,7 +5,7 @@ import { IProgram, IRule } from "../../types";
 import { BasicHeatingRule } from "./basic-heating-rule";
 import { ConfigValidation } from "./config-validation";
 
-@injectable()
+// @injectable()
 export class Program implements IProgram {
     public readonly id: string;
     public readonly name: string;

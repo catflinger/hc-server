@@ -41,41 +41,35 @@ describe("config-manager", () => {
     describe("getConfig", () => {
 
         it("should fail to load with no config", () => {
-            return expect(cfm.getConfig()).to.eventually.be.rejected;
+            return expect(cfm.start()).to.eventually.be.rejected;
         });
 
-        it("should load with good config", () => {
-            return writeFileP(configPath, JSON.stringify(goodConfig))
-            .then(() => { 
-                return expect(cfm.getConfig()).to.eventually.be.fulfilled; 
-            });
+        it("should load with good config", async () => {
+            fs.writeFileSync(configPath, JSON.stringify(goodConfig));
+            await cfm.start();
+            const config = cfm.getConfig();
+            expect(config).to.have.nested.property("namedConfig.saturdayProgramId", "23456");
         });
 
         it("should fail to load with bad config", () => {
-            writeFileP(configPath, JSON.stringify(badConfig))
-            .then(() => {
-                return expect(cfm.getConfig()).to.eventually.be.rejected;
-            });
+            fs.writeFileSync(configPath, JSON.stringify(badConfig));
+            return expect(cfm.start()).to.eventually.be.rejected;
         });
 
     });
 
     describe("setConfig", () => {
-        it("should save valid config", () => {
+        it("should save valid config", async () => {
             const c: IConfiguration = new Configuration(goodConfig);
             const testValue = "xyz";
             c.getNamedConfig().saturdayProgramId = testValue;
 
-            return cfm.setConfig(c)
-            .then(() => {
-                const promiseOfData: Promise<string> = readFileP(configPath, "utf-8")
-                .then((data) => { return JSON.parse(data); });
-                
-                return Promise.all([
-                    expect(promiseOfData).to.eventually.be.fulfilled,
-                    expect(promiseOfData).to.eventually.have.nested.property("namedConfig.saturdayProgramId"),
-                ]);
-            })
+            await cfm.setConfig(c);
+            const data: any = fs.readFileSync(configPath, "utf-8");
+            const raw = JSON.parse(data);
+            expect(raw).to.have.nested.property("namedConfig.saturdayProgramId", testValue);
+            const config = cfm.getConfig();
+            expect(config).to.have.nested.property("namedConfig.saturdayProgramId", testValue);
         });
     });
 });

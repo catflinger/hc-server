@@ -14,7 +14,30 @@ export class ConfigManager implements IConfigManager {
     @inject(INJECTABLES.Configuration)
     private configuration: interfaces.Newable<Configuration>;
 
-    public getConfig(): Promise<IConfiguration> {
+    private configCache: IConfiguration = null;
+
+    public async start(): Promise<void> {
+        this.configCache = await(this.readConfig());
+    }
+
+    public getConfig(): IConfiguration {
+        return this.configCache;
+    }
+
+    public setConfig(config: IConfiguration): Promise<any> {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(this.configfile(), JSON.stringify(config), { encoding: "utf-8" },  (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    this.configCache = config;
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    private readConfig(): Promise<IConfiguration> {
         return new Promise((resolve, reject) => {
             fs.readFile(this.configfile(), "utf-8", (error, data) => {
                 if (error) {
@@ -26,18 +49,6 @@ export class ConfigManager implements IConfigManager {
                     } catch (e) {
                         reject(e);
                     }
-                }
-            });
-        });
-    }
-
-    public setConfig(config: IConfiguration): Promise<any> {
-        return new Promise((resolve, reject) => {
-            fs.writeFile(this.configfile(), JSON.stringify(config), { encoding: "utf-8" },  (error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(true);
                 }
             });
         });
