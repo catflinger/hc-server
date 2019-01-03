@@ -1,19 +1,18 @@
 
 export const INJECTABLES = {
-    ConfigManager: Symbol("ConfigManager"),
+    // symbols for constants
     ConfigRootDir: Symbol("ConfigRootDir"),
-    Configuration: Symbol("Configuration"),
-    Controller: Symbol("Controller"),
-    DatedConfig: Symbol("DatedConfig"),
-    Device: Symbol("Device"),
     GpioRootDir: Symbol("GpioRootDir"),
-    NamedConfig: Symbol("NamedConfig"),
     OneWireRootDir: Symbol("OneWireRootDir"),
-    Program: Symbol("Program"),
-    Rule: Symbol("Rule"),
-    SensorConfig: Symbol("SensorConfig"),
+
+    // symbols for the main players 
+    ConfigManager: Symbol("ConfigManager"),
+    Controller: Symbol("Controller"),
     SensorManager: Symbol("SensorManager"),
-    System: Symbol("SystemSystem"),
+    System: Symbol("System"),
+
+    // symbols for the supporting cast
+    Device: Symbol("Device"),
 };
 
 // entry point for the app

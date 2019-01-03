@@ -11,5 +11,3 @@ export const container = new Container();
 container.bind<string>(INJECTABLES.ConfigRootDir).toConstantValue(path.join(__dirname, "data"));
 
 container.bind<IConfigManager>(INJECTABLES.ConfigManager).to(ConfigManager);
-
-container.bind<interfaces.Newable<Configuration>>(INJECTABLES.Configuration).toConstructor(Configuration);

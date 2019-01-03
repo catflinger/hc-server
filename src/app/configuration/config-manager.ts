@@ -11,9 +11,6 @@ export class ConfigManager implements IConfigManager {
     @inject(INJECTABLES.ConfigRootDir)
     private rootDir: string;
 
-    @inject(INJECTABLES.Configuration)
-    private configuration: interfaces.Newable<Configuration>;
-
     private configCache: IConfiguration = null;
 
     public async start(): Promise<void> {
@@ -44,7 +41,7 @@ export class ConfigManager implements IConfigManager {
                     reject(error);
                 } else {
                     try {
-                        const config: IConfiguration = new this.configuration(JSON.parse(data));
+                        const config: IConfiguration = new Configuration(JSON.parse(data));
                         resolve(config);
                     } catch (e) {
                         reject(e);
