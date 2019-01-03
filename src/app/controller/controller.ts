@@ -51,6 +51,8 @@ export class Controller implements IController {
                         refreshInterval * 1000);
                     }
 
+                    this.refresh(new Date());
+
                     resolve();
                 } catch (err) {
                     reject (err);

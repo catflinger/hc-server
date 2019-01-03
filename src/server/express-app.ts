@@ -4,7 +4,7 @@ import * as express from "express";
 import { Container, inject, injectable } from "inversify";
 import * as path from "path";
 
-import { IController, INJECTABLES } from "../types";
+import { IApi,  IController, INJECTABLES } from "../types";
 
 const debug = Debug("app");
 
@@ -12,10 +12,10 @@ const debug = Debug("app");
 export class ExpressApp {
     private express: express.Application;
 
-    constructor(
-        @inject(INJECTABLES.ExpressStaticRootDir) private wwwRoot: string,
-        @inject(INJECTABLES.Controller) private controller: IController,
-    ) {}
+    @inject(INJECTABLES.ExpressStaticRootDir) private wwwRoot: string;
+    @inject(INJECTABLES.Controller) private controller: IController;
+
+    @inject(INJECTABLES.ControlApi) private controlApi: IApi;
 
     public start(): Promise<express.Application> {
         // save a copy of express as a class member for convenience
@@ -24,7 +24,7 @@ export class ExpressApp {
         // get the router and add the API implementation
         const router: express.Router = express.Router();
 
-        // this.statusApi.addRoutes(router);
+        this.controlApi.addRoutes(router);
 
         this.express.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");

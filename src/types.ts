@@ -1,3 +1,4 @@
+import { Router } from "express";
 
 export const INJECTABLES = {
     // symbols for constants
@@ -14,10 +15,13 @@ export const INJECTABLES = {
     // symbols for the supporting cast
     Device: Symbol("Device"),
 
-    // symbols for the API
+    // symbols for the server
     ExpressApp: Symbol("ExpressApp"),
     ExpressPort: Symbol("ExpressPort"),
     ExpressStaticRootDir: Symbol("ExpressStaticRootDir"),
+
+    // symbols for the apis
+    ControlApi: Symbol("ControlApi"),
 };
 
 // entry point for the app
@@ -128,4 +132,8 @@ export interface ISensorConfig {
     description: string;
     role: string;
     deleted: boolean;
+}
+
+export interface IApi {
+    addRoutes(router: Router): void;
 }
