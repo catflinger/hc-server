@@ -22,7 +22,10 @@ export class SensorManager implements ISensorManager {
     private configManager: IConfigManager;
 
     public async readAvailableSensors(): Promise<IReading[]> {
-        const sensorsIds = await fsu.listDirectoriesP(this.oneWireRoot);
+        const sensorsIds = await fsu.listDirectoriesP(this.oneWireRoot)
+        .catch((err) => {
+            throw err;
+        });
         const readings: Array<Promise<IReading>> = [];
 
         sensorsIds.forEach((id: string) => {
@@ -37,8 +40,8 @@ export class SensorManager implements ISensorManager {
         return Promise.all(readings);
     }
 
-    public async readConfiguredSensors(): Promise<IReading[]> {
-        const config: IConfiguration = await this.configManager.getConfig();
+    public readConfiguredSensors(): Promise<IReading[]> {
+        const config: IConfiguration = this.configManager.getConfig();
         const readings: Array<Promise<IReading>> = [];
 
         config.getSensorConfig().forEach((sc: ISensorConfig) => {
@@ -51,7 +54,7 @@ export class SensorManager implements ISensorManager {
     }
 
     private readSensor(config: ISensorConfig): Promise<IReading> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             fsu.readFileP(path.join(this.oneWireRoot, config.id, "temperature"), "utf-8")
             .then((val) => {
                 resolve({
@@ -60,6 +63,9 @@ export class SensorManager implements ISensorManager {
                     role: config.role,
                     value: Number.parseFloat(val),
                 });
+            })
+            .catch ((err) => {
+                reject(err);
             });
         });
     }

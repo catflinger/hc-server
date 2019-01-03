@@ -13,8 +13,17 @@ export class ConfigManager implements IConfigManager {
 
     private configCache: IConfiguration = null;
 
-    public async start(): Promise<void> {
-        this.configCache = await(this.readConfig());
+    public start(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.readConfig()
+            .then((config) => {
+                this.configCache = config;
+                resolve(true);
+            })
+            .catch((err) => {
+                reject(err);
+            });
+        });
     }
 
     public getConfig(): IConfiguration {
@@ -35,7 +44,7 @@ export class ConfigManager implements IConfigManager {
     }
 
     private readConfig(): Promise<IConfiguration> {
-        return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
             fs.readFile(this.configfile(), "utf-8", (error, data) => {
                 if (error) {
                     reject(error);

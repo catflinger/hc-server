@@ -5,7 +5,7 @@ export const INJECTABLES = {
     GpioRootDir: Symbol("GpioRootDir"),
     OneWireRootDir: Symbol("OneWireRootDir"),
 
-    // symbols for the main players 
+    // symbols for the main players
     ConfigManager: Symbol("ConfigManager"),
     Controller: Symbol("Controller"),
     SensorManager: Symbol("SensorManager"),
@@ -13,11 +13,16 @@ export const INJECTABLES = {
 
     // symbols for the supporting cast
     Device: Symbol("Device"),
+
+    // symbols for the API
+    ExpressApp: Symbol("ExpressApp"),
+    ExpressPort: Symbol("ExpressPort"),
+    ExpressStaticRootDir: Symbol("ExpressStaticRootDir"),
 };
 
 // entry point for the app
 export interface IController {
-    start(): void;
+    start(): Promise<void>;
     getActiveProgram(now: Date): IProgram;
     getControlState(): IControlState;
 }

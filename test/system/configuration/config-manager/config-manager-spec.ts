@@ -12,9 +12,6 @@ import { container } from "./inversify-test.config";
 import { IConfigManager, INJECTABLES, IConfiguration } from "../../../../src/types";
 import { Configuration } from "../../../../src/app/configuration/configuration";
 
-const writeFileP = util.promisify(fs.writeFile);
-const readFileP = util.promisify(fs.readFile);
-
 // function to delete a file only it if exists
 const deleteFileP = (filepath: string): Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) => {

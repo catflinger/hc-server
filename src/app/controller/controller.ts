@@ -32,22 +32,34 @@ export class Controller implements IController {
             hotWater: this.controlState.hotWater,
         };
     }
-    public async start(refreshInterval?: number): Promise<void> {
-        await this.configManager.start();
 
-        this.controlState = {
-            heating: false,
-            hotWater: false,
-        };
+    public start(refreshInterval?: number): Promise<any> {
+        return new Promise((resolve, reject) => {
 
-        if (refreshInterval !== undefined && refreshInterval > 5) {
-            setInterval(() => {
-                this.refresh(new Date());
-            },
-            refreshInterval * 1000);
-        }
-        // TO DO...
-        // console.log("Controller started");
+            this.configManager.start()
+            .then(() => {
+                try {
+                    this.controlState = {
+                        heating: false,
+                        hotWater: false,
+                    };
+
+                    if (refreshInterval !== undefined && refreshInterval > 5) {
+                        setInterval(() => {
+                            this.refresh(new Date());
+                        },
+                        refreshInterval * 1000);
+                    }
+
+                    resolve();
+                } catch (err) {
+                    reject (err);
+                }
+            })
+            .catch ((err) => {
+                reject (err);
+            });
+        });
     }
 
     public async refresh(now: Date): Promise<any> {
