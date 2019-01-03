@@ -83,7 +83,7 @@ describe("Controller", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
         before (() => {
-            controller.start();
+            return controller.start();
         });
 
         it("should refresh with empty config", async () => {
@@ -132,20 +132,16 @@ describe("Controller", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
         before (() => {
-            controller.start();
             mockConfigManager.config = new Configuration(configE);
+            return controller.start();
         });
 
         it("should control hw temperature", async () => {
             mockSensorManager.setHwTemp(10);
 
-            // should start with hw off
-            let cs = controller.getControlState();
-            expect(cs.hotWater).to.equal(false);
-
             // turn on when below threshold
             await controller.refresh(new Date("2019-01-06T02:00:00"));
-            cs = controller.getControlState();
+            let cs = controller.getControlState();
             expect(cs.hotWater).to.equal(true);
 
             // remain on when inside threshold

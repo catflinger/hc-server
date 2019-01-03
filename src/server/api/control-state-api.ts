@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { IApi, INJECTABLES, IController } from "../../types";
+import { IApi, IController, INJECTABLES } from "../../types";
 
 @injectable()
-export class ControlApi implements IApi {
+export class ControlStateApi implements IApi {
 
     @inject(INJECTABLES.Controller)
     private controller: IController;

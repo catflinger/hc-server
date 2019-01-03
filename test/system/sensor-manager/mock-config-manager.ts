@@ -5,7 +5,7 @@ import { IConfigManager, IProgram, IDatedConfig, IConfiguration } from "../../..
 @injectable()
 export class MockConfigManager implements IConfigManager {
     
-    start(): Promise<any> {
+    public start(): Promise<any> {
         throw new Error("Method not implemented.");
     }
 

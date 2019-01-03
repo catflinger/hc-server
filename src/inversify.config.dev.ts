@@ -10,7 +10,7 @@ import { System } from "./app/system/system";
 import { ExpressApp } from "./server/express-app";
 import { IConfigManager, IController, INJECTABLES, ISensorManager, ISystem } from "./types";
 
-import { ControlApi } from "./server/api/control-api";
+import { ControlStateApi } from "./server/api/control-state-api";
 
 export const container = new Container();
 
@@ -34,4 +34,4 @@ container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.jo
 container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(3000);
 
 // bindings for the apis
-container.bind<ControlApi>(INJECTABLES.ControlApi).to(ControlApi).inSingletonScope();
+container.bind<ControlStateApi>(INJECTABLES.ControlApi).to(ControlStateApi).inSingletonScope();
