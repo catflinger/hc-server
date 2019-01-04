@@ -10,8 +10,20 @@ export class NamedConfig implements INamedConfig {
     public readonly sundayProgramId: string;
 
     constructor(data: any) {
-        this.weekdayProgramId = ConfigValidation.getString(data.weekdayProgramId, "namedConfig:weekdayProgramId", null);
-        this.saturdayProgramId = ConfigValidation.getString(data.saturdayProgramId, "namedConfig:saturdayProgramId", null);
-        this.sundayProgramId = ConfigValidation.getString(data.sundayProgramId, "namedConfig:sundayProgramId", null);
+        this.weekdayProgramId = isPresent(data.weekdayProgramId) ?
+            ConfigValidation.getString(data.weekdayProgramId, "namedConfig:weekdayProgramId", null) :
+            "";
+        
+        this.saturdayProgramId = isPresent(data.saturdayProgramId) ?
+            ConfigValidation.getString(data.saturdayProgramId, "namedConfig:saturdayProgramId", null) :
+            "";
+        
+        this.sundayProgramId = isPresent(data.sundayProgramId) ?
+            ConfigValidation.getString(data.sundayProgramId, "namedConfig:sundayProgramId", null) :
+            "";
     }
+}
+
+function isPresent(val: any): boolean {
+    return !(val === null || val === undefined);
 }

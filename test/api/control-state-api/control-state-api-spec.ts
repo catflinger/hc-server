@@ -1,10 +1,10 @@
 import * as mocha from 'mocha';
 import * as chai from 'chai';
-import { container } from "./inversify-test.config";
+import { container } from "../inversify-test.config";
 
 import { ExpressApp } from '../../../src/server/express-app';
 import { INJECTABLES } from '../../../src/types';
-import { MockController } from './mock-controller';
+import { MockController } from '../mocks/mock-controller';
 
 let mockController = container.get<MockController>(INJECTABLES.Controller);
 let expressApp = container.get<ExpressApp>(INJECTABLES.ExpressApp);

@@ -21,6 +21,7 @@ export const INJECTABLES = {
     ExpressStaticRootDir: Symbol("ExpressStaticRootDir"),
 
     // symbols for the apis
+    ConfigApi: Symbol("ConfigApi"),
     ControlApi: Symbol("ControlApi"),
 };
 
