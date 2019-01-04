@@ -1,1 +1,1 @@
-{"programs":[],"sensors":[{"id":"abcde12345","description":"hot water top of tank","role":"hw","deleted":false}],"datedConfig":[{"programId":"abcde","date":"2018-11-23T12:12:12.000Z"}],"namedConfig":{"weekdayProgramId":"21","saturdayProgramId":"xyz","sundayProgramId":"dr4edfgf"}}
+{"programConfig":[],"sensorConfig":[{"id":"abcde12345","description":"hot water top of tank","role":"hw","deleted":false}],"datedConfig":[{"programId":"abcde","date":"2018-11-23T12:12:12.000Z"}],"namedConfig":{"weekdayProgramId":"21","saturdayProgramId":"xyz","sundayProgramId":"dr4edfgf"}}

@@ -19,14 +19,45 @@ export class MockConfigManager implements IConfigManager {
 }
 
 const defaultConfig: any = {
-    "programConfig": [],
-    "namedConfig": {
-        "weekdayProgramId": null,
-        "saturdayProgramId": null,
-        "sundayProgramId": null
+    namedConfig: {
+        saturdayProgramId: "A",
+        sundayProgramId: "B",
+        weekdayProgramId: "C",
     },
-    "datedConfig": [
+    datedConfig: [
+        {
+            programId: "X",
+            date: "2012-12-12T00:00:00",
+        },
+        {
+            programId: "Y",
+            date: "2010-10-10T00:00:00",
+        }
     ],
-    "sensorConfig": [
-    ]
+    programConfig: [
+        {
+            id: "P1",
+            name: "I am called P1",
+            minHwTemp: 12,
+            maxHwTemp: 30,
+        },
+        {
+            id: "p2",
+            name: "I am called P2",
+            minHwTemp: 12,
+            maxHwTemp: 30,
+        }
+
+    ],
+    sensorConfig: [
+        {
+            id: "A",
+            description: "B",
+        },
+        {
+            id: "C",
+            description: "D",
+            role: "hw",
+        }    
+    ],
 };

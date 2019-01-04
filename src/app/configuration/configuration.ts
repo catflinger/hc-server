@@ -6,8 +6,8 @@ import { SensorConfig } from "./sensor-config";
 
 export class Configuration implements IConfiguration {
 
-    private programs: IProgram[] = [];
-    private sensors: ISensorConfig[] = [];
+    private programConfig: IProgram[] = [];
+    private sensorConfig: ISensorConfig[] = [];
     private datedConfig: IDatedConfig[] = [];
     private namedConfig: INamedConfig;
 
@@ -17,7 +17,7 @@ export class Configuration implements IConfiguration {
             if (data.programConfig) {
                 if (Array.isArray(data.programConfig)) {
                     data.programConfig.forEach((p: any) => {
-                        this.programs.push(new Program(p));
+                        this.programConfig.push(new Program(p));
                     });
                 } else {
                     throw new Error("invalid config: programs not an array");
@@ -40,7 +40,7 @@ export class Configuration implements IConfiguration {
             if (data.sensorConfig) {
                 if (Array.isArray(data.sensorConfig)) {
                     data.sensorConfig.forEach((dp: any) => {
-                        this.sensors.push(new SensorConfig(dp));
+                        this.sensorConfig.push(new SensorConfig(dp));
                     });
                 } else {
                     throw new Error("invalid config: datedConfig not an array");
@@ -52,7 +52,7 @@ export class Configuration implements IConfiguration {
     }
 
     public getProgramConfig(): ReadonlyArray<IProgram> {
-        return this.programs as ReadonlyArray<IProgram>;
+        return this.programConfig as ReadonlyArray<IProgram>;
     }
 
     public getDatedConfig(): ReadonlyArray<IDatedConfig> {
@@ -60,7 +60,7 @@ export class Configuration implements IConfiguration {
     }
 
     public getSensorConfig(): ReadonlyArray<ISensorConfig> {
-        return this.sensors as ReadonlyArray<ISensorConfig>;
+        return this.sensorConfig as ReadonlyArray<ISensorConfig>;
     }
 
     public getNamedConfig(): INamedConfig {

@@ -32,16 +32,24 @@ describe("Config API' get /api/config", () => {
     });
 
     it('should contain valid data', () => {
-    //     mockController.state.heating = true;
-    //     mockController.state.hotWater = false;
+        return chai.request(app).get('/api/config')
+            .then((res: any) => {
+                const config: any = res.body;
 
-    //     return chai.request(app).get('/api/control-state')
-    //         .then((res: any) => {
-    //             expect(res.status).to.equal(200);
-    //             expect(res.type).to.eql('application/json');
-    //             const state: any = res.body;
-    //             expect(state.heating).to.equal(true);
-    //             expect(state.hotWater).to.equal(false);
-    //         });
+                console.log(JSON.stringify(config, null, 4));
+                
+                // check a few random values
+                expect(config.namedConfig.weekdayProgramId).to.equal("C");
+
+                expect(config.datedConfig.length).to.equal(2);
+                expect(config.datedConfig[1].programId).to.equal("Y");
+
+                expect(config.programConfig.length).to.equal(2);
+                expect(config.programConfig[0].id).to.equal("P1");
+
+                expect(config.sensorConfig.length).to.equal(2);
+                expect(config.sensorConfig[0].role).to.equal("");
+                expect(config.sensorConfig[1].role).to.equal("hw");
+            });
     });
 });
