@@ -5,7 +5,6 @@ import { container } from "../inversify-test.config";
 import { ExpressApp } from '../../../src/server/express-app';
 import { INJECTABLES } from '../../../src/types';
 import { MockConfigManager } from '../mocks/mock-config-manager';
-import { Configuration } from '../../../src/app/configuration/configuration';
 
 let mockConfigManager = container.get<MockConfigManager>(INJECTABLES.ConfigManager);
 let expressApp = container.get<ExpressApp>(INJECTABLES.ExpressApp);
@@ -36,8 +35,6 @@ describe("Config API' get /api/config", () => {
             .then((res: any) => {
                 const config: any = res.body;
 
-                console.log(JSON.stringify(config, null, 4));
-                
                 // check a few random values
                 expect(config.namedConfig.weekdayProgramId).to.equal("C");
 

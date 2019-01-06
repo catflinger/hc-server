@@ -2,7 +2,7 @@ import { Container, injectable, interfaces } from "inversify";
 import * as path from "path";
 import "reflect-metadata";
 
-import { INJECTABLES, ISwitchable, IController, ISensorManager, IConfigManager, ISystem } from "../../../src/types";
+import { INJECTABLES, IController, ISensorManager, IConfigManager, ISystem } from "../../../src/types";
 import { Controller } from "../../../src/app/controller/controller";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";

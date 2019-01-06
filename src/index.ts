@@ -1,7 +1,7 @@
 import * as Debug from "debug";
 import * as http from "http";
-import { Container } from "inversify";
 
+import { container } from "./inversify.config";
 import { ExpressApp } from "./server/express-app";
 import { INJECTABLES } from "./types";
 
@@ -9,12 +9,6 @@ process.on("unhandledRejection", (reason, p) => {
     const message: string = `'Unhandled Promise Rejection at: Promise ${p} reason: ${reason}`;
     throw new Error(message);
   });
-
-let container: Container;
-
-container = (process.env.NODE_ENV === "production") ?
-     require("./inversify.config").container :
-     require("./inversify.config.dev").container;
 
 const port = container.get<number>(INJECTABLES.ExpressPort);
 const debug = Debug("app");

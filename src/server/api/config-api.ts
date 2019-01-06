@@ -1,5 +1,5 @@
-import { inject, injectable } from "inversify";
 import { Router } from "express";
+import { inject, injectable } from "inversify";
 
 import { IApi, IConfigManager, INJECTABLES } from "../../types";
 

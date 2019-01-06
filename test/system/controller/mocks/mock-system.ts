@@ -1,14 +1,23 @@
-import { ISystem, ISwitchable, IDeviceState } from "../../../../src/types";
+import { ISystem, IDevice, IDeviceState, IControlState } from "../../../../src/types";
 import { injectable } from "inversify";
 
 @injectable()
 export class MockSystem implements ISystem {
-    public boiler: ISwitchable = new MockDevice();
-    public chPump: ISwitchable = new MockDevice();
-    public hwPump: ISwitchable = new MockDevice();
+    public boiler: IDevice = new MockDevice();
+    public chPump: IDevice = new MockDevice();
+    public hwPump: IDevice = new MockDevice();
+
+    public getDeviceState(): Promise<IDeviceState[]> {
+        throw new Error("getDeviceState not implemented in mock");
+    }
+
+    public applyControlState(cs: IControlState): Promise<void> {
+        throw new Error("applyControlState not implemented in mock");
+    }
+    
 }
 
-export class MockDevice implements ISwitchable {
+export class MockDevice implements IDevice {
     public id: string;    
     public description: string;
 

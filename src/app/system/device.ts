@@ -1,18 +1,18 @@
 import * as fs from "fs";
 import { injectable } from "inversify";
 
-import { IDeviceState, ISwitchable } from "../../types";
+import { IDevice, IDeviceState } from "../../types";
 import { DeviceState } from "./device-state";
 
 export type DeviceConstructor = new(id: string, description: string, devicePath: string) => Device;
 
 @injectable()
-export class Device implements ISwitchable {
+export class Device implements IDevice {
 
     constructor(
-        public readonly id: string,
-        public readonly description: string,
-        private readonly deviceFile: string) {
+        private id: string,
+        private description: string,
+        private deviceFile: string) {
     }
 
     public getState(): Promise<IDeviceState> {

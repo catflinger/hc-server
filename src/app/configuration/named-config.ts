@@ -13,11 +13,11 @@ export class NamedConfig implements INamedConfig {
         this.weekdayProgramId = isPresent(data.weekdayProgramId) ?
             ConfigValidation.getString(data.weekdayProgramId, "namedConfig:weekdayProgramId", null) :
             "";
-        
+
         this.saturdayProgramId = isPresent(data.saturdayProgramId) ?
             ConfigValidation.getString(data.saturdayProgramId, "namedConfig:saturdayProgramId", null) :
             "";
-        
+
         this.sundayProgramId = isPresent(data.sundayProgramId) ?
             ConfigValidation.getString(data.sundayProgramId, "namedConfig:sundayProgramId", null) :
             "";

@@ -34,15 +34,12 @@ export interface IController {
 
 // models the physical boiler and pumps
 export interface ISystem {
-    boiler: ISwitchable;
-    chPump: ISwitchable;
-    hwPump: ISwitchable;
+    getDeviceState(): Promise<IDeviceState[]>;
+    applyControlState(controlState: IControlState): Promise<void>;
 }
 
 // models a device in the system
-export interface ISwitchable {
-    id: string;
-    description: string;
+export interface IDevice {
     getState(): Promise<IDeviceState>;
     switch(state: boolean): Promise<void>;
 }

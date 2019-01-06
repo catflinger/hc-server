@@ -101,9 +101,7 @@ export class Controller implements IController {
             this.controlState = newControlState;
 
             // switch the devices based on new control state
-            this.system.boiler.switch(this.controlState.heating || this.controlState.hotWater);
-            this.system.chPump.switch(this.controlState.heating);
-            this.system.hwPump.switch(this.controlState.hotWater);
+            this.system.applyControlState(newControlState);
         })
         .catch(() => {
             // what to do here?  How can an error here be reported?
