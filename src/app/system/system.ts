@@ -6,7 +6,7 @@ import { DeviceConstructor } from "./device";
 
 @injectable()
 export class System implements ISystem {
-    private boiler: IDevice;
+    private readonly boiler: IDevice;
     private readonly chPump: IDevice;
     private readonly hwPump: IDevice;
 

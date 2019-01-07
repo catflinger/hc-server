@@ -3,12 +3,13 @@ import * as path from "path";
 import "reflect-metadata";
 
 import { ConfigManager } from "./app/configuration/config-manager";
+import { Clock } from "./app/controller/clock";
 import { Controller } from "./app/controller/controller";
 import { SensorManager } from "./app/sensors/sensor-manager";
 import { Device } from "./app/system/device";
 import { System } from "./app/system/system";
 import { ExpressApp } from "./server/express-app";
-import { IConfigManager, IController, INJECTABLES, ISensorManager, ISystem } from "./types";
+import { IClock, IConfigManager, IController, INJECTABLES, ISensorManager, ISystem } from "./types";
 
 import { ConfigApi } from "./server/api/config-api";
 import { ControlStateApi } from "./server/api/control-state-api";
@@ -36,6 +37,7 @@ container.bind<IController>(INJECTABLES.Controller).to(Controller).inSingletonSc
 container.bind<IConfigManager>(INJECTABLES.ConfigManager).to(ConfigManager).inSingletonScope();
 container.bind<ISensorManager>(INJECTABLES.SensorManager).to(SensorManager).inSingletonScope();
 container.bind<ISystem>(INJECTABLES.System).to(System).inSingletonScope();
+container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 
 // bindings to newables
 container.bind<interfaces.Newable<Device>>(INJECTABLES.Device).toConstructor(Device);

@@ -3,7 +3,7 @@ import * as path from "path";
 import "reflect-metadata";
 
 import { ExpressApp } from "../../src/server/express-app";
-import { INJECTABLES, IController } from "../../src/types";
+import { INJECTABLES, IController, IClock } from "../../src/types";
 
 import { MockConfigManager } from "./mocks/mock-config-manager";
 import { MockController } from "./mocks/mock-controller";
@@ -12,8 +12,11 @@ import { ConfigApi } from "../../src/server/api/config-api";
 import { ControlStateApi } from "../../src/server/api/control-state-api";
 import { SensorApi } from "../../src/server/api/sensor-api";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
+import { Clock } from "../../src/app/controller/clock";
 
 export const container = new Container();
+
+container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 
 // mocks
 container.bind<IController>(INJECTABLES.Controller).to(MockController).inSingletonScope();

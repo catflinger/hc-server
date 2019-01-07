@@ -2,6 +2,7 @@ import { inject, injectable } from "inversify";
 import { setInterval } from "timers";
 
 import {
+    IClock,
     IConfigManager,
     IConfiguration,
     IController,
@@ -24,6 +25,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.ConfigManager) private configManager: IConfigManager,
         @inject(INJECTABLES.SensorManager) private sensorManager: ISensorManager,
         @inject(INJECTABLES.System) private system: ISystem,
+        @inject(INJECTABLES.Clock) private clock: IClock,
     ) {}
 
     public getControlState(): IControlState {
@@ -46,12 +48,12 @@ export class Controller implements IController {
 
                     if (refreshInterval !== undefined && refreshInterval > 5) {
                         setInterval(() => {
-                            this.refresh(new Date());
+                            this.refresh(this.clock.now());
                         },
                         refreshInterval * 1000);
                     }
 
-                    this.refresh(new Date());
+                    this.refresh(this.clock.now());
 
                     resolve();
                 } catch (err) {

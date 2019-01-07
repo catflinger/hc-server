@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { v4 as guid } from "uuid";
+import { v4 as uuid } from "uuid";
 
 import { IProgram, IRule } from "../../types";
 import { BasicHeatingRule } from "./basic-heating-rule";
@@ -15,7 +15,7 @@ export class Program implements IProgram {
     private rules: IRule[] = [];
 
     constructor(data: any) {
-        this.id = data.id ? ConfigValidation.getString(data.id, "programConfig:id") : guid();
+        this.id = data.id ? ConfigValidation.getString(data.id, "programConfig:id") : uuid();
         this.name = ConfigValidation.getString(data.name, "programConfig:name");
         this.minHwTemp = ConfigValidation.getNumber(data.minHwTemp, "programConfig:minHwTemp");
         this.maxHwTemp = ConfigValidation.getNumber(data.maxHwTemp, "programConfig:maxHwTemp");

@@ -9,10 +9,12 @@ export const INJECTABLES = {
     // symbols for the main players
     ConfigManager: Symbol("ConfigManager"),
     Controller: Symbol("Controller"),
+    OverrideManager: Symbol("OverrideManager"),
     SensorManager: Symbol("SensorManager"),
     System: Symbol("System"),
 
     // symbols for the supporting cast
+    Clock: Symbol("Clock"),
     Device: Symbol("Device"),
 
     // symbols for the server
@@ -57,6 +59,20 @@ export interface IConfigManager {
     start(): Promise<any>;
     getConfig(): IConfiguration;
     setConfig(config: IConfiguration): Promise<any>;
+}
+
+// manages overrides to the standard configuration
+export interface IOverrideManager {
+    addOverride(rule: IRule): void;
+    getOverrides(): ReadonlyArray<IOverride>;
+    clearOverrides(): void;
+    housekeep(): void;
+}
+
+export interface IOverride {
+    readonly id: string;
+    readonly date: Date;
+    readonly rule: IRule;
 }
 
 /**
@@ -135,4 +151,9 @@ export interface ISensorConfig {
 
 export interface IApi {
     addRoutes(router: Router): void;
+}
+
+export interface IClock {
+    now(): Date;
+    timeOfDay(): ITimeOfDay;
 }
