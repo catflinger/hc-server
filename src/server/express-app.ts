@@ -17,6 +17,7 @@ export class ExpressApp {
 
     @inject(INJECTABLES.ControlApi) private controlApi: IApi;
     @inject(INJECTABLES.ConfigApi) private configApi: IApi;
+    @inject(INJECTABLES.SensorApi) private sensorApi: IApi;
 
     public start(): Promise<express.Application> {
         // save a copy of express as a class member for convenience
@@ -27,6 +28,7 @@ export class ExpressApp {
 
         this.controlApi.addRoutes(router);
         this.configApi.addRoutes(router);
+        this.sensorApi.addRoutes(router);
 
         this.express.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");

@@ -66,7 +66,7 @@ export class Controller implements IController {
 
     public async refresh(now: Date): Promise<any> {
         return this.sensorManager.readConfiguredSensors()
-        .then((sensorReadings) => {
+        .then((sensorReadings: ReadonlyArray<IReading>) => {
             const config: IConfiguration = this.configManager.getConfig();
 
             // find the active program

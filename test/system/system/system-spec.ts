@@ -14,7 +14,7 @@ describe("System", () => {
 
     it("should get device state", async () => {
         let system: ISystem = container.get<ISystem>(INJECTABLES.System);
-        let ds: IDeviceState[] = await system.getDeviceState();
+        let ds: ReadonlyArray<IDeviceState> = await system.getDeviceState();
         expect(ds.length).to.equal(3);
 
         expect(ds[0].id).to.equal("boiler");
@@ -34,7 +34,7 @@ describe("System", () => {
         let controlState = { heating: true, hotWater: true };
         await system.applyControlState(controlState);
 
-        let ds: IDeviceState[] = await system.getDeviceState();
+        let ds: ReadonlyArray<IDeviceState> = await system.getDeviceState();
         expect(ds.length).to.equal(3);
 
         expect(ds[0].id).to.equal("boiler");

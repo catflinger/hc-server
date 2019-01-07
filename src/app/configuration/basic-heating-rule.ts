@@ -25,7 +25,7 @@ export class BasicHeatingRule implements IRule {
         }
     }
 
-    public applyRule(currentState: IControlState, readings: IReading[], time: ITimeOfDay | Date): IRuleResult {
+    public applyRule(currentState: IControlState, readings: ReadonlyArray<IReading>, time: ITimeOfDay | Date): IRuleResult {
         const result: IRuleResult = {
             heating: null,
             hotWater: null,

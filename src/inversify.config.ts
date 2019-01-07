@@ -10,7 +10,9 @@ import { System } from "./app/system/system";
 import { ExpressApp } from "./server/express-app";
 import { IConfigManager, IController, INJECTABLES, ISensorManager, ISystem } from "./types";
 
+import { ConfigApi } from "./server/api/config-api";
 import { ControlStateApi } from "./server/api/control-state-api";
+import { SensorApi } from "./server/api/sensor-api";
 
 export const container = new Container();
 
@@ -45,3 +47,5 @@ container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(3000);
 
 // bindings for the apis
 container.bind<ControlStateApi>(INJECTABLES.ControlApi).to(ControlStateApi).inSingletonScope();
+container.bind<SensorApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
+container.bind<ConfigApi>(INJECTABLES.ConfigApi).to(ConfigApi).inSingletonScope();

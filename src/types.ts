@@ -23,6 +23,7 @@ export const INJECTABLES = {
     // symbols for the apis
     ConfigApi: Symbol("ConfigApi"),
     ControlApi: Symbol("ControlApi"),
+    SensorApi: Symbol("SensorApi"),
 };
 
 // entry point for the app
@@ -34,7 +35,7 @@ export interface IController {
 
 // models the physical boiler and pumps
 export interface ISystem {
-    getDeviceState(): Promise<IDeviceState[]>;
+    getDeviceState(): Promise<ReadonlyArray<IDeviceState>>;
     applyControlState(controlState: IControlState): Promise<void>;
 }
 
@@ -46,8 +47,8 @@ export interface IDevice {
 
 // models the 1-wire sensor network
 export interface ISensorManager {
-    readAvailableSensors(): Promise<IReading[]>;
-    readConfiguredSensors(): Promise<IReading[]>;
+    readAvailableSensors(): Promise<ReadonlyArray<IReading>>;
+    readConfiguredSensors(): Promise<ReadonlyArray<IReading>>;
     // readSesnor(id: string): Promise<IReading>;
 }
 
@@ -78,7 +79,7 @@ export interface IProgram {
 export interface IRule {
     startTime: ITimeOfDay;
     endTime: ITimeOfDay;
-    applyRule(currentState: IControlState, readings: IReading[], time: ITimeOfDay | Date): IRuleResult;
+    applyRule(currentState: IControlState, readings: ReadonlyArray<IReading>, time: ITimeOfDay | Date): IRuleResult;
 }
 
 export interface IRuleResult {

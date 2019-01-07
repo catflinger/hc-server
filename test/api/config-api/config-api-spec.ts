@@ -6,7 +6,7 @@ import { ExpressApp } from '../../../src/server/express-app';
 import { INJECTABLES } from '../../../src/types';
 import { MockConfigManager } from '../mocks/mock-config-manager';
 
-let mockConfigManager = container.get<MockConfigManager>(INJECTABLES.ConfigManager);
+// let mockConfigManager = container.get<MockConfigManager>(INJECTABLES.ConfigManager);
 let expressApp = container.get<ExpressApp>(INJECTABLES.ExpressApp);
 let app: Express.Application;
 
