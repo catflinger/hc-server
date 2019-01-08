@@ -5,7 +5,7 @@ import { SensorConfig } from "../../../../../src/app/configuration/sensor-config
 
 const expect = chai.expect;
 
-describe("Named Config", () => {
+describe("Sensor Config", () => {
     describe("loading with good data", () => {
         it("load with all fields present", () => {
             let sc: SensorConfig = new SensorConfig({

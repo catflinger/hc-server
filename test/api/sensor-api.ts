@@ -1,11 +1,11 @@
 import * as mocha from 'mocha';
 import * as chai from 'chai';
-import { container } from "../inversify-test.config";
+import { container } from "./inversify-test.config";
 
-import { ExpressApp } from '../../../src/server/express-app';
-import { INJECTABLES } from '../../../src/types';
-import { MockController } from '../mocks/mock-controller';
-import { MockSensorManager } from '../mocks/mock-sensor-manager';
+import { ExpressApp } from '../../src/server/express-app';
+import { INJECTABLES } from '../../src/types';
+import { MockController } from './mocks/mock-controller';
+import { MockSensorManager } from './mocks/mock-sensor-manager';
 
 let mockSensorManager = container.get<MockSensorManager>(INJECTABLES.SensorManager);
 let expressApp = container.get<ExpressApp>(INJECTABLES.ExpressApp);

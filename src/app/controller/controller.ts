@@ -8,6 +8,8 @@ import {
     IController,
     IControlState,
     INJECTABLES,
+    IOverride,
+    IOverrideManager,
     IProgram,
     IReading,
     IRule,
@@ -15,6 +17,7 @@ import {
     ISensorManager,
     ISystem,
 } from "../../types";
+import { TimeOfDay } from "./time-of-day";
 
 @injectable()
 export class Controller implements IController {
@@ -24,6 +27,7 @@ export class Controller implements IController {
     constructor(
         @inject(INJECTABLES.ConfigManager) private configManager: IConfigManager,
         @inject(INJECTABLES.SensorManager) private sensorManager: ISensorManager,
+        @inject(INJECTABLES.OverrideManager) private overideManager: IOverrideManager,
         @inject(INJECTABLES.System) private system: ISystem,
         @inject(INJECTABLES.Clock) private clock: IClock,
     ) {}
@@ -89,15 +93,12 @@ export class Controller implements IController {
                     newControlState.hotWater = true;
                 }
             }
-
             program.getRules().forEach((rule: IRule) => {
-                const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
-                if (result.heating !== null) {
-                    newControlState.heating =  result.heating;
-                }
-                if (result.hotWater !== null) {
-                    newControlState.hotWater =  result.hotWater;
-                }
+                this.applyRule(rule, sensorReadings, now, newControlState);
+            });
+
+            this.overideManager.getOverrides().forEach((ov: IOverride) => {
+                this.applyRule(ov.rule, sensorReadings, now, newControlState);
             });
 
             this.controlState = newControlState;
@@ -159,5 +160,15 @@ export class Controller implements IController {
         }
 
         return activeProgram;
+    }
+
+    private applyRule(rule: IRule, sensorReadings: ReadonlyArray<IReading>, now: TimeOfDay | Date, newControlState: IControlState): void {
+        const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
+        if (result.heating !== null) {
+            newControlState.heating =  result.heating;
+        }
+        if (result.hotWater !== null) {
+            newControlState.hotWater =  result.hotWater;
+        }
     }
 }

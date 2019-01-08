@@ -5,7 +5,7 @@ import { DatedConfig } from "../../../../../src/app/configuration/dated-config";
 
 const expect = chai.expect;
 
-describe("Named Config", () => {
+describe("Dated Config", () => {
 
     it("should load with valid data", () => {
         let date: Date = new Date("2018-12-23T12:13:14"); 

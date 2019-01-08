@@ -3,17 +3,20 @@ import * as chai from "chai";
 
 import { Controller } from "../../../src/app/controller/controller";
 import { container } from "./inversify-test.config";
-import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IProgram, IControlState } from "../../../src/types";
+import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IProgram, IControlState, IOverrideManager, IRule } from "../../../src/types";
 import { MockSystem } from "./mocks/mock-system";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";
 import { Configuration } from "../../../src/app/configuration/configuration";
+import { MockOverrideManager } from "./mocks/mock-override-manager";
+import { Override } from "../../../src/app/override/override";
+import { BasicHeatingRule } from "../../../src/app/configuration/basic-heating-rule";
 
 const expect = chai.expect;
 
-const mockSystem: MockSystem = container.get<ISystem>(INJECTABLES.System) as MockSystem;
 const mockSensorManager: MockSensorManager = container.get<ISensorManager>(INJECTABLES.SensorManager) as MockSensorManager;
 const mockConfigManager: MockConfigManager = container.get<IConfigManager>(INJECTABLES.ConfigManager) as MockConfigManager;
+const mockOverrideManager: MockOverrideManager = container.get<IOverrideManager>(INJECTABLES.OverrideManager) as MockOverrideManager;
 
 describe("Controller", () => {
 
@@ -125,6 +128,37 @@ describe("Controller", () => {
 
             cs = controller.getControlState();
             expect(cs.heating).to.equal(true);
+        });
+
+        it("should override program rules", async () => {
+            const today: Date = new Date("2019-01-06T18:00:00");
+
+            mockConfigManager.config = new Configuration(configD);
+            mockOverrideManager.overrides = [];
+            await controller.refresh(today);
+
+            let cs: IControlState = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+            expect(cs.hotWater).to.equal(false);
+
+            let rule: IRule = new BasicHeatingRule({
+                startTime: {
+                    hour: 17,
+                    minute: 17,
+                    second: 17
+                },
+                endTime: {
+                    hour: 18,
+                    minute: 18,
+                    second: 18
+                },
+            });
+
+            mockOverrideManager.overrides.push(new Override(rule, today));
+            await controller.refresh(today);
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(true);
+            expect(cs.hotWater).to.equal(false);
         });
     });
 

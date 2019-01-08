@@ -8,6 +8,7 @@ import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";
 import { MockSystem } from "./mocks/mock-system";
 import { Clock } from "../../../src/app/controller/clock";
+import { MockOverrideManager } from "./mocks/mock-override-manager";
 
 export const container = new Container();
 
@@ -18,4 +19,5 @@ container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 
 container.bind<ISensorManager>(INJECTABLES.SensorManager).to(MockSensorManager).inSingletonScope();
 container.bind<IConfigManager>(INJECTABLES.ConfigManager).to(MockConfigManager).inSingletonScope();
+container.bind<MockOverrideManager>(INJECTABLES.OverrideManager).to(MockOverrideManager).inSingletonScope();
 container.bind<ISystem>(INJECTABLES.System).to(MockSystem).inSingletonScope();

@@ -9,10 +9,11 @@ import { SensorManager } from "./app/sensors/sensor-manager";
 import { Device } from "./app/system/device";
 import { System } from "./app/system/system";
 import { ExpressApp } from "./server/express-app";
-import { IClock, IConfigManager, IController, INJECTABLES, ISensorManager, ISystem } from "./types";
+import { IApi, IClock, IConfigManager, IController, INJECTABLES, ISensorManager, ISystem } from "./types";
 
 import { ConfigApi } from "./server/api/config-api";
 import { ControlStateApi } from "./server/api/control-state-api";
+import { OverrideApi } from "./server/api/override-api";
 import { SensorApi } from "./server/api/sensor-api";
 
 export const container = new Container();
@@ -48,6 +49,7 @@ container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.jo
 container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(3000);
 
 // bindings for the apis
-container.bind<ControlStateApi>(INJECTABLES.ControlApi).to(ControlStateApi).inSingletonScope();
-container.bind<SensorApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
-container.bind<ConfigApi>(INJECTABLES.ConfigApi).to(ConfigApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.ControlApi).to(ControlStateApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.ConfigApi).to(ConfigApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();

@@ -25,6 +25,7 @@ export const INJECTABLES = {
     // symbols for the apis
     ConfigApi: Symbol("ConfigApi"),
     ControlApi: Symbol("ControlApi"),
+    OverrideApi: Symbol("OverrideApi"),
     SensorApi: Symbol("SensorApi"),
 };
 
