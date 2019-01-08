@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 
-import { IClock, INJECTABLES, IOverride, IOverrideManager, IRule } from "../../types";
+import { IClock, INJECTABLES, IOverride, IOverrideManager, IRule, ITimeOfDay } from "../../types";
 import { TimeOfDay } from "../controller/time-of-day";
 import { Override } from "./override";
 
@@ -34,7 +34,7 @@ export class OverrideManager implements IOverrideManager {
         }
     }
 
-    private checkOveride(idx: number, today: Date, now: TimeOfDay): number {
+    private checkOveride(idx: number, today: Date, now: ITimeOfDay): number {
         let next: number = null;
 
         if (this.overrides.length === 0) {

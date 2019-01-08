@@ -7,13 +7,13 @@ export class MockOverrideManager implements IOverrideManager {
     public overrides: IOverride[] = [];
 
     addOverride(rule: IRule): void {
-        throw new Error("Method not implemented.");
+        return;
     }
     getOverrides(): ReadonlyArray<IOverride> {
         return this.overrides as ReadonlyArray<IOverride>;
     }
     clearOverrides(): void {
-        throw new Error("Method not implemented.");
+        this.overrides.length = 0;;
     }
     housekeep(): void {
         throw new Error("Method not implemented.");

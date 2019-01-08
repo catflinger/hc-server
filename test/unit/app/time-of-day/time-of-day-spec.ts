@@ -83,6 +83,59 @@ describe("Time Of Day", () => {
             expect(todA.isSameAs(todC)).to.be.false;
         });
     });
+
+    describe("addSeconds", () => {
+        it("should add zero seconds", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(0);
+            expect(result.hour).to.equal(tod.hour);
+            expect(result.minute).to.equal(tod.minute);
+            expect(result.second).to.equal(tod.second);
+        });
+        it("should add 1 second", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(1);
+            expect(result.hour).to.equal(tod.hour);
+            expect(result.minute).to.equal(tod.minute);
+            expect(result.second).to.equal(tod.second + 1);
+        });
+        it("should add 60 seconds", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(60);
+            expect(result.hour).to.equal(tod.hour);
+            expect(result.minute).to.equal(tod.minute + 1);
+            expect(result.second).to.equal(tod.second);
+        });
+        it("should add many seconds", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(2 * 60 * 60 + 3 * 60 + 4);
+            expect(result.hour).to.equal(tod.hour + 2);
+            expect(result.minute).to.equal(tod.minute + 3);
+            expect(result.second).to.equal(tod.second + 4);
+        });
+        it("should not go over end of day", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(999999999);
+            expect(result.hour).to.equal(23);
+            expect(result.minute).to.equal(59);
+            expect(result.second).to.equal(59);
+        });
+        it("should add negative seconds", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(-60);
+            expect(result.hour).to.equal(tod.hour);
+            expect(result.minute).to.equal(tod.minute - 1);
+            expect(result.second).to.equal(tod.second);
+        });
+        it("should go before start of day", () => {
+            const tod = new TimeOfDay({ hour: 12, minute: 13, second: 14 });
+            const result = tod.addSeconds(-99999999);
+            expect(result.hour).to.equal(0);
+            expect(result.minute).to.equal(0);
+            expect(result.second).to.equal(0);
+        });
+    });
+
 });
 
 function test(h: any, m: any, s: any, eh: number, em: number, es: number): boolean {

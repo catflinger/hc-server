@@ -24,7 +24,7 @@ container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 container.bind<IController>(INJECTABLES.Controller).to(MockController).inSingletonScope();
 container.bind<MockConfigManager>(INJECTABLES.ConfigManager).to(MockConfigManager);
 container.bind<MockSensorManager>(INJECTABLES.SensorManager).to(MockSensorManager);
-container.bind<MockOverrideManager>(INJECTABLES.OverrideManager).to(MockOverrideManager);
+container.bind<MockOverrideManager>(INJECTABLES.OverrideManager).to(MockOverrideManager).inSingletonScope();
 
 // /express
 container.bind<ExpressApp>(INJECTABLES.ExpressApp).to(ExpressApp).inSingletonScope();

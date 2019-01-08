@@ -35,7 +35,7 @@ describe("OverrideManager", () => {
         it("should add an override", () => {
             overrideManager.addOverride(new BasicHeatingRule({
                 startTime: clock.timeOfDay(),
-                endTime: addMinutes(clock.timeOfDay(), 7),
+                endTime: clock.timeOfDay().addMinutes(7),
             }));
             let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
             expect(Array.isArray(ovs)).to.be.true;
@@ -44,8 +44,8 @@ describe("OverrideManager", () => {
 
         it("should add another override", () => {
             overrideManager.addOverride(new BasicHeatingRule({
-                startTime: addMinutes(clock.timeOfDay(), 5),
-                endTime: addMinutes(clock.timeOfDay(), 10),
+                startTime: clock.timeOfDay().addMinutes(5),
+                endTime: clock.timeOfDay().addMinutes(10),
             }));
             let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
             expect(ovs.length).to.equal(2);
@@ -123,11 +123,3 @@ describe("OverrideManager", () => {
         });
     });
 });
-
-function addMinutes(from: TimeOfDay, minutesToAdd: number): TimeOfDay {
-    return new TimeOfDay({
-        hour: from.hour,
-        minute: from.minute + minutesToAdd,
-        second: from.second,
-    });
-}

@@ -108,9 +108,14 @@ export interface ITimeOfDay {
     hour: number;
     minute: number;
     second: number;
+
     isLaterThan(other: ITimeOfDay): boolean;
     isSameAs(other: ITimeOfDay): boolean;
     isEarlierThan(other: ITimeOfDay): boolean;
+
+    addHours(hours: number): ITimeOfDay;
+    addMinutes(minutes: number): ITimeOfDay;
+    addSeconds(seconds: number): ITimeOfDay;
 }
 
 export interface IControlState {

@@ -31,7 +31,7 @@ export class BasicHeatingRule implements IRule {
             hotWater: null,
         };
 
-        const now: TimeOfDay = time instanceof Date ?
+        const now: ITimeOfDay = time instanceof Date ?
             new TimeOfDay({
                 hour: time.getHours(),
                 minute: time.getMinutes(),
