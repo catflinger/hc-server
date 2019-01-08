@@ -1,7 +1,10 @@
+import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
 import { IApi, IClock, INJECTABLES, ISensorManager } from "../../types";
+
+const log = Debug("api");
 
 @injectable()
 export class SensorApi implements IApi {
@@ -14,6 +17,7 @@ export class SensorApi implements IApi {
 
     public addRoutes(router: Router): void {
         router.get("/sensor/configured", (req, res) => {
+            log("GET /sensor/configured");
             try {
                 res.json({
                     date: this.clock.now(),
@@ -25,6 +29,7 @@ export class SensorApi implements IApi {
         });
 
         router.get("/sensor/available", (req, res) => {
+            log("GET /sensor/configured");
             try {
                 res.json({
                     date: this.clock.now(),

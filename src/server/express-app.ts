@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { IApi,  IController, INJECTABLES } from "../types";
 
-const debug = Debug("app");
+const log = Debug("app");
 
 @injectable()
 export class ExpressApp {
@@ -48,7 +48,7 @@ export class ExpressApp {
 
         // tell express to use the wwwroot folder for serving staic files
         this.express.use(express.static(this.wwwRoot));
-        debug("Serving static content from " + this.wwwRoot);
+        log("Serving static content from " + this.wwwRoot);
 
         return new Promise((resolve, reject) => {
             // start the controller: this initialises digital outputpins and starts the environment polling

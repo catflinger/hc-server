@@ -1,9 +1,12 @@
+import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
 import { BasicHeatingRule } from "../../app/configuration/basic-heating-rule";
 import { ConfigValidation as Validation } from "../../app/configuration/config-validation";
 import { IApi, IClock, INJECTABLES, IOverrideManager, ITimeOfDay } from "../../types";
+
+const log = Debug("api");
 
 @injectable()
 export class OverrideApi implements IApi {
@@ -17,6 +20,7 @@ export class OverrideApi implements IApi {
     public addRoutes(router: Router): void {
         router.get("/override", (req, res) => {
             try {
+                log("GET /override");
                 return res.json({
                     date: this.clock.now(),
                     overrides: this.overrideManager.getOverrides(),
@@ -28,6 +32,7 @@ export class OverrideApi implements IApi {
 
         router.put("/override", (req, res) => {
             let duration: number;
+            log("PUT /override");
 
             try {
                 duration = Validation.getNumber(req.body.duration, "set override:minutes");
