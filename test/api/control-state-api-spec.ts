@@ -22,11 +22,12 @@ describe("Status API' get /api/control-state", () => {
         });
     });
 
-    it('should be json', () => {
+    it('should be json and dated', () => {
         return chai.request(app).get('/api/control-state')
             .then((res: any) => {
                 expect(res.status).to.equal(200);
                 expect(res.type).to.eql('application/json');
+                expect(res.body.date).not.to.be.undefined;
             });
     });
 
@@ -38,7 +39,7 @@ describe("Status API' get /api/control-state", () => {
             .then((res: any) => {
                 expect(res.status).to.equal(200);
                 expect(res.type).to.eql('application/json');
-                const state: any = res.body;
+                const state: any = res.body.controlState;
                 expect(state.heating).to.equal(true);
                 expect(state.hotWater).to.equal(false);
             });

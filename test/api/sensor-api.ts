@@ -29,6 +29,7 @@ describe("Sensor API'", () => {
             .then((res: any) => {
                 expect(res.status).to.equal(200);
                 expect(res.type).to.eql('application/json');
+                expect(res.body.date).not.to.be.undefined;
             });
         });
 

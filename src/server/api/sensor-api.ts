@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { IApi, INJECTABLES, ISensorManager } from "../../types";
+import { IApi, IClock, INJECTABLES, ISensorManager } from "../../types";
 
 @injectable()
 export class SensorApi implements IApi {
@@ -9,10 +9,14 @@ export class SensorApi implements IApi {
     @inject(INJECTABLES.SensorManager)
     private sensorManager: ISensorManager;
 
+    @inject(INJECTABLES.Clock)
+    private clock: IClock;
+
     public addRoutes(router: Router): void {
         router.get("/sensor/configured", (req, res) => {
             try {
                 res.json({
+                    date: this.clock.now(),
                     sensors: this.sensorManager.readConfiguredSensors(),
                 });
             } catch (err) {
@@ -23,6 +27,7 @@ export class SensorApi implements IApi {
         router.get("/sensor/available", (req, res) => {
             try {
                 res.json({
+                    date: this.clock.now(),
                     sensors: this.sensorManager.readAvailableSensors(),
                 });
             } catch (err) {

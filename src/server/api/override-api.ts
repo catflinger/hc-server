@@ -18,6 +18,7 @@ export class OverrideApi implements IApi {
         router.get("/override", (req, res) => {
             try {
                 return res.json({
+                    date: this.clock.now(),
                     overrides: this.overrideManager.getOverrides(),
                 });
             } catch (err) {
@@ -47,6 +48,7 @@ export class OverrideApi implements IApi {
 
                 // TO DO: think about what we should return here, is the data useful or an abuse of REST?
                 return res.json({
+                    date: this.clock.now(),
                     overrides: this.overrideManager.getOverrides(),
                 });
             } catch (err) {

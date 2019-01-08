@@ -50,6 +50,7 @@ describe("Override API", () => {
                     expect(res.status).to.equal(200);
                     expect(res.type).to.eql('application/json');
                     expect(Array.isArray(res.body.overrides)).to.be.true;
+                    expect(res.body.date).not.to.be.undefined;
                     expect(res.body.overrides.length).to.equal(2);
                     expect(res.body.overrides[0].id).to.equal("abc");
                     expect(res.body.overrides[1].id).to.equal("def");

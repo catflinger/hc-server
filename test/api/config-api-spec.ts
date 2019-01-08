@@ -22,18 +22,19 @@ describe("Config API' get /api/config", () => {
         });
     });
 
-    it('should be json', () => {
+    it('should be json and dated', () => {
         return chai.request(app).get('/api/config')
             .then((res: any) => {
                 expect(res.status).to.equal(200);
                 expect(res.type).to.eql('application/json');
+                expect(res.body.date).not.to.be.undefined;
             });
     });
 
     it('should contain valid data', () => {
         return chai.request(app).get('/api/config')
             .then((res: any) => {
-                const config: any = res.body;
+                const config: any = res.body.config;
 
                 // check a few random values
                 expect(config.namedConfig.weekdayProgramId).to.equal("C");
