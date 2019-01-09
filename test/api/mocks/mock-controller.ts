@@ -1,5 +1,6 @@
-import { IController, IProgram, IControlState } from "../../../src/types";
+import { IController } from "../../../src/types";
 import { injectable } from "inversify";
+import { IControlState, IProgram } from "hc-common";
 
 @injectable()
 export class MockController implements IController {

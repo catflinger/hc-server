@@ -1,12 +1,15 @@
+import {
+    IConfiguration,
+    IReading,
+    ISensorConfig,
+} from "hc-common";
+
 import { inject, injectable } from "inversify";
 import * as path from "path";
 
 import {
     IConfigManager,
-    IConfiguration,
     INJECTABLES,
-    IReading,
-    ISensorConfig,
     ISensorManager,
 } from "../../types";
 

@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 
-import { IOverrideManager, IOverride, IRule } from "../../../../src/types";
+import { IOverrideManager } from "../../../../src/types";
+import { IOverride, IRule } from "hc-common";
 
 @injectable()
 export class MockOverrideManager implements IOverrideManager {

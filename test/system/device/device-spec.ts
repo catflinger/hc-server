@@ -1,11 +1,11 @@
 import "mocha";
 import * as chai from "chai";
-import * as fsu from "../../../../../src/utils/fs-utils";
+import * as fsu from "../../../src/utils/fs-utils";
 import * as path from "path";
 import * as fs from "fs";
 
-import { INJECTABLES, IDevice, IDeviceState } from "../../../../../src/types";
-import { Device } from "../../../../../src/app/system/device";
+import { INJECTABLES, IDevice, IDeviceState } from "../../../src/types";
+import { Device } from "../../../src/app/system/device";
 import { container } from "./inversify-test.config";
 import { interfaces } from "inversify";
 

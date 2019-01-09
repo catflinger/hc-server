@@ -4,7 +4,6 @@ import "reflect-metadata";
 
 import { INJECTABLES, IConfigManager } from "../../../../src/types";
 import { ConfigManager } from "../../../../src/app/configuration/config-manager";
-import { Configuration } from "../../../../src/app/configuration/configuration";
 
 export const container = new Container();
 

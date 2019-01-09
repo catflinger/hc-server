@@ -1,9 +1,9 @@
 import * as fs from "fs";
+import { Configuration, IConfiguration } from "hc-common";
 import { inject, injectable, interfaces } from "inversify";
 import * as path from "path";
 
-import { IConfigManager, IConfiguration, INJECTABLES } from "../../types";
-import { Configuration } from "./configuration";
+import { IConfigManager, INJECTABLES } from "../../types";
 
 @injectable()
 export class ConfigManager implements IConfigManager {

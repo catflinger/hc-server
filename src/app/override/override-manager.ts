@@ -1,8 +1,7 @@
+import { IOverride, IRule, ITimeOfDay, Override } from "hc-common";
 import { inject, injectable } from "inversify";
 
-import { IClock, INJECTABLES, IOverride, IOverrideManager, IRule, ITimeOfDay } from "../../types";
-import { TimeOfDay } from "../controller/time-of-day";
-import { Override } from "./override";
+import { IClock, INJECTABLES, IOverrideManager } from "../../types";
 
 @injectable()
 export class OverrideManager implements IOverrideManager {

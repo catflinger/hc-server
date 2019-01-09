@@ -5,9 +5,8 @@ import { container } from "./inversify-test.config";
 
 const expect = chai.expect;
 
-import { IOverrideManager, INJECTABLES, IOverride } from "../../../src/types";
-import { BasicHeatingRule } from "../../../src/app/configuration/basic-heating-rule";
-import { TimeOfDay } from "../../../src/app/controller/time-of-day";
+import { IOverrideManager, INJECTABLES } from "../../../src/types";
+import { BasicHeatingRule, TimeOfDay, IOverride } from "hc-common";
 import { MockClock } from "./mock-clock";
 
 const clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);

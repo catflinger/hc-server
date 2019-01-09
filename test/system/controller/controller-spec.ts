@@ -3,14 +3,12 @@ import * as chai from "chai";
 
 import { Controller } from "../../../src/app/controller/controller";
 import { container } from "./inversify-test.config";
-import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IProgram, IControlState, IOverrideManager, IRule } from "../../../src/types";
+import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IOverrideManager } from "../../../src/types";
 import { MockSystem } from "./mocks/mock-system";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";
-import { Configuration } from "../../../src/app/configuration/configuration";
+import { BasicHeatingRule, Configuration, IControlState, IProgram, IRule, Override } from "hc-common";
 import { MockOverrideManager } from "./mocks/mock-override-manager";
-import { Override } from "../../../src/app/override/override";
-import { BasicHeatingRule } from "../../../src/app/configuration/basic-heating-rule";
 
 const expect = chai.expect;
 

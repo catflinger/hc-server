@@ -9,8 +9,8 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 import { container } from "./inversify-test.config";
-import { IConfigManager, INJECTABLES, IConfiguration } from "../../../../src/types";
-import { Configuration } from "../../../../src/app/configuration/configuration";
+import { IConfigManager, INJECTABLES } from "../../../../src/types";
+import { Configuration, IConfiguration } from "hc-common";
 
 // function to delete a file only it if exists
 const deleteFileP = (filepath: string): Promise<boolean> => {

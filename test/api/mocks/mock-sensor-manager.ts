@@ -1,5 +1,6 @@
-import { IReading, ISensorManager } from "../../../src/types";
+import { IReading } from "hc-common";
 import { injectable } from "inversify";
+import { ISensorManager } from "../../../src/types";
 
 @injectable()
 export class MockSensorManager implements ISensorManager {

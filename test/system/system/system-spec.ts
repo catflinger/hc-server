@@ -5,7 +5,7 @@ import { container } from "./inversify-test.config";
 
 const expect = chai.expect;
 
-import { ISystem, INJECTABLES, IDeviceState } from "../../../src/types";
+import { ISystem, INJECTABLES, IDeviceState, } from "../../../src/types";
 
 describe("System", () => {
     it("should construct", () => {

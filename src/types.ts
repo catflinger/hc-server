@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { IConfiguration, IControlState, IOverride, IProgram, IReading, IRule, ITimeOfDay } from "hc-common";
 
 export const INJECTABLES = {
     // symbols for constants
@@ -48,6 +49,12 @@ export interface IDevice {
     switch(state: boolean): Promise<void>;
 }
 
+export interface IDeviceState {
+    id: string;
+    description: string;
+    state: boolean;
+}
+
 // models the 1-wire sensor network
 export interface ISensorManager {
     readAvailableSensors(): Promise<ReadonlyArray<IReading>>;
@@ -70,91 +77,9 @@ export interface IOverrideManager {
     housekeep(): void;
 }
 
-export interface IOverride {
-    readonly id: string;
-    readonly date: Date;
-    readonly rule: IRule;
-}
-
 /**
  * The remaining interfaces are for immutable classes
  */
-export interface IDeviceState {
-    id: string;
-    description: string;
-    state: boolean;
-}
-
-export interface IProgram {
-    id: string;
-    name: string;
-    minHwTemp: number;
-    maxHwTemp: number;
-    getRules(): ReadonlyArray<IRule>;
-}
-
-export interface IRule {
-    startTime: ITimeOfDay;
-    endTime: ITimeOfDay;
-    applyRule(currentState: IControlState, readings: ReadonlyArray<IReading>, time: ITimeOfDay | Date): IRuleResult;
-}
-
-export interface IRuleResult {
-    heating: boolean | null;
-    hotWater: boolean | null;
-}
-
-export interface ITimeOfDay {
-    hour: number;
-    minute: number;
-    second: number;
-
-    isLaterThan(other: ITimeOfDay): boolean;
-    isSameAs(other: ITimeOfDay): boolean;
-    isEarlierThan(other: ITimeOfDay): boolean;
-
-    addHours(hours: number): ITimeOfDay;
-    addMinutes(minutes: number): ITimeOfDay;
-    addSeconds(seconds: number): ITimeOfDay;
-}
-
-export interface IControlState {
-    heating: boolean;
-    hotWater: boolean;
-}
-
-export interface IReading {
-    id: string;
-    description: string;
-    role: string;
-    value: number;
-}
-
-export interface IConfiguration {
-    getProgramConfig(): ReadonlyArray<IProgram>;
-    getNamedConfig(): INamedConfig;
-    getDatedConfig(): ReadonlyArray<IDatedConfig>;
-    getSensorConfig(): ReadonlyArray<ISensorConfig>;
-}
-
-export interface INamedConfig {
-    weekdayProgramId: string;
-    saturdayProgramId: string;
-    sundayProgramId: string;
-}
-
-export interface IDatedConfig {
-    programId: string;
-    date: Date;
-}
-
-export interface ISensorConfig {
-    id: string;
-    description: string;
-    role: string;
-    deleted: boolean;
-}
-
 export interface IApi {
     addRoutes(router: Router): void;
 }

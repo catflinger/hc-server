@@ -2,8 +2,8 @@ import { Container, injectable, interfaces } from "inversify";
 import * as path from "path";
 import "reflect-metadata";
 
-import { IDevice, INJECTABLES } from "../../../../../src/types";
-import { Device } from "../../../../../src/app/system/device";
+import { IDevice, INJECTABLES } from "../../../src/types";
+import { Device } from "../../../src/app/system/device";
 
 export const container = new Container();
 

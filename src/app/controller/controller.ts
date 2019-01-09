@@ -1,23 +1,26 @@
+import {
+    IConfiguration,
+    IControlState,
+    IOverride,
+    IProgram,
+    IReading,
+    IRule,
+    IRuleResult,
+    ITimeOfDay,
+} from "hc-common";
+
 import { inject, injectable } from "inversify";
 import { setInterval } from "timers";
 
 import {
     IClock,
     IConfigManager,
-    IConfiguration,
     IController,
-    IControlState,
     INJECTABLES,
-    IOverride,
     IOverrideManager,
-    IProgram,
-    IReading,
-    IRule,
-    IRuleResult,
     ISensorManager,
     ISystem,
 } from "../../types";
-import { TimeOfDay } from "./time-of-day";
 
 @injectable()
 export class Controller implements IController {
@@ -162,7 +165,7 @@ export class Controller implements IController {
         return activeProgram;
     }
 
-    private applyRule(rule: IRule, sensorReadings: ReadonlyArray<IReading>, now: TimeOfDay | Date, newControlState: IControlState): void {
+    private applyRule(rule: IRule, sensorReadings: ReadonlyArray<IReading>, now: ITimeOfDay | Date, newControlState: IControlState): void {
         const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
         if (result.heating !== null) {
             newControlState.heating =  result.heating;

@@ -1,5 +1,6 @@
-import { ISystem, IDevice, IDeviceState, IControlState } from "../../../../src/types";
+import { ISystem, IDevice, IDeviceState, } from "../../../../src/types";
 import { injectable } from "inversify";
+import { IControlState } from "hc-common";
 
 @injectable()
 export class MockSystem implements ISystem {
