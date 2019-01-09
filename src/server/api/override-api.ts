@@ -1,9 +1,9 @@
 import * as Debug from "debug";
 import { Router } from "express";
+import { ConfigValidation as Validation } from "hc-common";
 import { inject, injectable } from "inversify";
 
 import { BasicHeatingRule } from "../../app/configuration/basic-heating-rule";
-import { ConfigValidation as Validation } from "../../app/configuration/config-validation";
 import { IApi, IClock, INJECTABLES, IOverrideManager, ITimeOfDay } from "../../types";
 
 const log = Debug("api");

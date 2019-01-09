@@ -1,8 +1,5 @@
-import { injectable } from "inversify";
-
 import { IControlState, IReading, IRule, IRuleResult, ITimeOfDay } from "../../types";
 import { TimeOfDay } from "../controller/time-of-day";
-import { ConfigValidation } from "./config-validation";
 
 /* Base class for implementing rules */
 

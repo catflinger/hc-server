@@ -1,9 +1,7 @@
-import { injectable } from "inversify";
+import { ConfigValidation } from "hc-common";
 
 import { ISensorConfig } from "../../types";
-import { ConfigValidation } from "./config-validation";
 
-// @injectable()
 export class SensorConfig implements ISensorConfig {
     public readonly id: string;
     public readonly description: string;

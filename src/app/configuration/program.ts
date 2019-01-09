@@ -1,11 +1,9 @@
-import { injectable } from "inversify";
+import { ConfigValidation } from "hc-common";
 import { v4 as uuid } from "uuid";
 
 import { IProgram, IRule } from "../../types";
 import { BasicHeatingRule } from "./basic-heating-rule";
-import { ConfigValidation } from "./config-validation";
 
-// @injectable()
 export class Program implements IProgram {
     public readonly id: string;
     public readonly name: string;

@@ -1,5 +1,6 @@
+import { ConfigValidation } from "hc-common";
+
 import { ITimeOfDay } from "../../types";
-import { ConfigValidation } from "../configuration/config-validation";
 
 export class TimeOfDay implements ITimeOfDay {
 
