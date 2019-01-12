@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { IConfiguration, IControlState, IOverride, IProgram, IReading, IRule, ITimeOfDay } from "hc-common";
+
+import { IConfiguration, IControlState, IOverride, IProgram, IReading, IRule, ITimeOfDay } from "./common/types";
 
 export const INJECTABLES = {
     // symbols for constants

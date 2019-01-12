@@ -1,4 +1,4 @@
-import { IReading } from "hc-common";
+import { IReading } from "../../../src/common/types";
 import { injectable } from "inversify";
 import { ISensorManager } from "../../../src/types";
 

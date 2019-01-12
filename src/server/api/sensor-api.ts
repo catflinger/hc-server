@@ -16,27 +16,40 @@ export class SensorApi implements IApi {
     private clock: IClock;
 
     public addRoutes(router: Router): void {
+
         router.get("/sensor/configured", (req, res) => {
             log("GET /sensor/configured");
             try {
-                res.json({
-                    date: this.clock.now(),
-                    sensors: this.sensorManager.readConfiguredSensors(),
+                this.sensorManager.readConfiguredSensors()
+                .then((sensors) => {
+                    res.json({
+                        date: this.clock.now(),
+                        sensors,
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).send(err);
                 });
             } catch (err) {
-                res.status(500).send("could not process this request " + err);
+                res.status(500).send(err);
             }
         });
 
         router.get("/sensor/available", (req, res) => {
             log("GET /sensor/configured");
             try {
-                res.json({
-                    date: this.clock.now(),
-                    sensors: this.sensorManager.readAvailableSensors(),
+                this.sensorManager.readAvailableSensors()
+                .then((sensors) => {
+                    res.json({
+                        date: this.clock.now(),
+                        sensors,
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).send(err);
                 });
             } catch (err) {
-                res.status(500).send("could not process this request " + err);
+                res.status(500).send(err);
             }
         });
     }

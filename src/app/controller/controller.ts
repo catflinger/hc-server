@@ -7,7 +7,7 @@ import {
     IRule,
     IRuleResult,
     ITimeOfDay,
-} from "hc-common";
+} from "../../common/interfaces";
 
 import { inject, injectable } from "inversify";
 import { setInterval } from "timers";

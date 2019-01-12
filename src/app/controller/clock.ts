@@ -1,6 +1,6 @@
-import { ITimeOfDay, TimeOfDay } from "hc-common";
 import { injectable } from "inversify";
 
+import { ITimeOfDay, TimeOfDay } from "../../common/types";
 import { IClock } from "../../types";
 
 @injectable()

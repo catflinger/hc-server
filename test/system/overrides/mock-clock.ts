@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 
 import { IClock } from "../../../src/types";
-import { ITimeOfDay, TimeOfDay } from "hc-common";
+import { ITimeOfDay, TimeOfDay } from "../../../src/common/types";
 
 @injectable()
 export class MockClock implements IClock{

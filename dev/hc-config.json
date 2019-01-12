@@ -9,6 +9,6 @@
         { "programId": "abcde", "date": "2018-11-23T12:12:12" }
     ],
     "sensorConfig": [
-        { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }
+        { "id": "28.0", "description": "hot water top of tank", "role": "hw", "deleted": false }
     ]
 }

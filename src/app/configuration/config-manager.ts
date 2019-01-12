@@ -1,8 +1,8 @@
 import * as fs from "fs";
-import { Configuration, IConfiguration } from "hc-common";
 import { inject, injectable } from "inversify";
 import * as path from "path";
 
+import { Configuration, IConfiguration } from "../../common/types";
 import { IConfigManager, INJECTABLES } from "../../types";
 
 @injectable()

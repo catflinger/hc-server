@@ -1,6 +1,6 @@
-import { IOverride, IRule, ITimeOfDay, Override } from "hc-common";
 import { inject, injectable } from "inversify";
 
+import { IOverride, IRule, ITimeOfDay, Override } from "../../common/types";
 import { IClock, INJECTABLES, IOverrideManager } from "../../types";
 
 @injectable()

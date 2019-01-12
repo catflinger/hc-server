@@ -1,7 +1,7 @@
-import { IControlState } from "hc-common";
 import { inject, injectable } from "inversify";
 import * as path from "path";
 
+import { IControlState } from "../../common/types";
 import { IDevice, IDeviceState, INJECTABLES, ISystem } from "../../types";
 import { DeviceConstructor } from "./device";
 

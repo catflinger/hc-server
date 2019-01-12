@@ -19,8 +19,7 @@
         "uuid": "3.3.2",
         "debug": "4.1.1",
         "express": "4.16.4",
-        "body-parser": "1.18.3",
-        "hc-common": "file:../hc-common"
+        "body-parser": "1.18.3"
     },
     "devDependencies": {
         "rimraf": "2.6.2",

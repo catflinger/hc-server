@@ -1,11 +1,11 @@
+import { inject, injectable } from "inversify";
+import * as path from "path";
+
 import {
     IConfiguration,
     IReading,
     ISensorConfig,
-} from "hc-common";
-
-import { inject, injectable } from "inversify";
-import * as path from "path";
+} from "../../common/types";
 
 import {
     IConfigManager,

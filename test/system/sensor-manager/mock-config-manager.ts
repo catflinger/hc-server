@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { IProgram, IDatedConfig, IConfiguration } from "hc-common";
+import { IProgram, IDatedConfig, IConfiguration } from "../../../src/common/types";
 import { IConfigManager } from "../../../src/types";
 
 @injectable()

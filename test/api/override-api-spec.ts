@@ -5,7 +5,7 @@ import { container } from "./inversify-test.config";
 import { ExpressApp } from '../../src/server/express-app';
 import { INJECTABLES } from '../../src/types';
 import { MockOverrideManager } from '../system/controller/mocks/mock-override-manager';
-import { TimeOfDay } from 'hc-common';
+import { TimeOfDay } from '../../src/common/types';
 
 let expressApp = container.get<ExpressApp>(INJECTABLES.ExpressApp);
 let mockOverrideManager: MockOverrideManager = container.get<MockOverrideManager>(INJECTABLES.OverrideManager);

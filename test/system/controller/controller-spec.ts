@@ -7,7 +7,7 @@ import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IOve
 import { MockSystem } from "./mocks/mock-system";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";
-import { BasicHeatingRule, Configuration, IControlState, IProgram, IRule, Override } from "hc-common";
+import { BasicHeatingRule, Configuration, IControlState, IProgram, IRule, Override } from "../../../src/common/types";
 import { MockOverrideManager } from "./mocks/mock-override-manager";
 
 const expect = chai.expect;

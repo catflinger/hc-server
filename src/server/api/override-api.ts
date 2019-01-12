@@ -1,11 +1,12 @@
 import * as Debug from "debug";
 import { Router } from "express";
+import { inject, injectable } from "inversify";
+
 import {
     BasicHeatingRule,
-    ConfigValidation as Validation,
+    ConfigValidation,
     ITimeOfDay,
-} from "hc-common";
-import { inject, injectable } from "inversify";
+} from "../../common/types";
 
 import { IApi, IClock, INJECTABLES, IOverrideManager } from "../../types";
 
@@ -38,7 +39,7 @@ export class OverrideApi implements IApi {
             log("PUT /override");
 
             try {
-                duration = Validation.getNumber(req.body.duration, "set override:minutes");
+                duration = ConfigValidation.getNumber(req.body.duration, "set override:minutes");
 
                 if (duration < 0 || duration > 24 * 60) {
                     throw new Error("value for duraion out of range");
