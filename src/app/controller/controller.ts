@@ -21,6 +21,7 @@ import {
     ISensorManager,
     ISystem,
 } from "../../types";
+import { ControlState } from "../../common/configuration/control-state";
 
 @injectable()
 export class Controller implements IController {
@@ -36,10 +37,7 @@ export class Controller implements IController {
     ) {}
 
     public getControlState(): IControlState {
-        return {
-            heating: this.controlState.heating,
-            hotWater: this.controlState.hotWater,
-        };
+        return this.controlState;
     }
 
     public start(refreshInterval?: number): Promise<any> {

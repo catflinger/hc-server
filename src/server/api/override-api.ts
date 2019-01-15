@@ -1,5 +1,5 @@
 import * as Debug from "debug";
-import { Router } from "express";
+import { Router, Response } from "express";
 import { inject, injectable } from "inversify";
 
 import {
@@ -22,13 +22,11 @@ export class OverrideApi implements IApi {
     private clock: IClock;
 
     public addRoutes(router: Router): void {
+
         router.get("/override", (req, res) => {
             try {
                 log("GET /override");
-                return res.json({
-                    date: this.clock.now(),
-                    overrides: this.overrideManager.getOverrides(),
-                });
+                return this.sendOverrideList(res);
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
             }
@@ -38,6 +36,7 @@ export class OverrideApi implements IApi {
             let duration: number;
             log("PUT /override");
 
+            // first validate the input
             try {
                 duration = ConfigValidation.getNumber(req.body.duration, "set override:minutes");
 
@@ -48,6 +47,7 @@ export class OverrideApi implements IApi {
                 return res.status(400).send("Bad request " + err);
             }
 
+            // next execute the request
             try {
                 const now: ITimeOfDay = this.clock.timeOfDay();
                 this.overrideManager.addOverride(new BasicHeatingRule({
@@ -55,14 +55,29 @@ export class OverrideApi implements IApi {
                     startTime: now.addSeconds(duration * 60),
                 }));
 
-                // TO DO: think about what we should return here, is the data useful or an abuse of REST?
-                return res.json({
-                    date: this.clock.now(),
-                    overrides: this.overrideManager.getOverrides(),
-                });
+                // return the new override state
+                return this.sendOverrideList(res);
+
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
             }
+        });
+
+        router.delete("/override", (req, res) => {
+            try {
+                log("DELETE /override");
+                this.overrideManager.clearOverrides();
+                return this.sendOverrideList(res);
+            } catch (err) {
+                return res.status(500).send("could not process this request " + err);
+            }
+        });
+    }
+
+    private sendOverrideList(response: Response): Response {
+        return response.json({
+            date: this.clock.now(),
+            overrides: this.overrideManager.getOverrides(),
         });
     }
 }

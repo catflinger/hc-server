@@ -36,7 +36,7 @@ export class SensorApi implements IApi {
         });
 
         router.get("/sensor/available", (req, res) => {
-            log("GET /sensor/configured");
+            log("GET /sensor/available");
             try {
                 this.sensorManager.readAvailableSensors()
                 .then((sensors) => {
