@@ -32,6 +32,8 @@ export interface ITimeOfDay {
     addHours(hours: number): ITimeOfDay;
     addMinutes(minutes: number): ITimeOfDay;
     addSeconds(seconds: number): ITimeOfDay;
+
+    toSeconds(): number;
 }
 
 export interface IControlState {

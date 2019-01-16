@@ -25,6 +25,7 @@ export class ConfigApi implements IApi {
                     date: this.clock.now(),
                 });
             } catch (err) {
+                log("GET /config ERROR : " +  err);
                 return resp.status(500).send(err);
             }
         });

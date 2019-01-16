@@ -80,7 +80,7 @@ export class TimeOfDay implements ITimeOfDay {
         return TimeOfDay.fromSeconds(this.toSeconds() + seconds);
     }
 
-    private toSeconds(): number {
+    public toSeconds(): number {
         return this.hour * 60 * 60 + this.minute * 60 + this.second;
     }
 }

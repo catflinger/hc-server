@@ -21,7 +21,6 @@ import {
     ISensorManager,
     ISystem,
 } from "../../types";
-import { ControlState } from "../../common/configuration/control-state";
 
 @injectable()
 export class Controller implements IController {

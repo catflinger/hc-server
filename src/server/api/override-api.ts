@@ -1,5 +1,5 @@
 import * as Debug from "debug";
-import { Router, Response } from "express";
+import { Response, Router } from "express";
 import { inject, injectable } from "inversify";
 
 import {

@@ -1,12 +1,45 @@
 {
-    "programConfig": [],
+    "programConfig": [
+        {
+            "id": "foo",
+            "name": "one rule",
+            "minHwTemp": 12,
+            "maxHwTemp": 30,
+            "rules": [
+                {
+                    "startTime": {
+                        "hour": 12,
+                        "minute": 12,
+                        "second": 12
+                    },
+                    "endTime": {
+                        "hour": 13,
+                        "minute": 13,
+                        "second": 13
+                    }
+                },
+                {
+                    "startTime": {
+                        "hour": 14,
+                        "minute": 14,
+                        "second": 15
+                    },
+                    "endTime": {
+                        "hour": 15,
+                        "minute": 15,
+                        "second": 15
+                    }
+                }
+            ]
+        }
+    ],
     "namedConfig": {
-        "weekdayProgramId": "21",
-        "saturdayProgramId": "23456",
-        "sundayProgramId": "dr4edfgf"
+        "weekdayProgramId": "foo",
+        "saturdayProgramId": "foo",
+        "sundayProgramId": "foo"
     },
     "datedConfig": [
-        { "programId": "abcde", "date": "2018-11-23T12:12:12" }
+        { "programId": "foo", "date": "2018-11-23T12:12:12" }
     ],
     "sensorConfig": [
         { "id": "28.0", "description": "hot water top of tank", "role": "hw", "deleted": false }

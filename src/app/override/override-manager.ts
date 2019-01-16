@@ -11,6 +11,11 @@ export class OverrideManager implements IOverrideManager {
     private clock: IClock;
 
     public addOverride(rule: IRule): void {
+
+        // currently only allow a single override at once
+        // when we get some more sophisticated rule types we might want to revisit this
+        this.overrides.length = 0;
+
         this.overrides.push(new Override(rule, this.clock.now()));
     }
 
