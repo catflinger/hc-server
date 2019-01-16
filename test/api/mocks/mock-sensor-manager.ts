@@ -1,4 +1,4 @@
-import { IReading } from "../../../src/common/types";
+import { IReading } from "../../../src/common/interfaces";
 import { injectable } from "inversify";
 import { ISensorManager } from "../../../src/types";
 

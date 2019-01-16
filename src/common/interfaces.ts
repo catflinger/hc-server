@@ -1,6 +1,7 @@
 /**
- * The remaining interfaces are for immutable classes
+ * All these interfaces are intended for use with immutable classes
  */
+
 export interface IProgram {
     id: string;
     name: string;
@@ -77,4 +78,11 @@ export interface IOverride {
     readonly id: string;
     readonly date: Date;
     readonly rule: IRule;
+}
+
+export interface IConfigValidation {
+    getBoolean(val: any, message: string, defaultValue?: boolean): boolean;
+    getString(val: any, message: string, defaultValue?: string): string;
+    getNumber(val: any, message: string, defaultValue?: number): number;
+    getDate(val: any, message: string, defaultValue?: Date): Date;
 }

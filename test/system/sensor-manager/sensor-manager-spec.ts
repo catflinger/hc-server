@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { ISensorManager, INJECTABLES } from "../../../src/types";
 import { container } from "./inversify-test.config";
-import { IReading } from "../../../src/common/types";
+import { IReading } from "../../../src/common/interfaces";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;

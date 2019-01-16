@@ -1,6 +1,6 @@
 import { ISystem, IDevice, IDeviceState, } from "../../../../src/types";
 import { injectable } from "inversify";
-import { IControlState } from "../../../../src/common/types";
+import { IControlState } from "../../../../src/common/interfaces";
 
 @injectable()
 export class MockSystem implements ISystem {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { IConfiguration, IControlState, IOverride, IProgram, IReading, IRule, ITimeOfDay } from "./common/types";
+import { IConfiguration, IControlState, IOverride, IProgram, IReading, IRule, ITimeOfDay } from "./common/interfaces";
 
 export const INJECTABLES = {
     // symbols for constants

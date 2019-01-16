@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { IProgram, IDatedConfig, IConfiguration } from "../../../src/common/types";
+import { IProgram, IDatedConfig, IConfiguration } from "../../../src/common/interfaces";
 import { IConfigManager } from "../../../src/types";
 
 @injectable()

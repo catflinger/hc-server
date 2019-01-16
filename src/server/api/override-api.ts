@@ -2,11 +2,8 @@ import * as Debug from "debug";
 import { Response, Router } from "express";
 import { inject, injectable } from "inversify";
 
-import {
-    BasicHeatingRule,
-    ConfigValidation,
-    ITimeOfDay,
-} from "../../common/types";
+import { ITimeOfDay } from "../../common/interfaces";
+import { BasicHeatingRule, ConfigValidation } from "../../common/types";
 
 import { IApi, IClock, INJECTABLES, IOverrideManager } from "../../types";
 

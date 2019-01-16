@@ -5,7 +5,7 @@ import {
     IConfiguration,
     IReading,
     ISensorConfig,
-} from "../../common/types";
+} from "../../common/interfaces";
 
 import {
     IConfigManager,

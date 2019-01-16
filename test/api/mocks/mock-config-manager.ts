@@ -1,6 +1,7 @@
 import { IConfigManager } from "../../../src/types";
 import { injectable } from "inversify";
-import { IConfiguration, Configuration } from "../../../src/common/types";
+import { IConfiguration } from "../../../src/common/interfaces";
+import { Configuration } from "../../../src/common/types";
 
 @injectable()
 export class MockConfigManager implements IConfigManager {
@@ -9,7 +10,7 @@ export class MockConfigManager implements IConfigManager {
     public start(): Promise<void> {
         return Promise.resolve();
     }
-    
+
     public getConfig(): IConfiguration {
         return this.config;
     }    
