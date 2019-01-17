@@ -1,5 +1,5 @@
-import { ConfigValidation } from "../config-validation";
-import { IControlState } from "../interfaces";
+import { ConfigValidation } from "./config-validation";
+import { IControlState } from "./interfaces";
 
 export class ControlState implements IControlState {
     public readonly heating: boolean;

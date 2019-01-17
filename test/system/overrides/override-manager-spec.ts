@@ -6,7 +6,7 @@ import { container } from "./inversify-test.config";
 const expect = chai.expect;
 
 import { IOverrideManager, INJECTABLES } from "../../../src/types";
-import { IOverride } from "../../../src/common/interfaces";
+import { IOverride, ITimeOfDay } from "../../../src/common/interfaces";
 import { BasicHeatingRule, TimeOfDay } from "../../../src/common/types";
 import { MockClock } from "./mock-clock";
 
@@ -42,13 +42,15 @@ describe("OverrideManager", () => {
             expect(ovs.length).to.equal(1);
         });
 
-        it("should add another override", () => {
+        it("should replace an existing override", () => {
+            const endTime: ITimeOfDay = clock.timeOfDay().addMinutes(10);
             overrideManager.addOverride(new BasicHeatingRule({
                 startTime: clock.timeOfDay().addMinutes(5),
-                endTime: clock.timeOfDay().addMinutes(10),
+                endTime,
             }));
             let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
-            expect(ovs.length).to.equal(2);
+            expect(ovs.length).to.equal(1);
+            expect(ovs[0].rule.endTime.toSeconds()).to.equal(endTime.toSeconds());
         });
 
         it("should clear all overrides", () => {
@@ -66,7 +68,7 @@ describe("OverrideManager", () => {
             overrideManager = container.get<IOverrideManager>(INJECTABLES.OverrideManager);
         });
 
-        it("should remove expired overrides", () => {
+        it("should remove expired override", () => {
             // NOTE: housekeep time will be run on 2019-04-04 at 1pm
 
             // EXPIRE add one day before
@@ -76,6 +78,14 @@ describe("OverrideManager", () => {
                 endTime: new TimeOfDay({ hour: 22, minute: 0, second: 0}),
             }));
 
+            // run the housekeeping
+            clock.date = new Date("2019-04-04T13:00:00");
+            overrideManager.housekeep();
+            let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
+            expect(ovs.length).to.equal(0);
+        });
+
+        it("should remove future override", () => {
             // EXPIRE add one day after
             clock.date = new Date("2019-04-05T00:00:00");
             overrideManager.addOverride(new BasicHeatingRule({
@@ -83,12 +93,29 @@ describe("OverrideManager", () => {
                 endTime: new TimeOfDay({ hour: 22, minute: 0, second: 0}),
             }));
 
+            // run the housekeeping
+            clock.date = new Date("2019-04-04T13:00:00");
+            overrideManager.housekeep();
+            let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
+            expect(ovs.length).to.equal(0);
+        });
+
+        it("should remove expired today override", () => {
             // EXPIRE add one early and expired
             clock.date = new Date("2019-04-04T00:00:00");
             overrideManager.addOverride(new BasicHeatingRule({
                 startTime: new TimeOfDay({ hour: 11, minute: 0, second: 0}),
                 endTime: new TimeOfDay({ hour: 12, minute: 0, second: 0}),
             }));
+
+            // run the housekeeping
+            clock.date = new Date("2019-04-04T13:00:00");
+            overrideManager.housekeep();
+            let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
+            expect(ovs.length).to.equal(0);
+        });
+
+        it("should not remove current override", () => {
 
             // KEEP add one early but still current
             clock.date = new Date("2019-04-04T00:00:00");
@@ -97,6 +124,15 @@ describe("OverrideManager", () => {
                 endTime: new TimeOfDay({ hour: 22, minute: 0, second: 0}),
             }));
 
+            // run the housekeeping
+            clock.date = new Date("2019-04-04T13:00:00");
+            overrideManager.housekeep();
+            let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
+            expect(ovs.length).to.equal(1);
+
+        });
+
+        it("should not remove pending  override", () => {
             // KEEP add one later in day
             clock.date = new Date("2019-04-04T00:00:00");
             overrideManager.addOverride(new BasicHeatingRule({
@@ -104,22 +140,11 @@ describe("OverrideManager", () => {
                 endTime: new TimeOfDay({ hour: 16, minute: 0, second: 0}),
             }));
 
-            // EXPIRE add another expired 
-            clock.date = new Date("2019-04-04T00:00:00");
-            overrideManager.addOverride(new BasicHeatingRule({
-                startTime: new TimeOfDay({ hour: 9, minute: 0, second: 0}),
-                endTime: new TimeOfDay({ hour: 10, minute: 0, second: 0}),
-            }));
-
             // run the housekeeping
             clock.date = new Date("2019-04-04T13:00:00");
             overrideManager.housekeep();
             let ovs: ReadonlyArray<IOverride> = overrideManager.getOverrides();
-            expect(ovs.length).to.equal(2);
-            expect(ovs[0].rule.startTime.hour).to.equal(11);
-            expect(ovs[0].rule.endTime.hour).to.equal(22);
-            expect(ovs[1].rule.startTime.hour).to.equal(15);
-            expect(ovs[1].rule.endTime.hour).to.equal(16);
+            expect(ovs.length).to.equal(1);
         });
     });
 });

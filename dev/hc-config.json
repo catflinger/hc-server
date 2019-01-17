@@ -2,7 +2,7 @@
     "programConfig": [
         {
             "id": "foo",
-            "name": "one rule",
+            "name": "Winter Sundays",
             "minHwTemp": 12,
             "maxHwTemp": 30,
             "rules": [
@@ -31,7 +31,28 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "bar",
+            "name": "Schooldays",
+            "minHwTemp": 12,
+            "maxHwTemp": 30,
+            "rules": [
+                {
+                    "startTime": {
+                        "hour": 2,
+                        "minute": 0,
+                        "second": 0
+                    },
+                    "endTime": {
+                        "hour": 7,
+                        "minute": 0,
+                        "second": 0
+                    }
+                }
+            ]
         }
+
     ],
     "namedConfig": {
         "weekdayProgramId": "foo",
