@@ -47,7 +47,8 @@ export class MockConfigManager implements IConfigManager {
             },
             getProgramConfig: () => {
                 return [] as ReadonlyArray<IProgram>;
-            }
+            },
+            toMutable(){},
         };
     }
 

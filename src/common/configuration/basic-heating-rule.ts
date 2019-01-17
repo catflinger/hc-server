@@ -1,13 +1,21 @@
+import { v4 as uuid } from "uuid";
+
+import { ConfigValidation } from "../config-validation";
 import { IControlState, IReading, IRule, IRuleResult, ITimeOfDay } from "../interfaces";
 import { TimeOfDay } from "./time-of-day";
 
 /* Base class for implementing rules */
 
 export class BasicHeatingRule implements IRule {
+    public readonly id: string;
     public readonly startTime: ITimeOfDay;
     public readonly endTime: ITimeOfDay;
 
     constructor(data: any) {
+        this.id = data.id ?
+            ConfigValidation.getString(data.id, "id not valid in BasicHeatingRule configuration") :
+            uuid();
+
         if (data.startTime) {
             this.startTime = new TimeOfDay(data.startTime);
         } else {

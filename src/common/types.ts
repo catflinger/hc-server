@@ -12,6 +12,6 @@ export * from "./configuration/time-of-day";
 export * from "./control-state";
 
 // TypeScript does not allow interface members to be static.  This next export simulates this
-// by exporting an instance variable called ConvfigValidation that implements static methods 
+// by exporting an instance variable called ConvfigValidation that implements static methods
 // that have the same signature as those in IConfigValidation
 export const ConfigValidation: IConfigValidation = StaticConfigValidation;

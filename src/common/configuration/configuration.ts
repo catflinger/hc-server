@@ -66,4 +66,8 @@ export class Configuration implements IConfiguration {
     public getNamedConfig(): INamedConfig {
         return this.namedConfig;
     }
+
+    public toMutable(): any {
+        return JSON.parse(JSON.stringify(this));
+    }
 }
