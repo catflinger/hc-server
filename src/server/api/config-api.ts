@@ -2,9 +2,9 @@ import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { IApi, IClock, IConfigManager, INJECTABLES } from "../../types";
 import { IConfiguration } from "../../common/interfaces";
 import { Configuration } from "../../common/types";
+import { IApi, IClock, IConfigManager, INJECTABLES } from "../../types";
 
 const log = Debug("api");
 

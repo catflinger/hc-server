@@ -13,6 +13,7 @@ export class MockConfigManager implements IConfigManager {
     public getConfig(): IConfiguration {
 
         return {
+
             getSensorConfig: () => {
                 return [
                     {

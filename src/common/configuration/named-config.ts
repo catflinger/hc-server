@@ -19,6 +19,14 @@ export class NamedConfig implements INamedConfig {
             ConfigValidation.getString(data.sundayProgramId, "namedConfig:sundayProgramId", null) :
             "";
     }
+
+    public toJSON(): any {
+        return {
+            saturdayProgramId: this.saturdayProgramId,
+            sundayProgramId: this.sundayProgramId,
+            weekdayProgramId: this.weekdayProgramId,
+        };
+    }
 }
 
 function isPresent(val: any): boolean {

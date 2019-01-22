@@ -9,4 +9,11 @@ export class DatedConfig implements IDatedConfig {
         this.programId = ConfigValidation.getString(data.programId, "datedConfig:programId");
         this.date = ConfigValidation.getDate(data.date, "datedConfig:date");
     }
+
+    public toJSON(): any {
+        return {
+            date: this.date,
+            programId: this.programId,
+        };
+    }
 }

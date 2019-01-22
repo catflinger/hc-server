@@ -11,4 +11,12 @@ export class Override implements IOverride {
         this.date = date;
         this.rule = rule;
     }
+
+    public toJSON(): any {
+        return {
+            date: this.date,
+            id: this.id,
+            rule: this.rule,
+        };
+    }
 }

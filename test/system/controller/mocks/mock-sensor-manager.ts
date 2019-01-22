@@ -31,6 +31,8 @@ export class MockSensorManager implements ISensorManager {
 }
 
 export class MockReading implements IReading {
+    tag: any;
+
     constructor(
         public id: string,
         public description: string,

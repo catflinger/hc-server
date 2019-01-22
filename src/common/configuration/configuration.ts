@@ -5,7 +5,6 @@ import { Program } from "./program";
 import { SensorConfig } from "./sensor-config";
 
 export class Configuration implements IConfiguration {
-
     private programConfig: IProgram[] = [];
     private sensorConfig: ISensorConfig[] = [];
     private datedConfig: IDatedConfig[] = [];
@@ -49,6 +48,15 @@ export class Configuration implements IConfiguration {
         } else {
             throw new Error("no config supplied");
         }
+    }
+
+    public toJSON(): any {
+        return {
+            datedConfig: this.datedConfig,
+            namedConfig: this.namedConfig,
+            programConfig: this.programConfig,
+            sensorConfig: this.sensorConfig,
+        };
     }
 
     public getProgramConfig(): ReadonlyArray<IProgram> {

@@ -29,6 +29,14 @@ export class BasicHeatingRule implements IRule {
         }
     }
 
+    public toJSON(): any {
+        return {
+            endTime: this.endTime,
+            id: this.id,
+            startTime: this.startTime,
+        };
+    }
+
     public applyRule(currentState: IControlState, readings: ReadonlyArray<IReading>, time: ITimeOfDay | Date): IRuleResult {
         const result: IRuleResult = {
             heating: null,

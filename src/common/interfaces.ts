@@ -1,6 +1,6 @@
-/**
- * All these interfaces are intended for use with immutable classes
- */
+/*
+All these interfaces are intended for use with immutable classes.
+*/
 
 export interface IProgram {
     id: string;
@@ -36,6 +36,7 @@ export interface ITimeOfDay {
     addSeconds(seconds: number): ITimeOfDay;
 
     toSeconds(): number;
+    toString(): string;
 }
 
 export interface IControlState {

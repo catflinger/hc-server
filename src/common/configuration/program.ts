@@ -41,6 +41,16 @@ export class Program implements IProgram {
         }
     }
 
+    public toJSON(): any {
+        return {
+            id: this.id,
+            maxHwTemp: this.maxHwTemp,
+            minHwTemp: this.minHwTemp,
+            name: this.name,
+            rules: this.rules,
+        };
+    }
+
     public getRules(): ReadonlyArray<IRule> {
         return this.rules as ReadonlyArray<IRule>;
     }

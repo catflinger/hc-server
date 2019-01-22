@@ -13,4 +13,13 @@ export class SensorConfig implements ISensorConfig {
         this.role = ConfigValidation.getString(data.role, "sensorConfig:role", "");
         this.deleted = ConfigValidation.getBoolean(data.deleted, "sensorConfig:deleted", false);
     }
+
+    public toJSON(): any {
+        return {
+            deleted: this.deleted,
+            description: this.description,
+            id: this.id,
+            role: this.role,
+        };
+    }
 }

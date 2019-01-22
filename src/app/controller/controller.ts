@@ -153,6 +153,7 @@ export class Controller implements IController {
                 maxHwTemp: 50,
                 minHwTemp: 45,
                 name: "",
+
                 getRules(): ReadonlyArray<IRule> {
                     return [] as ReadonlyArray<IRule>;
                 },
