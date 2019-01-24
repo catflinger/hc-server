@@ -10,14 +10,12 @@ export class MockSensorManager implements ISensorManager {
             description: "Sensor A",
             role: "hw",
             reading: 30,
-            logPosition: null
         },
         {
             id: "B",
             description: "Sensor B",
             role: "something",
             reading: 30,
-            logPosition: null
         }
     ];
 

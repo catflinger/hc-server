@@ -45,20 +45,17 @@ const expectedA: ISensorConfig[] = [
         description: "first sensor",
         role: "hw",
         reading: 10,
-        logPosition: 1,
     },
     {
         id: "28.1",
         description: "second sensor",
         role: "",
         reading: 11,
-        logPosition: 2,
     },
     {
         id: "28.99",
         description: "deleted sensor",
         role: "",
         reading: null,
-        logPosition: null,
     },
 ];

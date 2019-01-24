@@ -25,21 +25,18 @@ const defaultAvailableSensors: ISensorConfig[] = [
         description: "",
         role: "",
         reading: 43.23,
-        logPosition: NaN,
     },
     {
         id: "28.1",
         description: "",
         role: "",
         reading: 19.2,
-        logPosition: NaN,
     },
     {
         id: "28.3",
         description: "",
         role: "",
         reading: 4,
-        logPosition: NaN,
     },
 ];
 
@@ -49,13 +46,11 @@ const defaultConfiguredSensors: ISensorConfig[] = [
         description: "hot water",
         role: "hw",
         reading: 43.23,
-        logPosition: NaN,
     },
     {
         id: "28.1",
         description: "bedroom",
         role: "",
         reading: 19.2,
-        logPosition: NaN,
     },
 ];

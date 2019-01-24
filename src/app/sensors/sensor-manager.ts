@@ -70,7 +70,6 @@ export class SensorManager implements ISensorManager {
             readings.push(this.readSensor({
                 description: "",
                 id,
-                logPosition: null,
                 reading: null,
                 role: "",
             }));
@@ -86,8 +85,8 @@ export class SensorManager implements ISensorManager {
                 resolve(new SensorReading({
                     description: config.description,
                     id: config.id,
-                    role: config.role,
                     reading: Number.parseFloat(val),
+                    role: config.role,
                 }));
             })
             .catch ((err) => {
