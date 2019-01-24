@@ -8,6 +8,7 @@ export * from "./configuration/named-config";
 export * from "./configuration/override";
 export * from "./configuration/program";
 export * from "./configuration/sensor-config";
+export * from "./configuration/sensor-reading";
 export * from "./configuration/time-of-day";
 export * from "./control-state";
 

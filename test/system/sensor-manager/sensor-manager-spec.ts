@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { ISensorManager, INJECTABLES } from "../../../src/types";
 import { container } from "./inversify-test.config";
-import { IReading } from "../../../src/common/interfaces";
+import { ISensorConfig } from "../../../src/common/interfaces";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -26,28 +26,12 @@ describe("sensor-manager", () => {
         
         it("should read sensors", () => {
 
-            const readings = sensorManager.readConfiguredSensors(); 
+            const readings = sensorManager.readSensors(); 
             return Promise.all([
                 expect(readings).to.eventually.be.fulfilled,
                 expect(readings).to.eventually.be.an.instanceOf(Array),
-                expect(readings).to.eventually.have.lengthOf(2),
+                expect(readings).to.eventually.have.lengthOf(3),
                 expect(readings).to.eventually.have.deep.members(expectedA)
-            ]);
-
-
-        });
-    });
-
-    describe("listSensors", () => {
-        
-        it("should list available sensors", () => {
-
-            const readings = sensorManager.readAvailableSensors(); 
-            return Promise.all([
-                expect(readings).to.eventually.be.fulfilled,
-                expect(readings).to.eventually.be.an.instanceOf(Array),
-                expect(readings).to.eventually.have.lengthOf(2),
-                expect(readings).to.eventually.have.deep.members(expectedB)
             ]);
 
 
@@ -55,31 +39,26 @@ describe("sensor-manager", () => {
     });
 });
 
-const expectedA: IReading[] = [
+const expectedA: ISensorConfig[] = [
     {
         id: "28.0",
         description: "first sensor",
         role: "hw",
-        value: 10
+        reading: 10,
+        logPosition: 1,
     },
     {
         id: "28.1",
         description: "second sensor",
         role: "",
-        value: 11
-    },
-];
-const expectedB: IReading[] = [
-    {
-        id: "28.0",
-        description: "",
-        role: "",
-        value: 10
+        reading: 11,
+        logPosition: 2,
     },
     {
-        id: "28.1",
-        description: "",
+        id: "28.99",
+        description: "deleted sensor",
         role: "",
-        value: 11
+        reading: null,
+        logPosition: null,
     },
 ];

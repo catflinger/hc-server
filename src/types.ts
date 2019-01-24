@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { IConfiguration, IControlState, IOverride, IProgram, IReading, IRule, ITimeOfDay } from "./common/interfaces";
+import { IConfiguration, IControlState, IOverride, IProgram, IRule, ISensorReading, ITimeOfDay } from "./common/interfaces";
 
 export const INJECTABLES = {
     // symbols for constants
@@ -58,9 +58,8 @@ export interface IDeviceState {
 
 // models the 1-wire sensor network
 export interface ISensorManager {
-    readAvailableSensors(): Promise<ReadonlyArray<IReading>>;
-    readConfiguredSensors(): Promise<ReadonlyArray<IReading>>;
-    // readSesnor(id: string): Promise<IReading>;
+    readSensors(): Promise<ReadonlyArray<ISensorReading>>;
+    // readSesnor(id: string): Promise<ISensorReading>;
 }
 
 // manages the application configuratiom

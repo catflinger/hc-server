@@ -38,7 +38,7 @@ export class OverrideApi implements IApi {
                 duration = ConfigValidation.getNumber(req.body.duration, "set override:minutes");
 
                 if (duration < 0 || duration > 24 * 60) {
-                    throw new Error("value for duraion out of range");
+                    throw new Error("value for duration out of range");
                 }
             } catch (err) {
                 return res.status(400).send("Bad request " + err);
@@ -48,8 +48,8 @@ export class OverrideApi implements IApi {
             try {
                 const now: ITimeOfDay = this.clock.timeOfDay();
                 this.overrideManager.addOverride(new BasicHeatingRule({
-                    endTime: now,
-                    startTime: now.addSeconds(duration * 60),
+                    endTime: now.addSeconds(duration * 60),
+                    startTime: now,
                 }));
 
                 // return the new override state

@@ -14,7 +14,7 @@ export interface IRule {
     id: string;
     startTime: ITimeOfDay;
     endTime: ITimeOfDay;
-    applyRule(currentState: IControlState, readings: ReadonlyArray<IReading>, time: ITimeOfDay | Date): IRuleResult;
+    applyRule(currentState: IControlState, readings: ReadonlyArray<ISensorReading>, time: ITimeOfDay | Date): IRuleResult;
 }
 
 export interface IRuleResult {
@@ -44,13 +44,6 @@ export interface IControlState {
     hotWater: boolean;
 }
 
-export interface IReading {
-    id: string;
-    description: string;
-    role: string;
-    value: number;
-}
-
 export interface IConfiguration {
     getProgramConfig(): ReadonlyArray<IProgram>;
     getNamedConfig(): INamedConfig;
@@ -70,12 +63,15 @@ export interface IDatedConfig {
     date: Date;
 }
 
+// the data required for senor configuration and the data required for displaying readings
+// is almost identical.  The same interface is used for both
 export interface ISensorConfig {
     id: string;
     description: string;
     role: string;
-    deleted: boolean;
+    reading: number;
 }
+export type ISensorReading = ISensorConfig;
 
 export interface IOverride {
     readonly id: string;

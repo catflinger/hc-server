@@ -1,42 +1,49 @@
-import { IReading } from "../../../../src/common/interfaces";
+import { ISensorConfig } from "../../../../src/common/interfaces";
 import { injectable } from "inversify";
 import { ISensorManager } from "../../../../src/types";
 
 @injectable()
 export class MockSensorManager implements ISensorManager {
-    public readings: IReading[] = [
+    public readings: ISensorConfig[] = [
         {
             id: "A",
             description: "Sensor A",
             role: "hw",
-            value: 30,
+            reading: 30,
+            logPosition: null
         },
         {
             id: "B",
             description: "Sensor B",
             role: "something",
-            value: 30,
+            reading: 30,
+            logPosition: null
         }
     ];
 
     public setHwTemp(val: number): void {
-        this.readings[0].value = val;
+        this.readings[0].reading = val;
     }
-    public readAvailableSensors(): Promise<IReading[]> {
+    public readAvailableSensors(): Promise<ISensorConfig[]> {
         return Promise.resolve(this.readings);
     }    
-    public readConfiguredSensors(): Promise<IReading[]> {
+    public readConfiguredSensors(): Promise<ISensorConfig[]> {
         return Promise.resolve(this.readings);
     }
+    readSensors(): Promise<ISensorConfig[]> {
+        return Promise.resolve(this.readings);
+    }
+
 }
 
-export class MockReading implements IReading {
+export class MockReading implements ISensorConfig {
     tag: any;
 
     constructor(
         public id: string,
         public description: string,
         public role: string,
-        public value: number,
+        public reading: number,
+        public logPosition: number,
     ){}
 }

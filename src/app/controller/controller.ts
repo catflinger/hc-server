@@ -3,9 +3,10 @@ import {
     IControlState,
     IOverride,
     IProgram,
-    IReading,
     IRule,
     IRuleResult,
+    ISensorConfig,
+    ISensorReading,
     ITimeOfDay,
 } from "../../common/interfaces";
 
@@ -71,8 +72,8 @@ export class Controller implements IController {
     }
 
     public async refresh(now: Date): Promise<any> {
-        return this.sensorManager.readConfiguredSensors()
-        .then((sensorReadings: ReadonlyArray<IReading>) => {
+        return this.sensorManager.readSensors()
+        .then((sensorReadings: ReadonlyArray<ISensorReading>) => {
             const config: IConfiguration = this.configManager.getConfig();
 
             // find the active program
@@ -82,11 +83,11 @@ export class Controller implements IController {
             const newControlState: IControlState = { heating: false, hotWater: false };
 
             // set the hot water based on the program threshold values
-            const hwReading: IReading = sensorReadings.find((r) => r.role === "hw");
+            const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
             if (hwReading !== undefined) {
-                if (hwReading.value < program.minHwTemp) {
+                if (hwReading.reading < program.minHwTemp) {
                     newControlState.hotWater = true;
-                } else if (hwReading.value < program.maxHwTemp && this.controlState.hotWater) {
+                } else if (hwReading.reading < program.maxHwTemp && this.controlState.hotWater) {
                     // keep the hw on until the upper threshold is reached
                     // if the hw is off then we are on theway back down again so keep it off
                     // this behaviour is to prevent the HW continually cycling around the upper threshold value
@@ -163,7 +164,7 @@ export class Controller implements IController {
         return activeProgram;
     }
 
-    private applyRule(rule: IRule, sensorReadings: ReadonlyArray<IReading>, now: ITimeOfDay | Date, newControlState: IControlState): void {
+    private applyRule(rule: IRule, sensorReadings: ReadonlyArray<ISensorReading>, now: ITimeOfDay | Date, newControlState: IControlState): void {
         const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
         if (result.heating !== null) {
             newControlState.heating =  result.heating;

@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 
 import { ConfigValidation } from "../config-validation";
-import { IControlState, IReading, IRule, IRuleResult, ITimeOfDay } from "../interfaces";
+import { IControlState, IRule, IRuleResult, ISensorReading, ITimeOfDay } from "../interfaces";
 import { TimeOfDay } from "./time-of-day";
 
 /* Base class for implementing rules */
@@ -27,6 +27,10 @@ export class BasicHeatingRule implements IRule {
         } else {
             throw new Error("endTime not found in rule config");
         }
+
+        if (this.startTime.isLaterThan(this.endTime)) {
+            throw new Error("start time cannopt be later than and time in TimeOfDay");
+        }
     }
 
     public toJSON(): any {
@@ -37,7 +41,7 @@ export class BasicHeatingRule implements IRule {
         };
     }
 
-    public applyRule(currentState: IControlState, readings: ReadonlyArray<IReading>, time: ITimeOfDay | Date): IRuleResult {
+    public applyRule(currentState: IControlState, readings: ReadonlyArray<ISensorReading>, time: ITimeOfDay | Date): IRuleResult {
         const result: IRuleResult = {
             heating: null,
             hotWater: null,
