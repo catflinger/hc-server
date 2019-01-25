@@ -20,7 +20,7 @@
         "debug": "4.1.1",
         "express": "4.16.4",
         "body-parser": "1.18.3",
-        "linqts": "1.12.2"
+        "sqlite3": "4.0.6"
     },
     "devDependencies": {
         "rimraf": "2.6.2",
@@ -40,6 +40,7 @@
         "@types/uuid": "3.4.4",
         "@types/debug": "0.0.31",
         "@types/express": "4.16.0",
-        "@types/body-parser": "1.17.0"
+        "@types/body-parser": "1.17.0",
+        "@types/sqlite3": "3.1.3"
     }
 }

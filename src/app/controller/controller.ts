@@ -17,6 +17,7 @@ import {
     IClock,
     IConfigManager,
     IController,
+    ILogger,
     INJECTABLES,
     IOverrideManager,
     ISensorManager,
@@ -34,6 +35,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.OverrideManager) private overideManager: IOverrideManager,
         @inject(INJECTABLES.System) private system: ISystem,
         @inject(INJECTABLES.Clock) private clock: IClock,
+        @inject(INJECTABLES.Logger) private logger: ILogger,
     ) {}
 
     public getControlState(): IControlState {

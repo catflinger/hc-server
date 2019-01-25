@@ -6,11 +6,13 @@ export const INJECTABLES = {
     // symbols for constants
     ConfigRootDir: Symbol("ConfigRootDir"),
     GpioRootDir: Symbol("GpioRootDir"),
+    LogRootDir: Symbol("LogRootDir"),
     OneWireRootDir: Symbol("OneWireRootDir"),
 
     // symbols for the main players
     ConfigManager: Symbol("ConfigManager"),
     Controller: Symbol("Controller"),
+    Logger: Symbol("Logger"),
     OverrideManager: Symbol("OverrideManager"),
     SensorManager: Symbol("SensorManager"),
     System: Symbol("System"),
@@ -75,6 +77,16 @@ export interface IOverrideManager {
     getOverrides(): ReadonlyArray<IOverride>;
     clearOverrides(): void;
     housekeep(): void;
+}
+
+// logs sensor readings and other information
+export interface ILogger {
+    init(): Promise<void>;
+    log(
+        date: Date,
+        readings: ISensorReading[],
+        controlState: IControlState,
+    ): Promise<void>;
 }
 
 /**

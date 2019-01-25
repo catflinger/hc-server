@@ -20,21 +20,18 @@ export class MockConfigManager implements IConfigManager {
                         id: "28.0",
                         description: "first sensor",
                         role: "hw",
-                        logPosition: 1,
                         reading: null,
                     },
                     {
                         id: "28.1",
                         description: "second sensor",
                         role: "",
-                        logPosition: 2,
                         reading: null,
                     },
                     {
                         id: "28.99",
                         description: "deleted sensor",
                         role: "",
-                        logPosition: null,
                         reading: null,
                     },
                 ]; 
