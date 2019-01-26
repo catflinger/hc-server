@@ -19,63 +19,51 @@ export class Logger implements ILogger {
     }
 
     public init(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (!fs.existsSync(this.dbFilename)) {
-                const db = new Database(this.dbFilename);
+        let db: Database;
 
-                db.run("CREATE TABLE reading (date INTEGER, sensor_id TEXT, reading INTEGER, UNIQUE(date,sensor_id))", (error) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        db.run("CREATE TABLE control_state (date INTEGER UNIQUE, heating INTEGER, hw INTEGER)", (error1) => {
-                            if (error1) {
-                                reject(error1);
-                            } else {
-                                db.run("CREATE TABLE sensor (id TEXT, name TEXT)", (error2) => {
-                                    if (error2) {
-                                        reject(error2);
-                                    } else {
-                                        db.run("CREATE INDEX reading_date ON reading (date)", (error3) => {
-                                            if (error3) {
-                                                reject(error3);
-                                            } else {
-                                                db.run("CREATE INDEX control_state_date ON control_state (date)", (error4) => {
-                                                    if (error4) {
-                                                        reject(error4);
-                                                    } else {
-                                                        db.close((error5) => {
-                                                            if (error5) {
-                                                                reject(error5);
-                                                            } else {
-                                                                resolve();
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            } else {
-                resolve();
-            }
+        // create a new database and schema if they dosn't already exist
+        if (fs.existsSync(this.dbFilename)) {
+            return Promise.resolve();
+        }
+
+        return this.openDatabase()
+        .then((database) => {
+            db = database;
+            // console.log ("DATABASE " + JSON.stringify(db, null, 4));
+            return this.runSQL(db, "CREATE TABLE reading (date INTEGER, sensor_id TEXT, reading INTEGER, UNIQUE(date,sensor_id))");
+        })
+        .then(() => {
+            return this.runSQL(db, "CREATE TABLE control_state (date INTEGER UNIQUE, heating INTEGER, hw INTEGER)");
+        })
+        .then(() => {
+            return this.runSQL(db, "CREATE TABLE sensor (id TEXT, name TEXT)");
+        })
+        .then(() => {
+            return this.runSQL(db, "CREATE INDEX reading_date ON reading (date)");
+        })
+        .then(() => {
+            return this.runSQL(db, "CREATE INDEX control_state_date ON control_state (date)");
+        })
+        .then(() => {
+            return this.tryCloseDatabase(db);
         });
     }
 
     public log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<void> {
+
+        if (!date) {
+            throw new Error("cannot log without a date");
+        }
         const logDate: number = this.roundedAsUnix(date);
         const dbstuff: DbStuff = new DbStuff();
 
-        return this.openDatabase(dbstuff)
-        .then(() => {
+        return this.openDatabase()
+        .then((database) => {
+            dbstuff.db = database;
             return this.prepareInsertReading(dbstuff);
         })
         .then(() => {
-            return this.prepareInsertReading(dbstuff);
+            return this.prepareInsertControlState(dbstuff);
         })
         .then(() => {
             return this.prepareInsertControlState(dbstuff);
@@ -91,24 +79,46 @@ export class Logger implements ILogger {
             return Promise.all(promises);
         })
         .then(() => {
-            return this.tryCloseDatabase(dbstuff);
-        })
-        .then(() => {
-            return Promise.resolve();
+            return this.tryCloseDatabase(dbstuff.db);
         })
         .catch((error: any) => {
-            console.log("FAILED to write log record " + error);
-            this.tryCloseDatabase(dbstuff);
+            // don't let the program fall over just because of a log record
+            // console.log("FAILED to write log record " + error);
         });
     }
 
-    private openDatabase(dbs: DbStuff): Promise<DbStuff> {
+    private openDatabase(): Promise<Database> {
         return new Promise((resolve, reject) => {
-            dbs.db = new Database(this.dbFilename, (error) => {
+            try {
+                const db: Database = new Database(this.dbFilename, (error) => {
+                    reject(error);
+                });
+                resolve(db);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    private tryCloseDatabase(db: Database): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                db.close(() => {
+                    resolve();
+                });
+            } catch {
+                resolve();
+            }
+        });
+    }
+
+    private runSQL(db: Database, sql: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            db.run(sql, (error) => {
                 if (error) {
                     reject(error);
                 } else {
-                    resolve(dbs);
+                    resolve();
                 }
             });
         });
@@ -152,24 +162,21 @@ export class Logger implements ILogger {
 
     private insertSensorReading(dbs: DbStuff, logDate: number, reading: ISensorReading): Promise<void> {
         return new Promise((resolve, reject) => {
-            const temp: number = Math.round(reading.reading * 10);
-            dbs.insertReading.run([ logDate, reading.id, temp], (error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
+            if (reading.id) {
 
-    private tryCloseDatabase(dbs: DbStuff): Promise<void> {
-        return new Promise((resolve, reject) => {
-            try {
-                dbs.db.close(() => {
-                    resolve();
+                const temp: number = reading.reading === null || reading.reading === undefined ?
+                    null :
+                    Math.round(reading.reading * 10);
+
+                dbs.insertReading.run([ logDate, reading.id, temp], (error) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve();
+                    }
                 });
-            } catch {
+            } else {
+                // skip bad readings
                 resolve();
             }
         });
