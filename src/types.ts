@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { IConfiguration, IControlState, IOverride, IProgram, IRule, ISensorReading, ITimeOfDay } from "./common/interfaces";
+import { IConfiguration, IControlState, ILogExtract, IOverride, IProgram, IRule, ISensorReading, ITimeOfDay } from "./common/interfaces";
 
 export const INJECTABLES = {
     // symbols for constants
@@ -29,6 +29,7 @@ export const INJECTABLES = {
     // symbols for the apis
     ConfigApi: Symbol("ConfigApi"),
     ControlApi: Symbol("ControlApi"),
+    LogApi: Symbol("LogApi"),
     OverrideApi: Symbol("OverrideApi"),
     SensorApi: Symbol("SensorApi"),
 };
@@ -87,6 +88,7 @@ export interface ILogger {
         readings: ISensorReading[],
         controlState: IControlState,
     ): Promise<void>;
+    getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract>;
 }
 
 /**

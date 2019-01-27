@@ -15,6 +15,7 @@ import { IApi, IClock, IConfigManager, IController, ILogger, INJECTABLES, IOverr
 import { Logger } from "./logger/logger";
 import { ConfigApi } from "./server/api/config-api";
 import { ControlStateApi } from "./server/api/control-state-api";
+import { LoggerApi } from "./server/api/logger-api";
 import { OverrideApi } from "./server/api/override-api";
 import { SensorApi } from "./server/api/sensor-api";
 
@@ -57,3 +58,4 @@ container.bind<IApi>(INJECTABLES.ControlApi).to(ControlStateApi).inSingletonScop
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.ConfigApi).to(ConfigApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();

@@ -1,15 +1,15 @@
 import * as fs from "fs";
-import { inject, injectable } from "inversify";
+import { inject, injectable, TargetTypeEnum } from "inversify";
 import * as path from "path";
 import { Database, Statement } from "sqlite3";
 
-import { IControlState, ISensorReading } from "../common/interfaces";
+import { IControlState, ISensorReading, ILogExtract } from "../common/interfaces";
 import { ILogger, INJECTABLES } from "../types";
 
-class DbStuff {
-    public db: Database;
-    public insertReading: Statement;
-    public insertControlState: Statement;
+interface IDbStuff {
+    db: Database;
+    insertReading: Statement;
+    insertControlState: Statement;
 }
 
 @injectable()
@@ -55,7 +55,12 @@ export class Logger implements ILogger {
             throw new Error("cannot log without a date");
         }
         const logDate: number = this.roundedAsUnix(date);
-        const dbstuff: DbStuff = new DbStuff();
+
+        const dbstuff: IDbStuff = {
+            db: null,
+            insertControlState: null,
+            insertReading: null,
+        };
 
         return this.openDatabase()
         .then((database) => {
@@ -84,6 +89,25 @@ export class Logger implements ILogger {
         .catch((error: any) => {
             // don't let the program fall over just because of a log record
             // console.log("FAILED to write log record " + error);
+        });
+    }
+
+    public getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract> {
+        return Promise.resolve({
+            sensors: ["foo", "bar"],
+
+            from: new Date("2019-01-03T12:00:00"),
+            to: new Date("2019-01-03T13:00:00"),
+
+            // the data retrieved
+            entries: [
+                {
+                    date: new Date("2019-01-03T12:00:00"),
+                    heating: true,
+                    hotWater: false,
+                    readings: [ 111, 222 ],
+                },
+            ],
         });
     }
 
@@ -124,7 +148,7 @@ export class Logger implements ILogger {
         });
     }
 
-    private prepareInsertReading(dbs: DbStuff): Promise<void> {
+    private prepareInsertReading(dbs: IDbStuff): Promise<void> {
         return new Promise((resolve, reject) => {
             dbs.insertReading = dbs.db.prepare("INSERT OR IGNORE INTO reading VALUES (?,?, ?)", (error) => {
                 if (error) {
@@ -136,7 +160,7 @@ export class Logger implements ILogger {
         });
     }
 
-    private prepareInsertControlState(dbs: DbStuff): Promise<void> {
+    private prepareInsertControlState(dbs: IDbStuff): Promise<void> {
         return new Promise((resolve, reject) => {
             dbs.insertControlState = dbs.db.prepare("INSERT OR IGNORE INTO control_state VALUES (?,?,?)", (error) => {
                 if (error) {
@@ -148,7 +172,7 @@ export class Logger implements ILogger {
         });
     }
 
-    private insertControlState(dbs: DbStuff, logDate: number, controlState: IControlState): Promise<void> {
+    private insertControlState(dbs: IDbStuff, logDate: number, controlState: IControlState): Promise<void> {
         return new Promise((resolve, reject) => {
             dbs.insertControlState.run([ logDate, controlState.heating, controlState.hotWater], (error) => {
                 if (error) {
@@ -160,7 +184,7 @@ export class Logger implements ILogger {
         });
     }
 
-    private insertSensorReading(dbs: DbStuff, logDate: number, reading: ISensorReading): Promise<void> {
+    private insertSensorReading(dbs: IDbStuff, logDate: number, reading: ISensorReading): Promise<void> {
         return new Promise((resolve, reject) => {
             if (reading.id) {
 

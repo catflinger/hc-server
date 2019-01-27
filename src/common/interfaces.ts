@@ -85,3 +85,25 @@ export interface IConfigValidation {
     getNumber(val: any, message: string, defaultValue?: number): number;
     getDate(val: any, message: string, defaultValue?: Date): Date;
 }
+
+export interface ILogEntry {
+    // the date and time of the entry
+    date: Date;
+
+    // the control state at this time
+    heating: boolean;
+    hotWater: boolean;
+
+    // the sensor values at this time
+    readings: number[];
+}
+
+export interface ILogExtract {
+    // the query parameters
+    sensors: string[];
+    from: Date;
+    to: Date;
+
+    // the data retrieved
+    entries: ILogEntry[];
+}
