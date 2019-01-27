@@ -42,34 +42,37 @@ export class Controller implements IController {
         return this.controlState;
     }
 
-    public start(refreshInterval?: number): Promise<any> {
-        return new Promise((resolve, reject) => {
+    public start(refreshInterval?: number, logInterval?: number): Promise<any> {
 
-            this.configManager.start()
-            .then(() => {
-                try {
-                    this.controlState = {
-                        heating: false,
-                        hotWater: false,
-                    };
-
-                    if (refreshInterval !== undefined && refreshInterval > 5) {
-                        setInterval(() => {
-                            this.refresh(this.clock.now());
-                        },
-                        refreshInterval * 1000);
-                    }
-
+        return this.configManager.start()
+        .then(() => {
+            return this.logger.init();
+        })
+        .then(() => {
+            this.controlState = {
+                heating: false,
+                hotWater: false,
+            };
+            return this.refresh(this.clock.now());
+        })
+        .then(() => {
+            return this.log();
+        })
+        .then(() => {
+            // kick the timers off
+            if (refreshInterval !== undefined && refreshInterval > 5) {
+                setInterval(() => {
                     this.refresh(this.clock.now());
+                },
+                refreshInterval * 1000);
+            }
 
-                    resolve();
-                } catch (err) {
-                    reject (err);
-                }
-            })
-            .catch ((err) => {
-                reject (err);
-            });
+            if (logInterval !== undefined && logInterval > 5) {
+                setInterval(() => {
+                    this.log();
+                },
+                logInterval * 1000);
+            }
         });
     }
 
@@ -174,5 +177,12 @@ export class Controller implements IController {
         if (result.hotWater !== null) {
             newControlState.hotWater =  result.hotWater;
         }
+    }
+
+    private log(): Promise<void> {
+        return this.sensorManager.readSensors()
+        .then((readings: ReadonlyArray<ISensorReading>) => {
+            this.logger.log(new Date(), readings, this.getControlState());
+        });
     }
 }

@@ -3,13 +3,15 @@ import { inject, injectable, TargetTypeEnum } from "inversify";
 import * as path from "path";
 import { Database, Statement } from "sqlite3";
 
-import { IControlState, ISensorReading, ILogExtract } from "../common/interfaces";
+import { IControlState, ILogExtract, ILogEntry, ISensorReading } from "../common/interfaces";
 import { ILogger, INJECTABLES } from "../types";
 
 interface IDbStuff {
     db: Database;
     insertReading: Statement;
     insertControlState: Statement;
+    selectReading: Statement;
+    selectControlState: Statement;
 }
 
 @injectable()
@@ -50,7 +52,6 @@ export class Logger implements ILogger {
     }
 
     public log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<void> {
-
         if (!date) {
             throw new Error("cannot log without a date");
         }
@@ -60,15 +61,14 @@ export class Logger implements ILogger {
             db: null,
             insertControlState: null,
             insertReading: null,
+            selectControlState: null,
+            selectReading: null,
         };
 
         return this.openDatabase()
         .then((database) => {
             dbstuff.db = database;
             return this.prepareInsertReading(dbstuff);
-        })
-        .then(() => {
-            return this.prepareInsertControlState(dbstuff);
         })
         .then(() => {
             return this.prepareInsertControlState(dbstuff);
@@ -93,21 +93,60 @@ export class Logger implements ILogger {
     }
 
     public getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract> {
-        return Promise.resolve({
-            sensors: ["foo", "bar"],
+        const extract: ILogExtract = {
+            entries: [],
+            from,
+            sensors: ids,
+            to,
+        };
 
-            from: new Date("2019-01-03T12:00:00"),
-            to: new Date("2019-01-03T13:00:00"),
+        let db: Database;
+        let controlStates: any[];
 
-            // the data retrieved
-            entries: [
-                {
-                    date: new Date("2019-01-03T12:00:00"),
-                    heating: true,
-                    hotWater: false,
-                    readings: [ 111, 222 ],
-                },
-            ],
+        return this.openDatabase()
+        .then((database) => {
+            db = database;
+            return this.prepareStatement(db, "SELECT date, heating, hw FROM control_state WHERE date >= ? AND date < ? ORDER BY date");
+        })
+        .then((statement) => {
+            return this.queryAll(statement, from.getTime(), to.getTime());
+        })
+        .then((rows: any[]) => {
+            controlStates = rows;
+            return this.prepareStatement(db, "SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?");
+        })
+        .then((statement) => {
+            const promises: Array<Promise<any[]>> = [];
+            ids.forEach((id: string) => {
+                promises.push(this.queryAll(statement, from.getTime(), to.getTime(), id));
+            });
+            return Promise.all(promises);
+        })
+        .then((rowsets: any[][]) => {
+
+            // TO DO: combine the data into an extract
+            controlStates.forEach((cs: any) => {
+                const entry: ILogEntry = {
+                    date: cs.date,
+                    heating: cs.heating,
+                    hotWater: cs.hw,
+                    readings: [],
+                };
+
+                rowsets.forEach((rs: any[]) => {
+                    const reading = rs.find((r) => r.date === cs.date);
+                    if (reading) {
+                        entry.readings.push(reading.reading);
+                    }
+                });
+
+                extract.entries.push(entry);
+            });
+
+            return this.tryCloseDatabase(db);
+        })
+        .then(() => {
+            return Promise.resolve(extract);
         });
     }
 
@@ -139,6 +178,41 @@ export class Logger implements ILogger {
     private runSQL(db: Database, sql: string): Promise<void> {
         return new Promise((resolve, reject) => {
             db.run(sql, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    private prepareStatement(db: Database, sql: string): Promise<Statement> {
+        return new Promise((resolve, reject) => {
+            const statement = db.prepare(sql, (error) => {
+                if (error) {
+                    reject(error);
+                }
+                resolve(statement);
+            });
+        });
+    }
+
+    private queryAll(statement: Statement, ...params: any[]): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            statement.all(...params, (error: Error, rows: any[]) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    private executeStatement(statement: Statement, ...params: any[]): Promise<void> {
+        return new Promise((resolve, reject) => {
+            statement.run(...params, (error: Error) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -219,3 +293,20 @@ export class Logger implements ILogger {
         return startOfDay.getTime() + tenMinIntervals * 10 * 60 * 1000;
     }
 }
+
+const dummyResult = {
+    sensors: ["foo", "bar"],
+
+    from: new Date("2019-01-03T12:00:00"),
+    to: new Date("2019-01-03T13:00:00"),
+
+    // the data retrieved
+    entries: [
+        {
+            date: new Date("2019-01-03T12:00:00"),
+            heating: true,
+            hotWater: false,
+            readings: [ 11.1, 22.2 ],
+        },
+    ],
+};

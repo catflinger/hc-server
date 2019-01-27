@@ -36,7 +36,7 @@ export const INJECTABLES = {
 
 // entry point for the app
 export interface IController {
-    start(): Promise<void>;
+    start(refreshInterval?: number, logInterval?: number): Promise<void>;
     getActiveProgram(now: Date): IProgram;
     getControlState(): IControlState;
 }
@@ -85,7 +85,7 @@ export interface ILogger {
     init(): Promise<void>;
     log(
         date: Date,
-        readings: ISensorReading[],
+        readings: ReadonlyArray<ISensorReading>,
         controlState: IControlState,
     ): Promise<void>;
     getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract>;
