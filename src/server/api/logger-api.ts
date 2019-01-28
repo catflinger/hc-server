@@ -27,6 +27,7 @@ export class LoggerApi implements IApi {
         router.get("/log", (req, res) => {
             apiLog("GET /log");
             try {
+                sensors.length = 0;
                 const params: any = JSON.parse(req.query.params);
 
                 from = ConfigValidation.getDate(params.from, "GET /log: from");
