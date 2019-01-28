@@ -114,7 +114,7 @@ export class Logger implements ILogger {
             });
             return Promise.all(promises);
         })
-        .then((rowsets: any[][]) => {
+        .then((sensorReadings: any[][]) => {
 
             // combine the data into an extract
             controlStates.forEach((cs: any) => {
@@ -125,10 +125,12 @@ export class Logger implements ILogger {
                     readings: [],
                 };
 
-                rowsets.forEach((rs: any[]) => {
-                    const reading = rs.find((r) => r.date === cs.date);
+                sensorReadings.forEach((sensorData: any[]) => {
+                    const reading = sensorData.find((sd) => sd.date === cs.date);
                     if (reading) {
                         entry.readings.push(reading.reading);
+                    } else {
+                        entry.readings.push(null);
                     }
                 });
                 extract.entries.push(entry);
