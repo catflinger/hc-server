@@ -55,13 +55,13 @@ function clearDatabase(): Promise<void> {
     return openDatabase(dbFile)
     .then((database) => {
         db = database;
-        return runSQL(db, "DELETE FROM reading");
+        return execSQL(db, "DELETE FROM reading");
     })
     .then((database) => {
-        return runSQL(db, "DELETE FROM sensor");
+        return execSQL(db, "DELETE FROM sensor");
     })
     .then((database) => {
-        return runSQL(db, "DELETE from control_state");
+        return execSQL(db, "DELETE from control_state");
     })
     .then(() => {
         return tryClose(db);
@@ -70,6 +70,7 @@ function clearDatabase(): Promise<void> {
 
 describe("Logger", () => {
     let logger: ILogger;
+    let db: Database;
 
     before (() => {
         logger = container.get<ILogger>(INJECTABLES.Logger);
@@ -82,7 +83,19 @@ describe("Logger", () => {
         .then(() => {
             expect(fs.existsSync(dbFile)).to.be.true;
             Promise.resolve();
-        });
+        })
+        .then(() => {
+            return openDatabase(dbFile);
+        })
+        .then((database: Database) => {
+            db = database;
+            return querySQL(db, "SELECT name FROM sqlite_master WHERE type='table'");
+        })
+        .then((rows: any[]) => {
+            expect(rows.findIndex(r => r.name === "reading")).to.be.greaterThan(-1);
+            expect(rows.findIndex(r => r.name === "sensor")).to.be.greaterThan(-1);
+            expect(rows.findIndex(r => r.name === "control_state")).to.be.greaterThan(-1);
+        })
     });
 
     it("should log a record", () => {
@@ -92,6 +105,9 @@ describe("Logger", () => {
         let db: Database;
 
         return clearDatabase()
+        .then(() => {
+            return logger.init();
+        })
         .then(() => {
             return logger.log(
                 date, 
@@ -136,6 +152,9 @@ describe("Logger", () => {
         const logger = container.get<ILogger>(INJECTABLES.Logger);
 
         return clearDatabase()
+        .then(() => {
+            return logger.init();
+        })
         .then(() => {
             return logger.log(
                 date1, 
@@ -190,6 +209,9 @@ describe("Logger", () => {
 
         return clearDatabase()
         .then(() => {
+            return logger.init();
+        })
+        .then(() => {
             return logger.log(
                 date, 
                 [ { id: "foo", description: null, role: null, reading: null }], 
@@ -237,13 +259,25 @@ function getStatus(db: Database): Promise<any[]> {
     });
 }
 
-function runSQL(db: Database, sql: string): Promise<void> {
+function execSQL(db: Database, sql: string): Promise<void> {
     return new Promise((resolve, reject) => {
         db.run(sql, (error) => {
             if (error) {
                 reject(error);
             } else {
                 resolve();
+            }
+        });
+    });
+}
+
+function querySQL(db: Database, sql: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        db.all(sql, (error: Error, rows: any[]) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(rows);
             }
         });
     });

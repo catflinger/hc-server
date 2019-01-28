@@ -1,11 +1,14 @@
 import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
+import { isArray } from "util";
 
 import { ILogExtract } from "../../common/interfaces";
+import { ConfigValidation } from "../../common/types";
 import { IApi, IClock, ILogger, INJECTABLES } from "../../types";
 
-const log = Debug("api");
+const apiLog = Debug("api");
+const errorLog = Debug("error");
 
 @injectable()
 export class LoggerApi implements IApi {
@@ -17,14 +20,28 @@ export class LoggerApi implements IApi {
     private clock: IClock;
 
     public addRoutes(router: Router): void {
+        let from: Date;
+        let to: Date;
+        const sensors: string[] = [];
 
         router.get("/log", (req, res) => {
-            log("GET /log");
+            apiLog("GET /log");
             try {
-                const from = new Date("2019-01-01T00:00:00");
-                const to = new Date("2019-12-31T00:00:00");
-                const sensors: string[] = ["28.0", "28.1", "28.99"];
+                const params: any = JSON.parse(req.query.params);
 
+                from = ConfigValidation.getDate(params.from, "GET /log: from");
+                to = ConfigValidation.getDate(params.to, "GET /log: to");
+                if (isArray(params.sensors)) {
+                    params.sensors.forEach((s: any) => {
+                        sensors.push(ConfigValidation.getString(s, "GET /log: sensors[i]"));
+                    });
+                }
+            } catch (error) {
+                errorLog("ERROR " + error);
+                return res.status(400).send("Bad request " + error);
+            }
+
+            try {
                 this.logger.getExtract(sensors, from, to)
                 .then((extract: ILogExtract) => {
                     res.json({
@@ -33,11 +50,11 @@ export class LoggerApi implements IApi {
                     });
                 })
                 .catch((err) => {
-                    console.log("ERROR " + err);
+                    errorLog("ERROR " + err);
                     res.status(500).send(err);
                 });
             } catch (err) {
-                console.log("ERROR " + err);
+                errorLog("ERROR " + err);
                 res.status(500).send(err);
             }
         });

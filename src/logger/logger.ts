@@ -3,10 +3,10 @@ import { inject, injectable, TargetTypeEnum } from "inversify";
 import * as path from "path";
 import { Database, Statement } from "sqlite3";
 
-import { IControlState, ILogExtract, ILogEntry, ISensorReading } from "../common/interfaces";
+import { IControlState, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
 import { ILogger, INJECTABLES } from "../types";
 
-interface IDbStuff {
+interface ILogStore {
     db: Database;
     insertReading: Statement;
     insertControlState: Statement;
@@ -17,37 +17,50 @@ interface IDbStuff {
 @injectable()
 export class Logger implements ILogger {
 
+    private store: ILogStore = {
+        db: null,
+        insertControlState: null,
+        insertReading: null,
+        selectControlState: null,
+        selectReading: null,
+    };
+
     constructor(@inject(INJECTABLES.LogRootDir) private logRoot: string) {
     }
 
     public init(): Promise<void> {
-        let db: Database;
-
-        // create a new database and schema if they dosn't already exist
-        if (fs.existsSync(this.dbFilename)) {
-            return Promise.resolve();
-        }
 
         return this.openDatabase()
         .then((database) => {
-            db = database;
-            // console.log ("DATABASE " + JSON.stringify(db, null, 4));
-            return this.runSQL(db, "CREATE TABLE reading (date INTEGER, sensor_id TEXT, reading INTEGER, UNIQUE(date,sensor_id))");
+            this.store.db = database;
+            return this.querySQL("SELECT name FROM sqlite_master WHERE type='table'");
+        })
+        .then((rows: any[]) => {
+
+            // Create a schema if necessary
+            if (rows.find((row) => row.name === "reading")) {
+                return Promise.resolve();
+            } else {
+                return this.createSchema();
+            }
         })
         .then(() => {
-            return this.runSQL(db, "CREATE TABLE control_state (date INTEGER UNIQUE, heating INTEGER, hw INTEGER)");
+            return this.prepareStatement("INSERT OR IGNORE INTO reading VALUES (?,?, ?)");
         })
-        .then(() => {
-            return this.runSQL(db, "CREATE TABLE sensor (id TEXT, name TEXT)");
+        .then((statement) => {
+            this.store.insertReading = statement;
+            return this.prepareStatement("INSERT OR IGNORE INTO control_state VALUES (?,?,?)");
         })
-        .then(() => {
-            return this.runSQL(db, "CREATE INDEX reading_date ON reading (date)");
+        .then((statement) => {
+            this.store.insertControlState = statement;
+            return this.prepareStatement("SELECT date, heating, hw FROM control_state WHERE date >= ? AND date < ? ORDER BY date");
         })
-        .then(() => {
-            return this.runSQL(db, "CREATE INDEX control_state_date ON control_state (date)");
+        .then((statement) => {
+            this.store.selectControlState = statement;
+            return this.prepareStatement("SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?");
         })
-        .then(() => {
-            return this.tryCloseDatabase(db);
+        .then((statement) => {
+            this.store.selectReading = statement;
         });
     }
 
@@ -57,38 +70,27 @@ export class Logger implements ILogger {
         }
         const logDate: number = this.roundedAsUnix(date);
 
-        const dbstuff: IDbStuff = {
-            db: null,
-            insertControlState: null,
-            insertReading: null,
-            selectControlState: null,
-            selectReading: null,
-        };
+        return this.execStatement(this.store.insertControlState, logDate, controlState.heating, controlState.hotWater)
 
-        return this.openDatabase()
-        .then((database) => {
-            dbstuff.db = database;
-            return this.prepareInsertReading(dbstuff);
-        })
-        .then(() => {
-            return this.prepareInsertControlState(dbstuff);
-        })
-        .then(() => {
-            return this.insertControlState(dbstuff, logDate, controlState);
-        })
         .then(() => {
             const promises: Array<Promise<void>> = [];
             readings.forEach((r) => {
-                promises.push(this.insertSensorReading(dbstuff, logDate, r));
+                if (r.id) {
+                    const rounded: number = r.reading === null || r.reading === undefined ?
+                        null :
+                        Math.round(r.reading * 10);
+
+                    promises.push(this.execStatement(this.store.insertReading, logDate, r.id, rounded));
+                }
             });
             return Promise.all(promises);
-        })
-        .then(() => {
-            return this.tryCloseDatabase(dbstuff.db);
         })
         .catch((error: any) => {
             // don't let the program fall over just because of a log record
             // console.log("FAILED to write log record " + error);
+        })
+        .then(() => {
+            return Promise.resolve();
         });
     }
 
@@ -100,31 +102,21 @@ export class Logger implements ILogger {
             to,
         };
 
-        let db: Database;
         let controlStates: any[];
 
-        return this.openDatabase()
-        .then((database) => {
-            db = database;
-            return this.prepareStatement(db, "SELECT date, heating, hw FROM control_state WHERE date >= ? AND date < ? ORDER BY date");
-        })
-        .then((statement) => {
-            return this.queryAll(statement, from.getTime(), to.getTime());
-        })
+        return this.queryAll(this.store.selectControlState, from.getTime(), to.getTime())
         .then((rows: any[]) => {
             controlStates = rows;
-            return this.prepareStatement(db, "SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?");
-        })
-        .then((statement) => {
+
             const promises: Array<Promise<any[]>> = [];
             ids.forEach((id: string) => {
-                promises.push(this.queryAll(statement, from.getTime(), to.getTime(), id));
+                promises.push(this.queryAll(this.store.selectReading, from.getTime(), to.getTime(), id));
             });
             return Promise.all(promises);
         })
         .then((rowsets: any[][]) => {
 
-            // TO DO: combine the data into an extract
+            // combine the data into an extract
             controlStates.forEach((cs: any) => {
                 const entry: ILogEntry = {
                     date: cs.date,
@@ -139,14 +131,28 @@ export class Logger implements ILogger {
                         entry.readings.push(reading.reading);
                     }
                 });
-
                 extract.entries.push(entry);
             });
 
-            return this.tryCloseDatabase(db);
+            return Promise.resolve(extract);
+        });
+    }
+
+    private createSchema(): Promise<void> {
+
+        return this.execSQL("CREATE TABLE reading (date INTEGER, sensor_id TEXT, reading INTEGER, UNIQUE(date,sensor_id))")
+
+        .then(() => {
+            return this.execSQL("CREATE TABLE control_state (date INTEGER UNIQUE, heating INTEGER, hw INTEGER)");
         })
         .then(() => {
-            return Promise.resolve(extract);
+            return this.execSQL("CREATE TABLE sensor (id TEXT, name TEXT)");
+        })
+        .then(() => {
+            return this.execSQL("CREATE INDEX reading_date ON reading (date)");
+        })
+        .then(() => {
+            return this.execSQL("CREATE INDEX control_state_date ON control_state (date)");
         });
     }
 
@@ -163,10 +169,11 @@ export class Logger implements ILogger {
         });
     }
 
-    private tryCloseDatabase(db: Database): Promise<void> {
+    private tryCloseDatabase(): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                db.close(() => {
+                this.store.db.close(() => {
+                    this.store.db = null;
                     resolve();
                 });
             } catch {
@@ -175,9 +182,9 @@ export class Logger implements ILogger {
         });
     }
 
-    private runSQL(db: Database, sql: string): Promise<void> {
+    private execSQL(sql: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            db.run(sql, (error) => {
+            this.store.db.run(sql, (error) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -187,9 +194,21 @@ export class Logger implements ILogger {
         });
     }
 
-    private prepareStatement(db: Database, sql: string): Promise<Statement> {
+    private querySQL(sql: string): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            const statement = db.prepare(sql, (error) => {
+            this.store.db.all(sql, (error: Error, rows: any[]) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    private prepareStatement(sql: string): Promise<Statement> {
+        return new Promise((resolve, reject) => {
+            const statement = this.store.db.prepare(sql, (error) => {
                 if (error) {
                     reject(error);
                 }
@@ -210,7 +229,7 @@ export class Logger implements ILogger {
         });
     }
 
-    private executeStatement(statement: Statement, ...params: any[]): Promise<void> {
+    private execStatement(statement: Statement, ...params: any[]): Promise<void> {
         return new Promise((resolve, reject) => {
             statement.run(...params, (error: Error) => {
                 if (error) {
@@ -219,64 +238,6 @@ export class Logger implements ILogger {
                     resolve();
                 }
             });
-        });
-    }
-
-    private prepareInsertReading(dbs: IDbStuff): Promise<void> {
-        return new Promise((resolve, reject) => {
-            dbs.insertReading = dbs.db.prepare("INSERT OR IGNORE INTO reading VALUES (?,?, ?)", (error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    private prepareInsertControlState(dbs: IDbStuff): Promise<void> {
-        return new Promise((resolve, reject) => {
-            dbs.insertControlState = dbs.db.prepare("INSERT OR IGNORE INTO control_state VALUES (?,?,?)", (error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    private insertControlState(dbs: IDbStuff, logDate: number, controlState: IControlState): Promise<void> {
-        return new Promise((resolve, reject) => {
-            dbs.insertControlState.run([ logDate, controlState.heating, controlState.hotWater], (error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    private insertSensorReading(dbs: IDbStuff, logDate: number, reading: ISensorReading): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (reading.id) {
-
-                const temp: number = reading.reading === null || reading.reading === undefined ?
-                    null :
-                    Math.round(reading.reading * 10);
-
-                dbs.insertReading.run([ logDate, reading.id, temp], (error) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve();
-                    }
-                });
-            } else {
-                // skip bad readings
-                resolve();
-            }
         });
     }
 
@@ -293,20 +254,3 @@ export class Logger implements ILogger {
         return startOfDay.getTime() + tenMinIntervals * 10 * 60 * 1000;
     }
 }
-
-const dummyResult = {
-    sensors: ["foo", "bar"],
-
-    from: new Date("2019-01-03T12:00:00"),
-    to: new Date("2019-01-03T13:00:00"),
-
-    // the data retrieved
-    entries: [
-        {
-            date: new Date("2019-01-03T12:00:00"),
-            heating: true,
-            hotWater: false,
-            readings: [ 11.1, 22.2 ],
-        },
-    ],
-};
