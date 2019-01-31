@@ -32,6 +32,9 @@ export const INJECTABLES = {
     LogApi: Symbol("LogApi"),
     OverrideApi: Symbol("OverrideApi"),
     SensorApi: Symbol("SensorApi"),
+
+    // symbols for development and debugging support
+    DevLogApi: Symbol("DevLogApi"),
 };
 
 // entry point for the app

@@ -19,6 +19,8 @@ import { LoggerApi } from "./server/api/logger-api";
 import { OverrideApi } from "./server/api/override-api";
 import { SensorApi } from "./server/api/sensor-api";
 
+import { DevLoggerApi } from "./dev/dev.logger-api";
+
 export const container = new Container();
 
 // environment specific bindings
@@ -59,3 +61,6 @@ container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.ConfigApi).to(ConfigApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
+
+// bindings for debugging support
+container.bind<IApi>(INJECTABLES.DevLogApi).to(DevLoggerApi).inSingletonScope();

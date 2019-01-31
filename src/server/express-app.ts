@@ -2,7 +2,6 @@ import * as bodyParser from "body-parser";
 import * as Debug from "debug";
 import * as express from "express";
 import { Container, inject, injectable } from "inversify";
-import * as path from "path";
 
 import { IApi,  IController, INJECTABLES } from "../types";
 
@@ -20,6 +19,7 @@ export class ExpressApp {
     @inject(INJECTABLES.SensorApi) private sensorApi: IApi;
     @inject(INJECTABLES.OverrideApi) private overrideApi: IApi;
     @inject(INJECTABLES.LogApi) private logApi: IApi;
+    @inject(INJECTABLES.DevLogApi) private devLogApi: IApi;
 
     public start(): Promise<express.Application> {
         // save a copy of express as a class member for convenience
@@ -33,6 +33,7 @@ export class ExpressApp {
         this.sensorApi.addRoutes(router);
         this.overrideApi.addRoutes(router);
         this.logApi.addRoutes(router);
+        this.devLogApi.addRoutes(router);
 
         this.express.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
