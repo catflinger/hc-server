@@ -95,15 +95,15 @@ export interface ILogEntry {
     hotWater: boolean;
 
     // the sensor values at this time
-    readings: number[];
+    readings: ReadonlyArray<number>;
 }
 
 export interface ILogExtract {
     // the query parameters
-    sensors: string[];
+    sensors: ReadonlyArray<string>;
     from: Date;
     to: Date;
 
     // the data retrieved
-    entries: ILogEntry[];
+    entries: ReadonlyArray<ILogEntry>;
 }

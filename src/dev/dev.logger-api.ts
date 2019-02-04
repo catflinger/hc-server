@@ -4,7 +4,7 @@ import { injectable } from "inversify";
 import * as moment from "moment";
 import { isArray } from "util";
 
-import { ILogExtract, ILogEntry } from "../common/interfaces";
+import { LogEntry } from "../common/log/log-entry";
 import { ConfigValidation } from "../common/types";
 import { IApi } from "../types";
 
@@ -27,6 +27,7 @@ export class DevLoggerApi implements IApi {
 
                 from = ConfigValidation.getDate(params.from, "GET /dev/log: from");
                 to = ConfigValidation.getDate(params.to, "GET /dev/log: to");
+
                 if (isArray(params.sensors)) {
                     params.sensors.forEach((s: any) => {
                         sensors.push(ConfigValidation.getString(s, "GET /dev/log: sensors[i]"));
@@ -50,31 +51,31 @@ export class DevLoggerApi implements IApi {
     }
 
     private generateLog(from: Date, to: Date, sensors: string[]) {
-        const entries: ILogEntry[] = [];
+        const entries: LogEntry[] = [];
         const entryCount = 24 * 6;
 
-        for(let i = 0; i < entryCount; i++) {
-            const entry: ILogEntry = {
-                date: moment(new Date("2019-01-03T12:00:00")).add(i * 10, "m").toDate(),
+        for (let i = 0; i < entryCount; i++) {
+            const readings: number[] = [];
+
+            readings.push(19 * Math.sin(i * Math.PI / (2 * entryCount)));
+            readings.push(35 + 15 * Math.cos(i * Math.PI / (2 * entryCount)));
+
+            const entry: LogEntry = new LogEntry({
+                date: moment(new Date("2019-01-03T00:00:00")).add(i * 10, "minutes").toDate(),
                 heating: true,
                 hotWater: false,
-                readings: [],
-            }
-
-            let reading = 19 * Math.sin(i * Math.PI / (2 * entryCount));
-            entry.readings.push(reading);
-
-            reading = 35 + 15 * Math.sin(i * Math.PI / (2 * entryCount));
-            entry.readings.push(reading);
+                readings,
+            });
 
             entries.push(entry);
         }
 
         return {
-            sensors: ["bedroom", "hot water"],
-            from: new Date("2019-01-03T12:00:00"),
-            to: new Date("2019-01-03T13:00:00"),
+            from: new Date("2019-01-03T00:00:00"),
+            to: new Date("2019-01-03T23:59:59"),
+
             entries,
+            sensors: ["bedroom", "hot water"],
         };
     }
 }

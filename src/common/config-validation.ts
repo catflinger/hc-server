@@ -17,7 +17,10 @@ export class ConfigValidation {
         let result: Date;
         const dateExpression: RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}");
 
-        if (val === undefined && defaultValue === undefined) {
+        if (val instanceof Date && !isNaN(val.getTime())) {
+            // already have a good date pased in, no need for any conversions or further checking
+            result = val;
+        } else if (val === undefined && defaultValue === undefined) {
             // value missing but no default
             throw new Error(`Config validation, cannot find ${message} and no default value supplied`);
         } else if (val !== undefined && typeof val !== "string") {

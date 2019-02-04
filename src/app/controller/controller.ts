@@ -42,7 +42,7 @@ export class Controller implements IController {
         return this.controlState;
     }
 
-    public start(refreshInterval?: number, logInterval?: number): Promise<any> {
+    public start(refreshIntervalSeconds?: number, logIntervalMinutes?: number): Promise<any> {
 
         return this.configManager.start()
         .then(() => {
@@ -60,18 +60,18 @@ export class Controller implements IController {
         })
         .then(() => {
             // kick the timers off
-            if (refreshInterval !== undefined && refreshInterval > 5) {
+            if (refreshIntervalSeconds !== undefined && refreshIntervalSeconds > 5) {
                 setInterval(() => {
                     this.refresh(this.clock.now());
                 },
-                refreshInterval * 1000);
+                refreshIntervalSeconds * 1000);
             }
 
-            if (logInterval !== undefined && logInterval > 5) {
+            if (logIntervalMinutes !== undefined && logIntervalMinutes > 5) {
                 setInterval(() => {
                     this.log();
                 },
-                logInterval * 1000);
+                logIntervalMinutes * 1000 * 60);
             }
         });
     }

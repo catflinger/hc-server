@@ -4,6 +4,8 @@ import * as path from "path";
 import { Database, Statement } from "sqlite3";
 
 import { IControlState, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
+import { LogEntry } from "../common/log/log-entry";
+import { LogExtract } from "../common/log/log-extract";
 import { ILogger, INJECTABLES } from "../types";
 
 interface ILogStore {
@@ -45,11 +47,11 @@ export class Logger implements ILogger {
             }
         })
         .then(() => {
-            return this.prepareStatement("INSERT OR IGNORE INTO reading VALUES (?,?, ?)");
+            return this.prepareStatement("INSERT OR IGNORE INTO reading (date, sensor_id, reading) VALUES (?,?, ?)");
         })
         .then((statement) => {
             this.store.insertReading = statement;
-            return this.prepareStatement("INSERT OR IGNORE INTO control_state VALUES (?,?,?)");
+            return this.prepareStatement("INSERT OR IGNORE INTO control_state (date, heating, hw) VALUES (?,?,?)");
         })
         .then((statement) => {
             this.store.insertControlState = statement;
@@ -65,6 +67,7 @@ export class Logger implements ILogger {
     }
 
     public log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<void> {
+
         if (!date) {
             throw new Error("cannot log without a date");
         }
@@ -95,12 +98,6 @@ export class Logger implements ILogger {
     }
 
     public getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract> {
-        const extract: ILogExtract = {
-            entries: [],
-            from,
-            sensors: ids,
-            to,
-        };
 
         let controlStates: any[];
 
@@ -115,28 +112,56 @@ export class Logger implements ILogger {
             return Promise.all(promises);
         })
         .then((sensorReadings: any[][]) => {
+            const entries: any[] = [];
 
-            // combine the data into an extract
+            // combine all readings into one
+            let allReadings: any[] = [];
+            sensorReadings.forEach((sr) => {
+                allReadings = allReadings.concat(sr);
+            });
+
+            // create a log entry for each control state (there will be one control state per log interval)
             controlStates.forEach((cs: any) => {
-                const entry: ILogEntry = {
-                    date: cs.date,
-                    heating: cs.heating,
-                    hotWater: cs.hw,
-                    readings: [],
-                };
+                const readings: number[] = [];
+
+                // find the readings for the requested sensors
+                ids.forEach((id: string) => {
+                    const reading = allReadings.find((sr) => {
+                        return sr.sensor_id === id && sr.date === cs.date;
+                    });
+
+                    if (reading) {
+                        readings.push(reading.reading);
+                    } else {
+                        readings.push(null);
+                    }
+                });
 
                 sensorReadings.forEach((sensorData: any[]) => {
                     const reading = sensorData.find((sd) => sd.date === cs.date);
                     if (reading) {
-                        entry.readings.push(reading.reading);
+                        readings.push(reading.reading);
                     } else {
-                        entry.readings.push(null);
+                        readings.push(null);
                     }
                 });
-                extract.entries.push(entry);
+
+                const entry: ILogEntry = new LogEntry({
+                    date: this.fromUnixDate(cs.date),
+                    heating: !!cs.heating,
+                    hotWater: !!cs.hw,
+                    readings,
+                });
+
+                entries.push(entry);
             });
 
-            return Promise.resolve(extract);
+            return Promise.resolve(new LogExtract({
+                entries,
+                from,
+                sensors: ids,
+                to,
+            }));
         });
     }
 
@@ -254,5 +279,13 @@ export class Logger implements ILogger {
         const tenMinIntervals = Math.round(secondsElapsed / (60 * 10));
 
         return startOfDay.getTime() + tenMinIntervals * 10 * 60 * 1000;
+    }
+
+    // return the date as Unix time rounded to the nearest 10 minutes
+    private fromUnixDate(seconds: number): Date {
+        const dt: Date = new Date();
+        dt.setTime(seconds);
+
+        return dt;
     }
 }
