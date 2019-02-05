@@ -3,6 +3,7 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 
 import { IApi, IClock, IController, INJECTABLES } from "../../types";
+import { IControlStateApiResponse } from "../../common/interfaces";
 
 const log = Debug("api");
 
@@ -20,10 +21,13 @@ export class ControlStateApi implements IApi {
             try {
                 log("GET /control-state");
 
-                res.json({
+                const response: IControlStateApiResponse = {
+                    activeProgram: this.controller.getActiveProgram(this.clock.now()),
                     controlState: this.controller.getControlState(),
                     date: this.clock.now(),
-                });
+                };
+
+                res.json(response);
             } catch (err) {
                 res.status(500).send("could not process this request " + err);
             }

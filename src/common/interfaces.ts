@@ -107,3 +107,11 @@ export interface ILogExtract {
     // the data retrieved
     entries: ReadonlyArray<ILogEntry>;
 }
+
+export interface IControlStateApiResponse {
+    date: Date,
+    controlState: IControlState;
+    activeProgram: IProgram; 
+}
+
+// TO DO: make interfaces for all the other API responses
