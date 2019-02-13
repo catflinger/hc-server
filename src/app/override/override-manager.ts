@@ -17,7 +17,10 @@ export class OverrideManager implements IOverrideManager {
         // when we get some more sophisticated rule types we might want to revisit this
         this.overrides.length = 0;
 
-        this.overrides.push(new Override(rule, this.clock.now()));
+        this.overrides.push(new Override({
+            date: this.clock.now(),
+            rule,
+        }));
     }
 
     public getOverrides(): ReadonlyArray<IOverride> {

@@ -3,7 +3,7 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 import { isArray } from "util";
 
-import { ILogExtract } from "../../common/interfaces";
+import { ILogApiResponse, ILogExtract } from "../../common/interfaces";
 import { ConfigValidation } from "../../common/types";
 import { IApi, IClock, ILogger, INJECTABLES } from "../../types";
 
@@ -45,10 +45,11 @@ export class LoggerApi implements IApi {
             try {
                 this.logger.getExtract(sensors, from, to)
                 .then((extract: ILogExtract) => {
-                    res.json({
+                    const data: ILogApiResponse = {
                         date: this.clock.now(),
                         log: extract,
-                    });
+                    };
+                    res.json(data);
                 })
                 .catch((err) => {
                     errorLog("ERROR " + err);

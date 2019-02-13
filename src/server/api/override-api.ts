@@ -2,7 +2,7 @@ import * as Debug from "debug";
 import { Response, Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { ITimeOfDay } from "../../common/interfaces";
+import { IOverrideApiResponse, ITimeOfDay } from "../../common/interfaces";
 import { BasicHeatingRule, ConfigValidation } from "../../common/types";
 
 import { IApi, IClock, INJECTABLES, IOverrideManager } from "../../types";
@@ -72,9 +72,10 @@ export class OverrideApi implements IApi {
     }
 
     private sendOverrideList(response: Response): Response {
-        return response.json({
+        const data: IOverrideApiResponse = {
             date: this.clock.now(),
             overrides: this.overrideManager.getOverrides(),
-        });
+        };
+        return response.json(data);
     }
 }

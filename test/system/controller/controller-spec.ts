@@ -153,7 +153,11 @@ describe("Controller", () => {
                 },
             });
 
-            mockOverrideManager.overrides.push(new Override(rule, today));
+            mockOverrideManager.overrides.push(new Override({
+                rule, 
+                date: today
+            }));
+            
             await controller.refresh(today);
             cs = controller.getControlState();
             expect(cs.heating).to.equal(true);

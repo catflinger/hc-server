@@ -109,9 +109,27 @@ export interface ILogExtract {
 }
 
 export interface IControlStateApiResponse {
-    date: Date,
+    date: Date;
     controlState: IControlState;
-    activeProgram: IProgram; 
+    activeProgram: IProgram;
 }
 
-// TO DO: make interfaces for all the other API responses
+export interface IConfigApiResponse {
+    date: Date;
+    config: IConfiguration;
+}
+
+export interface IOverrideApiResponse {
+    date: Date;
+    overrides: ReadonlyArray<IOverride>;
+}
+
+export interface ISensorApiResponse {
+    date: Date;
+    sensors: ReadonlyArray<ISensorReading>;
+}
+
+export interface ILogApiResponse {
+    date: Date;
+    log: ILogExtract;
+}

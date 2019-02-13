@@ -10,8 +10,12 @@ import {
     ITimeOfDay,
 } from "../../common/interfaces";
 
+import * as Debug from "debug";
 import { inject, injectable } from "inversify";
 import { setInterval } from "timers";
+
+const errorLog = Debug("error");
+
 
 import {
     IClock,
@@ -112,8 +116,8 @@ export class Controller implements IController {
             // switch the devices based on new control state
             this.system.applyControlState(newControlState);
         })
-        .catch(() => {
-            // what to do here?  How can an error here be reported?
+        .catch((error) => {
+            errorLog("Cannot read sensors: " + error);
         });
     }
 

@@ -1,7 +1,7 @@
-import { IControlStateApiResponse, IControlState, IProgram } from "../interfaces";
 import { ConfigValidation } from "../config-validation";
-import { ControlState } from "../control-state";
 import { Program } from "../configuration/program";
+import { ControlState } from "../control-state";
+import { IControlState, IControlStateApiResponse, IProgram } from "../interfaces";
 
 export class ControlStateApiResponse implements IControlStateApiResponse {
     public readonly controlState: IControlState;

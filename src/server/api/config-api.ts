@@ -2,7 +2,7 @@ import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { IConfiguration } from "../../common/interfaces";
+import { IConfigApiResponse, IConfiguration } from "../../common/interfaces";
 import { Configuration } from "../../common/types";
 import { IApi, IClock, IConfigManager, INJECTABLES } from "../../types";
 
@@ -22,15 +22,18 @@ export class ConfigApi implements IApi {
             try {
                 log("GET /config");
 
-                return resp.json({
+                const data: IConfigApiResponse  = {
                     config: this.configManager.getConfig(),
                     date: this.clock.now(),
-                });
+                };
+
+                return resp.json(data);
             } catch (err) {
                 log("GET /config ERROR : " +  err);
                 return resp.status(500).send(err);
             }
         });
+
         router.put("/config", async (req, resp) => {
             try {
                 log("PUT /config");
@@ -39,10 +42,12 @@ export class ConfigApi implements IApi {
 
                 await this.configManager.setConfig(config);
 
-                return resp.json({
+                const data: IConfigApiResponse  = {
                     config: this.configManager.getConfig(),
                     date: this.clock.now(),
-                });
+                };
+
+                return resp.json(data);
             } catch (err) {
                 log("PUT /config ERROR : " +  err);
                 return resp.status(500).send(err);
