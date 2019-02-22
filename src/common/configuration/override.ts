@@ -1,10 +1,10 @@
 import { v4 as uuid } from "uuid";
 import { ConfigValidation } from "../config-validation";
-import { IOverride, IRule } from "../interfaces";
-import { BasicHeatingRule } from "./basic-heating-rule";
+import { IOverride, IRuleConfig } from "../interfaces";
+import { RuleConfig } from "./rule-config";
 
 export class Override implements IOverride {
-    public readonly rule: IRule;
+    public readonly rule: IRuleConfig;
     public readonly id: string;
     public readonly date: Date;
 
@@ -21,7 +21,7 @@ export class Override implements IOverride {
         }
 
         if (data.rule) {
-            this.rule = new BasicHeatingRule(data.rule);
+            this.rule = new RuleConfig(data.rule);
         } else {
             throw new Error("rule missing from Override construcor");
         }

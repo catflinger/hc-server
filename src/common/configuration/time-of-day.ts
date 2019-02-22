@@ -33,6 +33,7 @@ export class TimeOfDay implements ITimeOfDay {
             this.minute = Math.floor(ConfigValidation.getNumber(data.minute, "timeOfDayConfig:minute"));
             this.second = Math.floor(ConfigValidation.getNumber(data.second, "timeOfDayConfig:second", 0));
         }
+
         if (isNaN(this.hour) || this.hour < 0 || this.hour > 23) {
             throw new Error(`TimeOfDay: value [${this.hour}] for hour outside range`);
         }

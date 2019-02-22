@@ -30,20 +30,22 @@ describe("Override API", () => {
                     id: "abc",
                     date: new Date(),
                     rule: {
+                        kind: "BasicHeatingRule",
+                        data: null,
                         id: null,
                         startTime: new TimeOfDay({hour: 1, minute: 1, second: 1}),
                         endTime: new TimeOfDay({hour: 2, minute: 2, second: 2}),
-                        applyRule: null,
                     },
                 },
                 {
                     id: "def",
                     date: new Date(),
                     rule: {
+                        kind: "BasicHeatingRule",
+                        data: null,
                         id: null,
                         startTime: new TimeOfDay({hour: 1, minute: 1, second: 1}),
                         endTime: new TimeOfDay({hour: 2, minute: 2, second: 2}),
-                        applyRule: null,
                     },
                 },
             ];

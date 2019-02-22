@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 
-import { IOverride, IRule, ITimeOfDay } from "../../common/interfaces";
+import { IOverride, IRuleConfig, ITimeOfDay } from "../../common/interfaces";
 import { Override } from "../../common/types";
 import { IClock, INJECTABLES, IOverrideManager } from "../../types";
 
@@ -11,7 +11,7 @@ export class OverrideManager implements IOverrideManager {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
-    public addOverride(rule: IRule): void {
+    public addOverride(rule: IRuleConfig): void {
 
         // currently only allow a single override at once
         // when we get some more sophisticated rule types we might want to revisit this

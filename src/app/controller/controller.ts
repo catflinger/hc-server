@@ -1,21 +1,16 @@
+import * as Debug from "debug";
+import { inject, injectable } from "inversify";
+import { setInterval } from "timers";
+
 import {
     IConfiguration,
     IControlState,
     IOverride,
     IProgram,
-    IRule,
-    IRuleResult,
-    ISensorConfig,
+    IRuleConfig,
     ISensorReading,
     ITimeOfDay,
 } from "../../common/interfaces";
-
-import * as Debug from "debug";
-import { inject, injectable } from "inversify";
-import { setInterval } from "timers";
-
-const errorLog = Debug("error");
-
 
 import {
     IClock,
@@ -24,9 +19,13 @@ import {
     ILogger,
     INJECTABLES,
     IOverrideManager,
+    IRule,
+    IRuleResult,
     ISensorManager,
     ISystem,
 } from "../../types";
+
+const errorLog = Debug("error");
 
 @injectable()
 export class Controller implements IController {
@@ -39,6 +38,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.OverrideManager) private overideManager: IOverrideManager,
         @inject(INJECTABLES.System) private system: ISystem,
         @inject(INJECTABLES.Clock) private clock: IClock,
+        @inject(INJECTABLES.RuleFactory) private ruleFactory: (ruleConfig: IRuleConfig) => IRule,
         @inject(INJECTABLES.Logger) private logger: ILogger,
     ) {}
 
@@ -103,7 +103,7 @@ export class Controller implements IController {
                     newControlState.hotWater = true;
                 }
             }
-            program.getRules().forEach((rule: IRule) => {
+            program.getRules().forEach((rule: IRuleConfig) => {
                 this.applyRule(rule, sensorReadings, now, newControlState);
             });
 
@@ -164,8 +164,8 @@ export class Controller implements IController {
                 minHwTemp: 45,
                 name: "",
 
-                getRules(): ReadonlyArray<IRule> {
-                    return [] as ReadonlyArray<IRule>;
+                getRules: (): ReadonlyArray<IRuleConfig> => {
+                    return [] as ReadonlyArray<IRuleConfig>;
                 },
             };
         }
@@ -173,7 +173,15 @@ export class Controller implements IController {
         return activeProgram;
     }
 
-    private applyRule(rule: IRule, sensorReadings: ReadonlyArray<ISensorReading>, now: ITimeOfDay | Date, newControlState: IControlState): void {
+    private applyRule(
+        ruleConfig: IRuleConfig,
+        sensorReadings: ReadonlyArray<ISensorReading>,
+        now: ITimeOfDay | Date,
+        newControlState: IControlState): void {
+
+        // the rule factory selects the right rule to use for this config (based on the value of ruleConfig.kind)
+        const rule: IRule = this.ruleFactory(ruleConfig);
+
         const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
         if (result.heating !== null) {
             newControlState.heating =  result.heating;

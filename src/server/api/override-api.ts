@@ -2,8 +2,9 @@ import * as Debug from "debug";
 import { Response, Router } from "express";
 import { inject, injectable } from "inversify";
 
+import { RuleConfig } from "../../common/configuration/rule-config";
 import { IOverrideApiResponse, ITimeOfDay } from "../../common/interfaces";
-import { BasicHeatingRule, ConfigValidation } from "../../common/types";
+import { configValidation } from "../../common/types";
 
 import { IApi, IClock, INJECTABLES, IOverrideManager } from "../../types";
 
@@ -35,7 +36,7 @@ export class OverrideApi implements IApi {
 
             // first validate the input
             try {
-                duration = ConfigValidation.getNumber(req.body.duration, "set override:minutes");
+                duration = configValidation.getNumber(req.body.duration, "set override:minutes");
 
                 if (duration < 0 || duration > 24 * 60) {
                     throw new Error("value for duration out of range");
@@ -47,7 +48,10 @@ export class OverrideApi implements IApi {
             // next execute the request
             try {
                 const now: ITimeOfDay = this.clock.timeOfDay();
-                this.overrideManager.addOverride(new BasicHeatingRule({
+                this.overrideManager.addOverride(new RuleConfig({
+                    data: null,
+                    kind: "BasicHeatingRule",
+
                     endTime: now.addSeconds(duration * 60),
                     startTime: now,
                 }));

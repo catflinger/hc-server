@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 import { isArray } from "util";
 
 import { ILogApiResponse, ILogExtract } from "../../common/interfaces";
-import { ConfigValidation } from "../../common/types";
+import { configValidation } from "../../common/types";
 import { IApi, IClock, ILogger, INJECTABLES } from "../../types";
 
 const apiLog = Debug("api");
@@ -30,11 +30,11 @@ export class LoggerApi implements IApi {
                 sensors.length = 0;
                 const params: any = JSON.parse(req.query.params);
 
-                from = ConfigValidation.getDate(params.from, "GET /log: from");
-                to = ConfigValidation.getDate(params.to, "GET /log: to");
+                from = configValidation.getDate(params.from, "GET /log: from");
+                to = configValidation.getDate(params.to, "GET /log: to");
                 if (isArray(params.sensors)) {
                     params.sensors.forEach((s: any) => {
-                        sensors.push(ConfigValidation.getString(s, "GET /log: sensors[i]"));
+                        sensors.push(configValidation.getString(s, "GET /log: sensors[i]"));
                     });
                 }
             } catch (error) {

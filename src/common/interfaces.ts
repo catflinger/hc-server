@@ -1,25 +1,22 @@
 /*
 All these interfaces are intended for use with immutable classes.
 */
+export type RuleType = "BasicHeatingRule" | "AnotherRuleType...";
 
 export interface IProgram {
     id: string;
     name: string;
     minHwTemp: number;
     maxHwTemp: number;
-    getRules(): ReadonlyArray<IRule>;
+    getRules(): ReadonlyArray<IRuleConfig>;
 }
 
-export interface IRule {
+export interface IRuleConfig {
     id: string;
+    kind: RuleType;
+    data: any;
     startTime: ITimeOfDay;
     endTime: ITimeOfDay;
-    applyRule(currentState: IControlState, readings: ReadonlyArray<ISensorReading>, time: ITimeOfDay | Date): IRuleResult;
-}
-
-export interface IRuleResult {
-    heating: boolean | null;
-    hotWater: boolean | null;
 }
 
 export interface ITimeOfDay {
@@ -76,7 +73,7 @@ export type ISensorReading = ISensorConfig;
 export interface IOverride {
     readonly id: string;
     readonly date: Date;
-    readonly rule: IRule;
+    readonly rule: IRuleConfig;
 }
 
 export interface IConfigValidation {
@@ -128,7 +125,6 @@ export interface ISensorApiResponse {
     date: Date;
     sensors: ReadonlyArray<ISensorReading>;
 }
-
 export interface ILogApiResponse {
     date: Date;
     log: ILogExtract;

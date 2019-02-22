@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { IConfiguration, IControlState, ILogExtract, IOverride, IProgram, IRule, ISensorReading, ITimeOfDay } from "./common/interfaces";
+import { IConfiguration, IControlState, ILogExtract, IOverride, IProgram, IRuleConfig, ISensorReading, ITimeOfDay } from "./common/interfaces";
 
 export const INJECTABLES = {
     // symbols for constants
@@ -14,6 +14,8 @@ export const INJECTABLES = {
     Controller: Symbol("Controller"),
     Logger: Symbol("Logger"),
     OverrideManager: Symbol("OverrideManager"),
+    Rule: Symbol("Rule"),
+    RuleFactory: Symbol("RuleFactory"),
     SensorManager: Symbol("SensorManager"),
     System: Symbol("System"),
 
@@ -75,9 +77,19 @@ export interface IConfigManager {
     setConfig(config: IConfiguration): Promise<any>;
 }
 
+// models a rule for controlling the devices
+export interface IRule {
+    applyRule(currentState: IControlState, readings: ReadonlyArray<ISensorReading>, time: ITimeOfDay | Date): IRuleResult;
+}
+
+export interface IRuleResult {
+    heating: boolean | null;
+    hotWater: boolean | null;
+}
+
 // manages overrides to the standard configuration
 export interface IOverrideManager {
-    addOverride(rule: IRule): void;
+    addOverride(rule: IRuleConfig): void;
     getOverrides(): ReadonlyArray<IOverride>;
     clearOverrides(): void;
     housekeep(): void;
@@ -105,3 +117,5 @@ export interface IClock {
     now(): Date;
     timeOfDay(): ITimeOfDay;
 }
+
+export type RuleConstructor = new(ruleConfig: IRuleConfig) => IRule;

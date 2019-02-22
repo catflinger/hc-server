@@ -1,8 +1,8 @@
 import { v4 as uuid } from "uuid";
 
 import { ConfigValidation } from "../config-validation";
-import { IProgram, IRule } from "../interfaces";
-import { BasicHeatingRule } from "./basic-heating-rule";
+import { IProgram, IRuleConfig } from "../interfaces";
+import { RuleConfig } from "./rule-config";
 
 export class Program implements IProgram {
     public readonly id: string;
@@ -10,7 +10,7 @@ export class Program implements IProgram {
     public readonly minHwTemp: number;
     public readonly maxHwTemp: number;
 
-    private rules: IRule[] = [];
+    private rules: IRuleConfig[] = [];
 
     constructor(data?: any) {
         if (data) {
@@ -34,7 +34,7 @@ export class Program implements IProgram {
             if (data.rules) {
                 if (Array.isArray(data.rules)) {
                     data.rules.forEach((r: any) => {
-                        this.rules.push(new BasicHeatingRule(r));
+                        this.rules.push(new RuleConfig(r));
                     });
                 } else {
                     throw new Error("invalid config: datedConfig not an array");
@@ -58,7 +58,7 @@ export class Program implements IProgram {
         };
     }
 
-    public getRules(): ReadonlyArray<IRule> {
-        return this.rules as ReadonlyArray<IRule>;
+    public getRules(): ReadonlyArray<IRuleConfig> {
+        return this.rules as ReadonlyArray<IRuleConfig>;
     }
 }

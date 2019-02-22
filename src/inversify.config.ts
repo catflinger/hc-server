@@ -10,7 +10,20 @@ import { SensorManager } from "./app/sensors/sensor-manager";
 import { Device } from "./app/system/device";
 import { System } from "./app/system/system";
 import { ExpressApp } from "./server/express-app";
-import { IApi, IClock, IConfigManager, IController, ILogger, INJECTABLES, IOverrideManager, ISensorManager, ISystem } from "./types";
+
+import {
+    IApi,
+    IClock,
+    IConfigManager,
+    IController,
+    ILogger,
+    INJECTABLES,
+    IOverrideManager,
+    IRule,
+    ISensorManager,
+    ISystem,
+    RuleConstructor,
+} from "./types";
 
 import { Logger } from "./logger/logger";
 import { ConfigApi } from "./server/api/config-api";
@@ -19,6 +32,8 @@ import { LoggerApi } from "./server/api/logger-api";
 import { OverrideApi } from "./server/api/override-api";
 import { SensorApi } from "./server/api/sensor-api";
 
+import { BasicHeatingRule } from "./app/controller/basic-heating-rule";
+import { IRuleConfig } from "./common/interfaces";
 import { DevLoggerApi } from "./dev/dev.logger-api";
 
 export const container = new Container();
@@ -64,3 +79,16 @@ container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 
 // bindings for debugging support
 container.bind<IApi>(INJECTABLES.DevLogApi).to(DevLoggerApi).inSingletonScope();
+
+// tagged bindings
+container.bind<interfaces.Newable<RuleConstructor>>(INJECTABLES.Rule)
+    .toConstructor(BasicHeatingRule)
+    .whenTargetTagged("kind", "BasicHeatingRule");
+
+// bindings for factories
+container.bind<interfaces.Factory<IRule>>(INJECTABLES.RuleFactory).toFactory<IRule>((context: interfaces.Context) => {
+    return (ruleConfig: IRuleConfig) => {
+        const ruleConstructor = container.getTagged<RuleConstructor>(INJECTABLES.Rule, "kind", ruleConfig.kind);
+        return new ruleConstructor(ruleConfig);
+    };
+});

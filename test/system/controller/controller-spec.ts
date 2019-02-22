@@ -3,13 +3,13 @@ import * as chai from "chai";
 
 import { Controller } from "../../../src/app/controller/controller";
 import { container } from "./inversify-test.config";
-import { IController, INJECTABLES, ISystem, ISensorManager, IConfigManager, IOverrideManager } from "../../../src/types";
-import { MockSystem } from "./mocks/mock-system";
+import { IController, INJECTABLES, ISensorManager, IConfigManager, IOverrideManager } from "../../../src/types";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
 import { MockConfigManager } from "./mocks/mock-config-manager";
-import { IControlState, IProgram, IRule } from "../../../src/common/interfaces";
-import { BasicHeatingRule, Configuration, Override } from "../../../src/common/types";
+import { IControlState, IProgram, IRuleConfig } from "../../../src/common/interfaces";
+import { Configuration, Override, TimeOfDay } from "../../../src/common/types";
 import { MockOverrideManager } from "./mocks/mock-override-manager";
+import { RuleConfig } from "../../../src/common/configuration/rule-config";
 
 const expect = chai.expect;
 
@@ -140,7 +140,10 @@ describe("Controller", () => {
             expect(cs.heating).to.equal(false);
             expect(cs.hotWater).to.equal(false);
 
-            let rule: IRule = new BasicHeatingRule({
+            let rule: IRuleConfig = new RuleConfig({
+                id: "",
+                kind: "BasicHeatingRule",
+                data: null,
                 startTime: {
                     hour: 17,
                     minute: 17,
@@ -305,6 +308,9 @@ const configD: any = {
             maxHwTemp: 30,
             rules: [
                 {
+                    id: null,
+                    kind: "BasicHeatingRule",
+                    data: null,
                     startTime: {
                         hour: 12,
                         minute: 12,
@@ -317,6 +323,9 @@ const configD: any = {
                     },
                 },
                 {
+                    id: null,
+                    kind: "BasicHeatingRule",
+                    data: null,
                     startTime: {
                         hour: 14,
                         minute: 14,
