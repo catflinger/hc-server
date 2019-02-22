@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 
 import { RuleConfig } from "../../common/configuration/rule-config";
 import { IOverrideApiResponse, ITimeOfDay } from "../../common/interfaces";
-import { configValidation } from "../../common/types";
+import { ConfigValidation } from "../../common/types";
 
 import { IApi, IClock, INJECTABLES, IOverrideManager } from "../../types";
 
@@ -36,7 +36,7 @@ export class OverrideApi implements IApi {
 
             // first validate the input
             try {
-                duration = configValidation.getNumber(req.body.duration, "set override:minutes");
+                duration = ConfigValidation.getNumber(req.body.duration, "set override:minutes");
 
                 if (duration < 0 || duration > 24 * 60) {
                     throw new Error("value for duration out of range");

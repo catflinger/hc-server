@@ -76,12 +76,12 @@ export interface IOverride {
     readonly rule: IRuleConfig;
 }
 
-export interface IConfigValidation {
-    getBoolean(val: any, message: string, defaultValue?: boolean): boolean;
-    getString(val: any, message: string, defaultValue?: string): string;
-    getNumber(val: any, message: string, defaultValue?: number): number;
-    getDate(val: any, message: string, defaultValue?: Date): Date;
-}
+// export interface IConfigValidation {
+//     getBoolean(val: any, message: string, defaultValue?: boolean): boolean;
+//     getString(val: any, message: string, defaultValue?: string): string;
+//     getNumber(val: any, message: string, defaultValue?: number): number;
+//     getDate(val: any, message: string, defaultValue?: Date): Date;
+// }
 
 export interface ILogEntry {
     // the date and time of the entry

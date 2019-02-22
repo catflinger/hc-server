@@ -5,7 +5,7 @@ import * as moment from "moment";
 import { isArray } from "util";
 
 import { LogEntry } from "../common/log/log-entry";
-import { configValidation } from "../common/types";
+import { ConfigValidation } from "../common/types";
 import { IApi } from "../types";
 
 const apiLog = Debug("api");
@@ -25,12 +25,12 @@ export class DevLoggerApi implements IApi {
                 sensors.length = 0;
                 const params: any = JSON.parse(req.query.params);
 
-                from = configValidation.getDate(params.from, "GET /dev/log: from");
-                to = configValidation.getDate(params.to, "GET /dev/log: to");
+                from = ConfigValidation.getDate(params.from, "GET /dev/log: from");
+                to = ConfigValidation.getDate(params.to, "GET /dev/log: to");
 
                 if (isArray(params.sensors)) {
                     params.sensors.forEach((s: any) => {
-                        sensors.push(configValidation.getString(s, "GET /dev/log: sensors[i]"));
+                        sensors.push(ConfigValidation.getString(s, "GET /dev/log: sensors[i]"));
                     });
                 }
             } catch (error) {
