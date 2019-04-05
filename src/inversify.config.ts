@@ -23,6 +23,7 @@ import {
     ISensorManager,
     ISystem,
     RuleConstructor,
+    ILoggerConfig,
 } from "./types";
 
 import { Logger } from "./logger/logger";
@@ -35,20 +36,19 @@ import { SensorApi } from "./server/api/sensor-api";
 import { BasicHeatingRule } from "./app/controller/basic-heating-rule";
 import { IRuleConfig } from "./common/interfaces";
 import { DevLoggerApi } from "./dev/dev.logger-api";
+import { fstat } from "fs";
 
 export const container = new Container();
 
 // environment specific bindings
 if (process.env.NODE_ENV === "production") {
     container.bind<string>(INJECTABLES.ConfigRootDir).toConstantValue(path.join(__dirname, "..", "data"));
-    container.bind<string>(INJECTABLES.LogRootDir).toConstantValue(path.join(__dirname, "..", "log"));
     container.bind<string>(INJECTABLES.OneWireRootDir).toConstantValue(path.join("/", "mnt", "1wire"));
-    container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join("/", "sys", "gpio"));
+    container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join("/", "sys", "class", "gpio"));
     container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.join(__dirname, "..", "wwwroot"));
     container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(80);
 } else {
     container.bind<string>(INJECTABLES.ConfigRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev"));
-    container.bind<string>(INJECTABLES.LogRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "log"));
     container.bind<string>(INJECTABLES.OneWireRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "onewire"));
     container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "gpio"));
     container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "wwwroot"));

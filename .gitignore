@@ -1,2 +1,4 @@
 node_modules
 lib
+dev/log-config.json
+test/config/log-config.json

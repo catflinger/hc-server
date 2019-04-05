@@ -1,79 +1,65 @@
 import * as fs from "fs";
 import { inject, injectable, TargetTypeEnum } from "inversify";
+import * as mysql from "mysql";
+import { Pool, MysqlError, FieldInfo } from "mysql";
 import * as path from "path";
-import { Database, Statement } from "sqlite3";
 
 import { IControlState, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
 import { LogEntry } from "../common/log/log-entry";
 import { LogExtract } from "../common/log/log-extract";
-import { ILogger, INJECTABLES } from "../types";
-
-interface ILogStore {
-    db: Database;
-    insertReading: Statement;
-    insertControlState: Statement;
-    selectReading: Statement;
-    selectControlState: Statement;
-}
+import { ILogger, INJECTABLES, ILoggerConfig } from "../types";
 
 @injectable()
 export class Logger implements ILogger {
+    public readonly config: ILoggerConfig;
 
-    private store: ILogStore = {
-        db: null,
-        insertControlState: null,
-        insertReading: null,
-        selectControlState: null,
-        selectReading: null,
-    };
+    private pool: Pool = null;
 
-    constructor(@inject(INJECTABLES.LogRootDir) private logRoot: string) {
+    constructor(
+        @inject(INJECTABLES.ConfigRootDir) private configRoot: string) {
+        this.config = this.getLoggerConfig();
     }
 
     public init(): Promise<void> {
 
+        if (this.pool !== null) {
+            return Promise.resolve();
+        }
+
         return this.openDatabase()
-        .then((database) => {
-            this.store.db = database;
-            return this.querySQL("SELECT name FROM sqlite_master WHERE type='table'");
+        .then((pool) => {
+            this.pool = pool;
+            return this.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'hc_log' AND table_name = 'reading'");
         })
         .then((rows: any[]) => {
 
             // Create a schema if necessary
-            if (rows.find((row) => row.name === "reading")) {
+            if (rows.length> 0) {
                 return Promise.resolve();
             } else {
                 return this.createSchema();
             }
-        })
-        .then(() => {
-            return this.prepareStatement("INSERT OR IGNORE INTO reading (date, sensor_id, reading) VALUES (?,?, ?)");
-        })
-        .then((statement) => {
-            this.store.insertReading = statement;
-            return this.prepareStatement("INSERT OR IGNORE INTO control_state (date, heating, hw) VALUES (?,?,?)");
-        })
-        .then((statement) => {
-            this.store.insertControlState = statement;
-            return this.prepareStatement("SELECT date, heating, hw FROM control_state WHERE date >= ? AND date < ? ORDER BY date");
-        })
-        .then((statement) => {
-            this.store.selectControlState = statement;
-            return this.prepareStatement("SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?");
-        })
-        .then((statement) => {
-            this.store.selectReading = statement;
         });
     }
 
-    public log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<void> {
+    public end(): Promise<void> {
+        return new Promise((resolve) => {
+            this.pool.end(() => {
+                this.pool = null;
+                resolve();
+            });
+        });
+    }
+
+    public log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<boolean> {
+        let success = true;
 
         if (!date) {
             throw new Error("cannot log without a date");
         }
         const logDate: number = this.roundedAsUnix(date);
 
-        return this.execStatement(this.store.insertControlState, logDate, controlState.heating, controlState.hotWater)
+        return this.insertControlState(this.pool, logDate, controlState.heating, controlState.hotWater)
 
         .then(() => {
             const promises: Array<Promise<void>> = [];
@@ -83,17 +69,18 @@ export class Logger implements ILogger {
                         null :
                         Math.round(r.reading * 10);
 
-                    promises.push(this.execStatement(this.store.insertReading, logDate, r.id, rounded));
+                    promises.push(this.insertReading(this.pool, logDate, r.id, rounded));
                 }
             });
             return Promise.all(promises);
         })
         .catch((error: any) => {
             // don't let the program fall over just because of a log record
-            // console.log("FAILED to write log record " + error);
+            console.log("FAILED to write log record " + error);
+            success = false;
         })
         .then(() => {
-            return Promise.resolve();
+            return Promise.resolve(success);
         });
     }
 
@@ -101,13 +88,13 @@ export class Logger implements ILogger {
 
         let controlStates: any[];
 
-        return this.queryAll(this.store.selectControlState, from.getTime(), to.getTime())
+        return this.selectControlState(this.pool, from.getTime(), to.getTime())
         .then((rows: any[]) => {
             controlStates = rows;
 
             const promises: Array<Promise<any[]>> = [];
             ids.forEach((id: string) => {
-                promises.push(this.queryAll(this.store.selectReading, from.getTime(), to.getTime(), id));
+                promises.push(this.selectReading(this.pool, from.getTime(), to.getTime(), id));
             });
             return Promise.all(promises);
         })
@@ -167,109 +154,52 @@ export class Logger implements ILogger {
 
     private createSchema(): Promise<void> {
 
-        return this.execSQL("CREATE TABLE reading (date INTEGER, sensor_id TEXT, reading INTEGER, UNIQUE(date,sensor_id))")
+        return this.query("CREATE TABLE reading (date BIGINT, sensor_id VARCHAR(255), reading INTEGER, UNIQUE(date,sensor_id))")
 
         .then(() => {
-            return this.execSQL("CREATE TABLE control_state (date INTEGER UNIQUE, heating INTEGER, hw INTEGER)");
+            return this.query("CREATE TABLE control_state (date BIGINT UNIQUE, heating BOOLEAN, hw BOOLEAN)");
         })
         .then(() => {
-            return this.execSQL("CREATE TABLE sensor (id TEXT, name TEXT)");
+            return this.query("CREATE TABLE sensor (id VARCHAR(255), name VARCHAR(255))");
         })
         .then(() => {
-            return this.execSQL("CREATE INDEX reading_date ON reading (date)");
+            return this.query("CREATE INDEX reading_date ON reading (date)");
         })
         .then(() => {
-            return this.execSQL("CREATE INDEX control_state_date ON control_state (date)");
+            return this.query("CREATE INDEX control_state_date ON control_state (date)");
+        })
+        .then(() => {
+            return Promise.resolve();
         });
     }
 
-    private openDatabase(): Promise<Database> {
+    private openDatabase(): Promise<Pool> {
         return new Promise((resolve, reject) => {
             try {
-                const db: Database = new Database(this.dbFilename, (error) => {
-                    reject(error);
+                const pool: Pool = mysql.createPool({
+                    connectionLimit: 5,
+                    host: this.config.server,
+                    user: this.config.user,
+                    password: this.config.password,
+                    database: this.config.database,
                 });
-                resolve(db);
+                resolve(pool);
             } catch (err) {
                 reject(err);
             }
         });
     }
 
-    private tryCloseDatabase(): Promise<void> {
+    private query(sql: string): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            try {
-                this.store.db.close(() => {
-                    this.store.db = null;
-                    resolve();
-                });
-            } catch {
-                resolve();
-            }
-        });
-    }
-
-    private execSQL(sql: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.store.db.run(sql, (error) => {
+            this.pool.query(sql, (error: MysqlError, results: any, fields: FieldInfo[]) => {
                 if (error) {
                     reject(error);
                 } else {
-                    resolve();
+                    resolve(results);
                 }
             });
         });
-    }
-
-    private querySQL(sql: string): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            this.store.db.all(sql, (error: Error, rows: any[]) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(rows);
-                }
-            });
-        });
-    }
-
-    private prepareStatement(sql: string): Promise<Statement> {
-        return new Promise((resolve, reject) => {
-            const statement = this.store.db.prepare(sql, (error) => {
-                if (error) {
-                    reject(error);
-                }
-                resolve(statement);
-            });
-        });
-    }
-
-    private queryAll(statement: Statement, ...params: any[]): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            statement.all(...params, (error: Error, rows: any[]) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(rows);
-                }
-            });
-        });
-    }
-
-    private execStatement(statement: Statement, ...params: any[]): Promise<void> {
-        return new Promise((resolve, reject) => {
-            statement.run(...params, (error: Error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    private get dbFilename(): string {
-        return path.join(this.logRoot, "hc-log.db");
     }
 
     // return the date as Unix time rounded to the nearest 10 minutes
@@ -287,5 +217,84 @@ export class Logger implements ILogger {
         dt.setTime(seconds);
 
         return dt;
+    }
+
+    private insertControlState(pool: Pool, date: number, heating: boolean, hw: boolean) {
+        return new Promise<void>((resolve, reject) => {
+            pool.query("INSERT IGNORE INTO control_state (date, heating, hw) VALUES (?,?,?)", [date, heating, hw], (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    console.log("INSERTED CONTROL STATE");
+                    resolve();
+                }
+            });
+        });
+    };
+
+    private insertReading(pool: Pool, date: number, id: string, reading: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            pool.query("INSERT IGNORE INTO reading (date, sensor_id, reading) VALUES (?,?, ?)", [date, id, reading], (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    };
+
+    private selectControlState(pool: Pool, from: number, to: number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            pool.query("SELECT date, heating, hw FROM control_state WHERE date >= ? AND date < ? ORDER BY date", [from, to], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+    
+    private selectReading(pool: Pool, from: number, to: number, id: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            pool.query("SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?", [from, to, id], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    private getLoggerConfig(): ILoggerConfig {
+        let cfg: any = null;
+        try {
+            const logConfigPath = path.join(this.configRoot, "log-config.json");
+    
+            const json = fs.readFileSync(logConfigPath, "utf8");
+            cfg = JSON.parse(json);
+    
+            const members = [
+                "server",
+                "user",
+                "password",
+                "database",
+                "testUser",
+                "testPassword",
+            ];
+            
+            members.forEach((member) => {
+                if (!cfg.hasOwnProperty(member)) {
+                    throw new Error ("missing property " + member);
+                }
+            });
+    
+        } catch (error) {
+            throw new Error ("Failed to read Log config file: " + error);
+        }
+    
+        return cfg as ILoggerConfig;
     }
 }

@@ -1,0 +1,8 @@
+{
+    "server": "localhost",
+    "user": "placeholder",
+    "database": "hc_log",
+    "password": "placeholder",
+    "testUser": "placeholder",
+    "testUserPassword": "placeholder"
+}

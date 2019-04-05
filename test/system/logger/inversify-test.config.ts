@@ -7,6 +7,6 @@ import { INJECTABLES, ILogger } from "../../../src/types";
 
 export const container = new Container();
 
-container.bind<string>(INJECTABLES.LogRootDir).toConstantValue(path.join(__dirname, "logs"));
+container.bind<string>(INJECTABLES.ConfigRootDir).toConstantValue(path.join(__dirname, "..", "..", "config"));
 
-container.bind<ILogger>(INJECTABLES.Logger).to(Logger);
+container.bind<ILogger>(INJECTABLES.Logger).to(Logger).inSingletonScope();

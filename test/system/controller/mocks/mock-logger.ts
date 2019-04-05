@@ -1,18 +1,24 @@
-import { ILogger } from "../../../../src/types";
+import { ILogger, ILoggerConfig } from "../../../../src/types";
 import { ISensorReading, IControlState, ILogExtract } from "../../../../src/common/interfaces";
 import { injectable } from "inversify";
 
 @injectable()
 export class MockLogger implements ILogger {
+    public config: ILoggerConfig;
+
     getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract> {
         return Promise.resolve(dummyResult);
     }
-    log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<void> {
-        return Promise.resolve();
+    log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<boolean> {
+        return Promise.resolve(true);
     }
     init(): Promise<void> {
         return Promise.resolve();
     }
+    end(): Promise<void> {
+        return Promise.resolve();
+    }    
+
 }
 const dummyResult = {
     sensors: ["foo", "bar"],

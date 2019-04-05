@@ -90,7 +90,12 @@ export class SensorManager implements ISensorManager {
                 }));
             })
             .catch ((err) => {
-                reject(err);
+                resolve(new SensorReading({
+                    description: config.description,
+                    id: config.id,
+                    reading: NaN,
+                    role: config.role,
+                }));
             });
         });
     }
