@@ -1,3 +1,4 @@
+import * as Debug from "debug";
 import { inject, injectable } from "inversify";
 import * as path from "path";
 
@@ -16,8 +17,12 @@ import {
 
 import * as fsu from "../../utils/fs-utils";
 
+const log = Debug("sensors");
+
 @injectable()
 export class SensorManager implements ISensorManager {
+
+    private cachedReadings: ISensorReading[];
 
     @inject(INJECTABLES.OneWireRootDir)
     private oneWireRoot: string;
@@ -25,57 +30,73 @@ export class SensorManager implements ISensorManager {
     @inject(INJECTABLES.ConfigManager)
     private configManager: IConfigManager;
 
-    public readSensors(): Promise<ISensorReading[]> {
-        return new Promise<ISensorReading[]>((resolve, reject) => {
-            this.readAvailableSensors()
-            .then((available: ISensorReading[]) => {
-                const configured: ReadonlyArray<ISensorConfig> = this.configManager.getConfig().getSensorConfig();
-                const combined: ISensorReading[] = [];
+    public start(): Promise<void> {
+        return this.refresh();
+    }
 
-                // first add all all of the configured sensors
-                configured.forEach((c: ISensorConfig) => {
-                    // see if we have a reading for it
-                    const a: ISensorReading = available.find((r) => r.id === c.id);
-                    if (a) {
-                        c.reading = a.reading;
-                    }
-                    combined.push(c);
-                });
+    public getReadings(): ISensorReading[] {
+            // TO DO: clone the readings
+            return this.cachedReadings;
+    }
 
-                // next add any remaining readings from sensors that are not configured
-                available.forEach((a: ISensorReading) => {
-                    // see if we have configuration for it
-                    const c: ISensorReading = configured.find((r) => r.id === a.id);
-                    if (!c) {
-                        combined.push(a);
-                    }
-                });
-
-                resolve(combined);
-            })
-            .catch((error) => {
-                reject(error);
-            });
+    public refresh(): Promise<void> {
+        return this.readSensors()
+        .then((readings: ISensorReading[]) => {
+            this.cachedReadings = readings;
+            return;
         });
     }
 
-    private async readAvailableSensors(): Promise<ISensorReading[]> {
+    private async readSensors(): Promise<ISensorReading[]> {
+        log("entering readAvailableSensors: 1wireRoot= " + this.oneWireRoot);
         const sensorsIds = await fsu.listDirectoriesP(this.oneWireRoot)
         .catch((err) => {
             throw err;
         });
-        const readings: Array<Promise<ISensorReading>> = [];
+        const tasks: Array<Promise<ISensorReading>> = [];
+
+        log("sensorIds.length: " + sensorsIds.length);
 
         sensorsIds.forEach((id: string) => {
-            readings.push(this.readSensor({
-                description: "",
-                id,
-                reading: null,
-                role: "",
-            }));
+            log("read sensor: " + id);
+            if (id.startsWith("28")) {
+                tasks.push(this.readSensor({
+                    description: "",
+                    id,
+                    reading: null,
+                    role: "",
+                }));
+            }
         });
 
-        return Promise.all(readings);
+        const results: ISensorReading[] = [];
+
+        // execute the promises sequentially
+        return tasks.reduce(
+            async (previousPromise: Promise<ISensorReading>, current) => {
+
+                // execute the previous promise
+                const reading = await previousPromise;
+
+                // the first promise is a dummy so don't add the reading to the results
+                if (reading !== null) {
+                    results.push(reading);
+                }
+
+                // return the current promise so that it will be executed in the next iteration
+                return current;
+            },
+            Promise.resolve(null),
+        )
+
+        // this executes the final promise in the taks list
+        .then((reading) => {
+            if (reading !== null) {
+                results.push(reading);
+            }
+            // there are now no more promises to execute so we can return the results
+            return Promise.resolve(results);
+        });
     }
 
     private readSensor(config: ISensorConfig): Promise<ISensorReading> {

@@ -1,6 +1,9 @@
+import * as Debug from "debug";
 import * as fs from "fs";
 import * as path from "path";
 import * as util from "util";
+
+const log = Debug("fsutils");
 
 export const readFileP = util.promisify(fs.readFile);
 export const writeFileP = util.promisify(fs.writeFile);
@@ -25,8 +28,10 @@ export const listDirectoriesP = (dirpath: string): Promise<string[]> => {
         fs.readdir(dirpath, { withFileTypes: true }, (err, entries) => {
             if (!err) {
                 try {
+                    log("entries.length: " + entries.length);
                     const result: string[] = [];
                     entries.forEach((entry) => {
+                        log("entry: " + entry.name);
                         if (entry.isDirectory) {
                             result.push(entry.name);
                         }

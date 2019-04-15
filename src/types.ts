@@ -66,8 +66,9 @@ export interface IDeviceState {
 
 // models the 1-wire sensor network
 export interface ISensorManager {
-    readSensors(): Promise<ReadonlyArray<ISensorReading>>;
-    // readSesnor(id: string): Promise<ISensorReading>;
+    start(): Promise<void>;
+    getReadings(): ISensorReading[];
+    refresh(): Promise<void>;
 }
 
 // manages the application configuratiom

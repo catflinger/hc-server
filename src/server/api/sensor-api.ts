@@ -20,18 +20,12 @@ export class SensorApi implements IApi {
         router.get("/sensor", (req, res) => {
             log("GET /sensor");
             try {
-                this.sensorManager.readSensors()
-                .then((sensors) => {
-                    res.json({
-                        date: this.clock.now(),
-                        sensors,
-                    });
-                })
-                .catch((err) => {
-                    res.status(500).send(err);
+                res.json({
+                    date: this.clock.now(),
+                    sensors: this.sensorManager.getReadings(),
                 });
             } catch (err) {
-                res.status(500).send(err);
+                    res.status(500).send(err);
             }
         });
     }

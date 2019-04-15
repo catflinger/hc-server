@@ -1,13 +1,12 @@
 import * as fs from "fs";
 import { inject, injectable, TargetTypeEnum } from "inversify";
-import * as mysql from "mysql";
-import { Pool, MysqlError, FieldInfo } from "mysql";
+import { createPool, FieldInfo, MysqlError, Pool } from "mysql";
 import * as path from "path";
 
 import { IControlState, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
 import { LogEntry } from "../common/log/log-entry";
 import { LogExtract } from "../common/log/log-extract";
-import { ILogger, INJECTABLES, ILoggerConfig } from "../types";
+import { ILogger, ILoggerConfig, INJECTABLES } from "../types";
 
 @injectable()
 export class Logger implements ILogger {
@@ -34,7 +33,7 @@ export class Logger implements ILogger {
         .then((rows: any[]) => {
 
             // Create a schema if necessary
-            if (rows.length> 0) {
+            if (rows.length > 0) {
                 return Promise.resolve();
             } else {
                 return this.createSchema();
@@ -75,8 +74,6 @@ export class Logger implements ILogger {
             return Promise.all(promises);
         })
         .catch((error: any) => {
-            // don't let the program fall over just because of a log record
-            console.log("FAILED to write log record " + error);
             success = false;
         })
         .then(() => {
@@ -154,13 +151,13 @@ export class Logger implements ILogger {
 
     private createSchema(): Promise<void> {
 
-        return this.query("CREATE TABLE reading (date BIGINT, sensor_id VARCHAR(255), reading INTEGER, UNIQUE(date,sensor_id))")
+        return this.query("CREATE TABLE reading (date BIGINT, sensor_id VARCHAR(25), reading INTEGER, UNIQUE(date,sensor_id))")
 
         .then(() => {
             return this.query("CREATE TABLE control_state (date BIGINT UNIQUE, heating BOOLEAN, hw BOOLEAN)");
         })
         .then(() => {
-            return this.query("CREATE TABLE sensor (id VARCHAR(255), name VARCHAR(255))");
+            return this.query("CREATE TABLE sensor (id VARCHAR(25), name VARCHAR(255))");
         })
         .then(() => {
             return this.query("CREATE INDEX reading_date ON reading (date)");
@@ -176,12 +173,12 @@ export class Logger implements ILogger {
     private openDatabase(): Promise<Pool> {
         return new Promise((resolve, reject) => {
             try {
-                const pool: Pool = mysql.createPool({
+                const pool: Pool = createPool({
                     connectionLimit: 5,
-                    host: this.config.server,
-                    user: this.config.user,
-                    password: this.config.password,
                     database: this.config.database,
+                    host: this.config.server,
+                    password: this.config.password,
+                    user: this.config.user,
                 });
                 resolve(pool);
             } catch (err) {
@@ -225,12 +222,11 @@ export class Logger implements ILogger {
                 if (error) {
                     reject(error);
                 } else {
-                    console.log("INSERTED CONTROL STATE");
                     resolve();
                 }
             });
         });
-    };
+    }
 
     private insertReading(pool: Pool, date: number, id: string, reading: number): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -242,7 +238,7 @@ export class Logger implements ILogger {
                 }
             });
         });
-    };
+    }
 
     private selectControlState(pool: Pool, from: number, to: number): Promise<any> {
         return new Promise((resolve, reject) => {
@@ -254,8 +250,8 @@ export class Logger implements ILogger {
                 }
             });
         });
-    };
-    
+    }
+
     private selectReading(pool: Pool, from: number, to: number, id: string): Promise<any> {
         return new Promise((resolve, reject) => {
             pool.query("SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?", [from, to, id], (error, results) => {
@@ -266,16 +262,16 @@ export class Logger implements ILogger {
                 }
             });
         });
-    };
+    }
 
     private getLoggerConfig(): ILoggerConfig {
         let cfg: any = null;
         try {
             const logConfigPath = path.join(this.configRoot, "log-config.json");
-    
+
             const json = fs.readFileSync(logConfigPath, "utf8");
             cfg = JSON.parse(json);
-    
+
             const members = [
                 "server",
                 "user",
@@ -284,17 +280,17 @@ export class Logger implements ILogger {
                 "testUser",
                 "testPassword",
             ];
-            
+
             members.forEach((member) => {
                 if (!cfg.hasOwnProperty(member)) {
                     throw new Error ("missing property " + member);
                 }
             });
-    
+
         } catch (error) {
             throw new Error ("Failed to read Log config file: " + error);
         }
-    
+
         return cfg as ILoggerConfig;
     }
 }

@@ -50,6 +50,9 @@ export class Controller implements IController {
 
         return this.configManager.start()
         .then(() => {
+            return this.sensorManager.start();
+        })
+        .then(() => {
             return this.logger.init();
         })
         .then(() => {
@@ -80,10 +83,10 @@ export class Controller implements IController {
         });
     }
 
-    public async refresh(now: Date): Promise<any> {
-        return this.sensorManager.readSensors()
-        .then((sensorReadings: ReadonlyArray<ISensorReading>) => {
-            const config: IConfiguration = this.configManager.getConfig();
+    public refresh(now: Date): void {
+        try {
+            const sensorReadings = this.sensorManager.getReadings();
+            // const config: IConfiguration = this.configManager.getConfig();
 
             // find the active program
             const program = this.getActiveProgram(now);
@@ -93,6 +96,7 @@ export class Controller implements IController {
 
             // set the hot water based on the program threshold values
             const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
+
             if (hwReading !== undefined) {
                 if (hwReading.reading < program.minHwTemp) {
                     newControlState.hotWater = true;
@@ -115,10 +119,10 @@ export class Controller implements IController {
 
             // switch the devices based on new control state
             this.system.applyControlState(newControlState);
-        })
-        .catch((error) => {
+
+        } catch (error) {
             errorLog("Cannot read sensors: " + error);
-        });
+        }
     }
 
     public getActiveProgram(now: Date): IProgram {
@@ -191,10 +195,10 @@ export class Controller implements IController {
         }
     }
 
-    private log(): Promise<void> {
-        return this.sensorManager.readSensors()
-        .then((readings: ReadonlyArray<ISensorReading>) => {
-            this.logger.log(new Date(), readings, this.getControlState());
-        });
+    private log(): Promise<boolean> {
+        return this.logger.log(
+            new Date(),
+            this.sensorManager.getReadings(),
+            this.getControlState());
     }
 }

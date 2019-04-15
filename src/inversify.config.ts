@@ -23,7 +23,6 @@ import {
     ISensorManager,
     ISystem,
     RuleConstructor,
-    ILoggerConfig,
 } from "./types";
 
 import { Logger } from "./logger/logger";
@@ -36,7 +35,6 @@ import { SensorApi } from "./server/api/sensor-api";
 import { BasicHeatingRule } from "./app/controller/basic-heating-rule";
 import { IRuleConfig } from "./common/interfaces";
 import { DevLoggerApi } from "./dev/dev.logger-api";
-import { fstat } from "fs";
 
 export const container = new Container();
 

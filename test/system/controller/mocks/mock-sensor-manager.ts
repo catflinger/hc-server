@@ -4,6 +4,10 @@ import { ISensorManager } from "../../../../src/types";
 
 @injectable()
 export class MockSensorManager implements ISensorManager {
+    start(): Promise<void> {
+        return Promise.resolve();
+    }
+
     public readings: ISensorConfig[] = [
         {
             id: "A",
@@ -22,14 +26,11 @@ export class MockSensorManager implements ISensorManager {
     public setHwTemp(val: number): void {
         this.readings[0].reading = val;
     }
-    public readAvailableSensors(): Promise<ISensorConfig[]> {
-        return Promise.resolve(this.readings);
-    }    
-    public readConfiguredSensors(): Promise<ISensorConfig[]> {
-        return Promise.resolve(this.readings);
+    public refresh(): Promise<void> {
+        return Promise.resolve();
     }
-    readSensors(): Promise<ISensorConfig[]> {
-        return Promise.resolve(this.readings);
+    public getReadings(): ISensorConfig[] {
+        return this.readings;
     }
 
 }

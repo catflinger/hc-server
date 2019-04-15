@@ -5,16 +5,16 @@ import { ISensorManager } from "../../../src/types";
 @injectable()
 export class MockSensorManager implements ISensorManager {
 
-    readAvailableSensors(): Promise<ISensorConfig[]> {
-        return Promise.resolve(defaultAvailableSensors);
+    start(): Promise<void> {
+        return Promise.resolve();
+    } 
+
+    getReadings(): ISensorConfig[] {
+        return defaultConfiguredSensors;
     }
 
-    readConfiguredSensors(): Promise<ISensorConfig[]> {
-        return Promise.resolve(defaultConfiguredSensors);
-    }
-
-    readSensors(): Promise<ISensorConfig[]> {
-        return Promise.resolve(defaultConfiguredSensors);
+    refresh(): Promise<void> {
+        return Promise.resolve();
     }
 
 }
