@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { ISensorManager, INJECTABLES } from "../../../src/types";
 import { container } from "./inversify-test.config";
-import { ISensorConfig } from "../../../src/common/interfaces";
+import { ISensorReading } from "../../../src/common/interfaces";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -31,29 +31,23 @@ describe("sensor-manager", () => {
 
             const readings = sensorManager.getReadings(); 
             expect(readings).to.be.an.instanceOf(Array),
-            expect(readings).to.have.lengthOf(3),
+            expect(readings).to.have.lengthOf(2),
             expect(readings).to.have.deep.members(expectedA)
         });
     });
 });
 
-const expectedA: ISensorConfig[] = [
+const expectedA: ISensorReading[] = [
     {
         id: "28.0",
-        description: "first sensor",
-        role: "hw",
+        description: "",
+        role: "",
         reading: 10,
     },
     {
         id: "28.1",
-        description: "second sensor",
+        description: "",
         role: "",
         reading: 11,
-    },
-    {
-        id: "28.99",
-        description: "deleted sensor",
-        role: "",
-        reading: null,
     },
 ];
