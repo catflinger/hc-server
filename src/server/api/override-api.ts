@@ -19,12 +19,16 @@ export class OverrideApi implements IApi {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
+    @inject(INJECTABLES.DevApiDelayMs)
+    private delay: number;
+
     public addRoutes(router: Router): void {
 
         router.get("/override", (req, res) => {
             try {
                 log("GET /override");
-                return this.sendOverrideList(res);
+
+                setTimeout(() => { this.sendOverrideList(res); }, this.delay);
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
             }
@@ -57,7 +61,7 @@ export class OverrideApi implements IApi {
                 }));
 
                 // return the new override state
-                return this.sendOverrideList(res);
+                setTimeout(() => { this.sendOverrideList(res); }, this.delay);
 
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
@@ -68,7 +72,7 @@ export class OverrideApi implements IApi {
             try {
                 log("DELETE /override");
                 this.overrideManager.clearOverrides();
-                return this.sendOverrideList(res);
+                setTimeout(() => { this.sendOverrideList(res); }, this.delay);
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
             }

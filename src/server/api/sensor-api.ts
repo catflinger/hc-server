@@ -15,15 +15,21 @@ export class SensorApi implements IApi {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
+    @inject(INJECTABLES.DevApiDelayMs)
+    private delay: number;
+
     public addRoutes(router: Router): void {
 
         router.get("/sensor", (req, res) => {
             log("GET /sensor");
             try {
-                res.json({
-                    date: this.clock.now(),
-                    sensors: this.sensorManager.getReadings(),
-                });
+                setTimeout(() => { 
+                    res.json({
+                        date: this.clock.now(),
+                        sensors: this.sensorManager.getReadings(),
+                    });
+                }, this.delay);
+
             } catch (err) {
                     res.status(500).send(err);
             }

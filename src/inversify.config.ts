@@ -45,12 +45,14 @@ if (process.env.NODE_ENV === "production") {
     container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join("/", "sys", "class", "gpio"));
     container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.join(__dirname, "..", "wwwroot"));
     container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(80);
+    container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(0);
 } else {
     container.bind<string>(INJECTABLES.ConfigRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev"));
     container.bind<string>(INJECTABLES.OneWireRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "onewire"));
     container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "gpio"));
     container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "wwwroot"));
     container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(3000);
+    container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(500);
 }
 
 // bindings to the singletons

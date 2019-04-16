@@ -19,6 +19,9 @@ export class LoggerApi implements IApi {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
+    @inject(INJECTABLES.DevApiDelayMs)
+    private delay: number;
+
     public addRoutes(router: Router): void {
         let from: Date;
         let to: Date;
@@ -49,7 +52,8 @@ export class LoggerApi implements IApi {
                         date: this.clock.now(),
                         log: extract,
                     };
-                    res.json(data);
+
+                    setTimeout(() => res.json(data), this.delay);
                 })
                 .catch((err) => {
                     errorLog("ERROR " + err);

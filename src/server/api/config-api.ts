@@ -17,6 +17,9 @@ export class ConfigApi implements IApi {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
+    @inject(INJECTABLES.DevApiDelayMs)
+    private delay: number;
+
     public addRoutes(router: Router): void {
         router.get("/config", (req, resp) => {
             try {
@@ -27,7 +30,8 @@ export class ConfigApi implements IApi {
                     date: this.clock.now(),
                 };
 
-                return resp.json(data);
+                setTimeout(() => { resp.json(data); }, this.delay);
+
             } catch (err) {
                 log("GET /config ERROR : " +  err);
                 return resp.status(500).send(err);
@@ -47,7 +51,8 @@ export class ConfigApi implements IApi {
                     date: this.clock.now(),
                 };
 
-                return resp.json(data);
+                setTimeout(() => { resp.json(data); }, this.delay);
+
             } catch (err) {
                 log("PUT /config ERROR : " +  err);
                 return resp.status(500).send(err);

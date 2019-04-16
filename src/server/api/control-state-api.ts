@@ -16,6 +16,9 @@ export class ControlStateApi implements IApi {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
+    @inject(INJECTABLES.DevApiDelayMs)
+    private delay: number;
+
     public addRoutes(router: Router): void {
         router.get("/control-state", (req, res) => {
             try {
@@ -27,7 +30,7 @@ export class ControlStateApi implements IApi {
                     date: this.clock.now(),
                 };
 
-                res.json(response);
+                setTimeout(() => { res.json(response); }, this.delay);
             } catch (err) {
                 res.status(500).send("could not process this request " + err);
             }

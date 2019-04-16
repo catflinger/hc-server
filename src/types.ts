@@ -37,6 +37,7 @@ export const INJECTABLES = {
 
     // symbols for development and debugging support
     DevLogApi: Symbol("DevLogApi"),
+    DevApiDelayMs: Symbol("DevLogApi"),
 };
 
 // entry point for the app
