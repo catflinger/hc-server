@@ -1,4 +1,4 @@
-import { IConfiguration, IDatedConfig, INamedConfig, IProgram, ISensorConfig } from "../interfaces";
+import { IConfiguration, IConfigurationM, IDatedConfig, INamedConfig, IProgram, ISensorConfig } from "../interfaces";
 import { DatedConfig } from "./dated-config";
 import { NamedConfig } from "./named-config";
 import { Program } from "./program";
@@ -75,7 +75,7 @@ export class Configuration implements IConfiguration {
         return this.namedConfig;
     }
 
-    public toMutable(): any {
+    public toMutable(): IConfigurationM {
         return JSON.parse(JSON.stringify(this));
     }
 }

@@ -11,6 +11,15 @@ export interface IProgram {
     getRules(): ReadonlyArray<IRuleConfig>;
 }
 
+// interface for the mutable version of Program
+export interface IProgramM {
+    id: string;
+    name: string;
+    minHwTemp: number;
+    maxHwTemp: number;
+    getRules(): ReadonlyArray<IRuleConfig>;
+}
+
 export interface IRuleConfig {
     id: string;
     kind: RuleType;
@@ -46,7 +55,15 @@ export interface IConfiguration {
     getNamedConfig(): INamedConfig;
     getDatedConfig(): ReadonlyArray<IDatedConfig>;
     getSensorConfig(): ReadonlyArray<ISensorConfig>;
-    toMutable(): any;
+    toMutable(): IConfigurationM;
+}
+
+// interface for the mutable version of Program
+export interface IConfigurationM {
+    datedConfig: IDatedConfigM;
+    namedConfig: INamedConfigM;
+    programConfig: IProgramM [];
+    sensorConfig: ISensorConfigM [];
 }
 
 export interface INamedConfig {
@@ -55,19 +72,29 @@ export interface INamedConfig {
     sundayProgramId: string;
 }
 
+// interface for the mutable version of named config
+type INamedConfigM = INamedConfig;
+
 export interface IDatedConfig {
     programId: string;
     date: Date;
 }
 
-// the data required for senor configuration and the data required for displaying readings
-// is almost identical.  The same interface is used for both
+// interface for the mutable version of dated config
+type IDatedConfigM = IDatedConfig;
+
 export interface ISensorConfig {
     id: string;
     description: string;
     role: string;
     reading: number;
 }
+
+// interface for the mutable version of sensor config
+export type ISensorConfigM = ISensorConfig;
+
+// the data required for senor configuration and the data required for displaying readings
+// is almost identical.  The same interface is used for both
 export type ISensorReading = ISensorConfig;
 
 export interface IOverride {
