@@ -17,7 +17,7 @@ export interface IProgramM {
     name: string;
     minHwTemp: number;
     maxHwTemp: number;
-    getRules(): ReadonlyArray<IRuleConfig>;
+    rules: IRuleConfig [];
 }
 
 export interface IRuleConfig {
