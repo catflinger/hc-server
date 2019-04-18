@@ -46,6 +46,7 @@ container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi);
 
 // bindings for debugging support
 container.bind<IApi>(INJECTABLES.DevLogApi).to(DevLoggerApi).inSingletonScope();
+container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(0);
 
 // tagged bindings
 container.bind<interfaces.Newable<RuleConstructor>>(INJECTABLES.Rule)

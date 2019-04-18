@@ -23,7 +23,7 @@ export class SensorApi implements IApi {
         router.get("/sensor", (req, res) => {
             log("GET /sensor");
             try {
-                setTimeout(() => { 
+                setTimeout(() => {
                     res.json({
                         date: this.clock.now(),
                         sensors: this.sensorManager.getReadings(),

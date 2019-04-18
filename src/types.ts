@@ -36,8 +36,8 @@ export const INJECTABLES = {
     SensorApi: Symbol("SensorApi"),
 
     // symbols for development and debugging support
+    DevApiDelayMs: Symbol("DevApiDelayMs"),
     DevLogApi: Symbol("DevLogApi"),
-    DevApiDelayMs: Symbol("DevLogApi"),
 };
 
 // entry point for the app

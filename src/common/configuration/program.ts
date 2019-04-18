@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 
 import { ConfigValidation } from "../config-validation";
-import { IProgram, IRuleConfig } from "../interfaces";
+import { IProgram, IProgramM, IRuleConfig } from "../interfaces";
 import { RuleConfig } from "./rule-config";
 
 export class Program implements IProgram {
@@ -60,5 +60,9 @@ export class Program implements IProgram {
 
     public getRules(): ReadonlyArray<IRuleConfig> {
         return this.rules as ReadonlyArray<IRuleConfig>;
+    }
+
+    public toMuatble(): IProgramM {
+        return JSON.parse(this.toJSON());
     }
 }

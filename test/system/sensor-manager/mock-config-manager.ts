@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { IProgram, IDatedConfig, IConfiguration } from "../../../src/common/interfaces";
+import { IProgram, IDatedConfig, IConfiguration, IConfigurationM } from "../../../src/common/interfaces";
 import { IConfigManager } from "../../../src/types";
 
 @injectable()
@@ -49,7 +49,9 @@ export class MockConfigManager implements IConfigManager {
             getProgramConfig: () => {
                 return [] as ReadonlyArray<IProgram>;
             },
-            toMutable(){},
+            toMutable(): IConfigurationM {
+                return JSON.parse(JSON.stringify(this));
+            },
         };
     }
 
