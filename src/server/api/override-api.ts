@@ -6,12 +6,15 @@ import { RuleConfig } from "../../common/configuration/rule-config";
 import { IOverrideApiResponse, ITimeOfDay } from "../../common/interfaces";
 import { ConfigValidation } from "../../common/types";
 
-import { IApi, IClock, INJECTABLES, IOverrideManager } from "../../types";
+import { IApi, IClock, IController, INJECTABLES, IOverrideManager } from "../../types";
 
 const log = Debug("api");
 
 @injectable()
 export class OverrideApi implements IApi {
+
+    @inject(INJECTABLES.Controller)
+    private controller: IController;
 
     @inject(INJECTABLES.OverrideManager)
     private overrideManager: IOverrideManager;
@@ -57,11 +60,13 @@ export class OverrideApi implements IApi {
                     kind: "BasicHeatingRule",
 
                     endTime: now.addSeconds(duration * 60),
-                    startTime: now,
+                    startTime: now.justBefore(),
                 }));
 
                 // return the new override state
                 setTimeout(() => { this.sendOverrideList(res); }, this.delay);
+
+                this.controller.refresh();
 
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
@@ -73,6 +78,7 @@ export class OverrideApi implements IApi {
                 log("DELETE /override");
                 this.overrideManager.clearOverrides();
                 setTimeout(() => { this.sendOverrideList(res); }, this.delay);
+                this.controller.refresh();
             } catch (err) {
                 return res.status(500).send("could not process this request " + err);
             }

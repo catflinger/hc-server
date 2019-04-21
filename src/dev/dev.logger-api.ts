@@ -1,18 +1,21 @@
 import * as Debug from "debug";
 import { Router } from "express";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import * as moment from "moment";
 import { isArray } from "util";
 
 import { LogEntry } from "../common/log/log-entry";
 import { ConfigValidation } from "../common/types";
-import { IApi } from "../types";
+import { IApi, IClock, INJECTABLES } from "../types";
 
 const apiLog = Debug("api");
 const errorLog = Debug("error");
 
 @injectable()
 export class DevLoggerApi implements IApi {
+
+    @inject(INJECTABLES.Clock)
+    private clock: IClock;
 
     public addRoutes(router: Router): void {
         let from: Date;
@@ -40,7 +43,7 @@ export class DevLoggerApi implements IApi {
 
             try {
                 res.json({
-                    date: new Date(),
+                    date: this.clock.now(),
                     log: this.generateLog(from, to, sensors),
                 });
             } catch (err) {

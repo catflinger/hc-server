@@ -25,4 +25,6 @@ export class MockController implements IController {
     public getControlState(): IControlState {
         return this.state;
     }
+    
+    public refresh() {}
 }

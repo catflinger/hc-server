@@ -43,6 +43,8 @@ export interface ITimeOfDay {
 
     toSeconds(): number;
     toString(): string;
+
+    justBefore(): ITimeOfDay;
 }
 
 export interface IControlState {

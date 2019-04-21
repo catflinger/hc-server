@@ -60,7 +60,7 @@ export class Controller implements IController {
                 heating: false,
                 hotWater: false,
             };
-            return this.refresh(this.clock.now());
+            return this.refresh();
         })
         .then(() => {
             return this.log();
@@ -69,7 +69,7 @@ export class Controller implements IController {
             // kick the timers off
             if (refreshIntervalSeconds !== undefined && refreshIntervalSeconds > 5) {
                 setInterval(() => {
-                    this.refresh(this.clock.now());
+                    this.refresh();
                 },
                 refreshIntervalSeconds * 1000);
             }
@@ -83,7 +83,11 @@ export class Controller implements IController {
         });
     }
 
-    public refresh(now: Date): void {
+    public refresh(now?: Date): void {
+
+        if (!now) {
+            now = this.clock.now();
+        }
         try {
             const sensorReadings = this.sensorManager.getReadings();
             // const config: IConfiguration = this.configManager.getConfig();
@@ -197,7 +201,7 @@ export class Controller implements IController {
 
     private log(): Promise<boolean> {
         return this.logger.log(
-            new Date(),
+            this.clock.now(),
             this.sensorManager.getReadings(),
             this.getControlState());
     }

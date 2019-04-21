@@ -97,6 +97,15 @@ export class TimeOfDay implements ITimeOfDay {
         return `${this.as2d(this.hour)}:${this.as2d(this.minute)}:${this.as2d(this.second)}`;
     }
 
+    public justBefore(): ITimeOfDay {
+        let seconds: number = this.toSeconds();
+
+        if (seconds > 0) {
+            seconds = seconds - 1;
+        }
+        return  TimeOfDay.fromSeconds(seconds - 1);
+    }
+
     private as2d(n: number): string {
         n = Math.abs(Math.trunc(n));
         const s: string = "0" + n;

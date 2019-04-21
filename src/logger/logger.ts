@@ -6,13 +6,16 @@ import * as path from "path";
 import { IControlState, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
 import { LogEntry } from "../common/log/log-entry";
 import { LogExtract } from "../common/log/log-extract";
-import { ILogger, ILoggerConfig, INJECTABLES } from "../types";
+import { IClock, ILogger, ILoggerConfig, INJECTABLES } from "../types";
 
 @injectable()
 export class Logger implements ILogger {
     public readonly config: ILoggerConfig;
 
     private pool: Pool = null;
+
+    @inject(INJECTABLES.Clock)
+    private clock: IClock;
 
     constructor(
         @inject(INJECTABLES.ConfigRootDir) private configRoot: string) {
@@ -210,7 +213,7 @@ export class Logger implements ILogger {
 
     // return the date as Unix time rounded to the nearest 10 minutes
     private fromUnixDate(seconds: number): Date {
-        const dt: Date = new Date();
+        const dt: Date = this.clock.now();
         dt.setTime(seconds);
 
         return dt;

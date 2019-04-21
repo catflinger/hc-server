@@ -4,12 +4,15 @@ import { inject, injectable } from "inversify";
 
 import { IConfigApiResponse, IConfiguration } from "../../common/interfaces";
 import { Configuration } from "../../common/types";
-import { IApi, IClock, IConfigManager, INJECTABLES } from "../../types";
+import { IApi, IClock, IConfigManager, IController, INJECTABLES } from "../../types";
 
 const log = Debug("api");
 
 @injectable()
 export class ConfigApi implements IApi {
+
+    @inject(INJECTABLES.Controller)
+    private controller: IController;
 
     @inject(INJECTABLES.ConfigManager)
     private configManager: IConfigManager;
@@ -52,6 +55,8 @@ export class ConfigApi implements IApi {
                 };
 
                 setTimeout(() => { resp.json(data); }, this.delay);
+
+                this.controller.refresh();
 
             } catch (err) {
                 log("PUT /config ERROR : " +  err);
