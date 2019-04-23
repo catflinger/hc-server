@@ -80,7 +80,13 @@ const goodConfig: any = {
         "sundayProgramId": "dr4edfgf"
     },
     "datedConfig": [
-        { "programId": "abcde", "date": "2018-11-23T12:12:12" }
+        { 
+            "programId": "abcde",
+            "timeOfYear": {
+                month: 11,
+                day: 23
+            }
+        }
     ],
     "sensorConfig": [
         { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }

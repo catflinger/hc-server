@@ -1,1 +1,1 @@
-{"datedConfig":[{"date":"2018-11-23T12:12:12.000Z","programId":"abcde"}],"namedConfig":{"saturdayProgramId":"xyz","sundayProgramId":"dr4edfgf","weekdayProgramId":"21"},"programConfig":[],"sensorConfig":[{"id":"abcde12345","description":"hot water top of tank","role":"hw","reading":null}]}
+{"datedConfig":[{"programId":"abcde","timeOfYear":{"day":23,"month":11}}],"namedConfig":{"saturdayProgramId":"xyz","sundayProgramId":"dr4edfgf","weekdayProgramId":"21"},"programConfig":[],"sensorConfig":[{"id":"abcde12345","description":"hot water top of tank","role":"hw","reading":null}]}

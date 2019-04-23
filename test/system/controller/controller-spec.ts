@@ -22,7 +22,7 @@ describe("Controller", () => {
     describe("getActiveProgram", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
-        before (() => {
+        before(() => {
             controller.start();
         });
 
@@ -84,7 +84,7 @@ describe("Controller", () => {
     describe("refresh", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
-        before (() => {
+        before(() => {
             return controller.start();
         });
 
@@ -157,10 +157,10 @@ describe("Controller", () => {
             });
 
             mockOverrideManager.overrides.push(new Override({
-                rule, 
+                rule,
                 date: today
             }));
-            
+
             await controller.refresh(today);
             cs = controller.getControlState();
             expect(cs.heating).to.equal(true);
@@ -171,7 +171,7 @@ describe("Controller", () => {
     describe("hot water", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
-        before (() => {
+        before(() => {
             mockConfigManager.config = new Configuration(configE);
             return controller.start();
         });
@@ -189,25 +189,25 @@ describe("Controller", () => {
             await controller.refresh(new Date("2019-01-06T02:00:00"));
             cs = controller.getControlState();
             expect(cs.hotWater).to.equal(true);
-            
+
             // turn off when above threshold
             mockSensorManager.setHwTemp(40);
             await controller.refresh(new Date("2019-01-06T02:00:00"));
             cs = controller.getControlState();
             expect(cs.hotWater).to.equal(false);
-            
+
             // remain off when inside threshold
             mockSensorManager.setHwTemp(40);
             await controller.refresh(new Date("2019-01-06T02:00:00"));
             cs = controller.getControlState();
             expect(cs.hotWater).to.equal(false);
-            
+
             // turn on again off when below threshold
             mockSensorManager.setHwTemp(10);
             await controller.refresh(new Date("2019-01-06T02:00:00"));
             cs = controller.getControlState();
             expect(cs.hotWater).to.equal(true);
-            
+
         });
     });
 
@@ -251,7 +251,13 @@ const configB: any = {
         "sundayProgramId": "dr4edfgf"
     },
     "datedConfig": [
-        { "programId": "abcde", "date": "2018-11-23T12:12:12" }
+        {
+            "programId": "abcde",
+            timeOfYear: {
+                month: 11,
+                day: 23
+            }
+        }
     ],
     "sensorConfig": [
         { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }
@@ -292,7 +298,13 @@ const configC: any = {
         "sundayProgramId": "dr4edfgf"
     },
     "datedConfig": [
-        { "programId": "foo", "date": "2019-01-06T01:01:01" }
+        { 
+            "programId": "foo",
+            timeOfYear: {
+                month: 1,
+                day: 6
+            } 
+        }
     ],
     "sensorConfig": [
         { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }
@@ -347,7 +359,13 @@ const configD: any = {
         "sundayProgramId": ""
     },
     "datedConfig": [
-        { "programId": "foo", "date": "2019-01-06T02:00:00" }
+        { 
+            "programId": "foo", 
+            timeOfYear: {
+                month: 1,
+                day: 6
+            } 
+        }
     ],
     "sensorConfig": []
 };
@@ -367,7 +385,13 @@ const configE: any = {
         "sundayProgramId": ""
     },
     "datedConfig": [
-        { "programId": "foo", "date": "2019-01-06T02:00:00" }
+        { 
+            "programId": "foo", 
+            timeOfYear: {
+                month: 1,
+                day: 6
+            } 
+        }
     ],
     "sensorConfig": []
 };

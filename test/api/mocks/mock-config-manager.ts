@@ -28,11 +28,17 @@ const defaultConfig: any = {
     datedConfig: [
         {
             programId: "X",
-            date: "2012-12-12T00:00:00",
+            timeOfYear: {
+                month: 12,
+                day: 12
+            },
         },
         {
             programId: "Y",
-            date: "2010-10-10T00:00:00",
+            timeOfYear: {
+                month: 10,
+                day: 10
+            },
         }
     ],
     programConfig: [
