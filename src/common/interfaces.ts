@@ -54,6 +54,12 @@ export interface ITimeOfYear {
     day: number;
 
     isToday(date: Date): boolean;
+    isSameAs(timeOfYear: ITimeOfYear): boolean;
+}
+
+export interface ITimeOfYearM {
+    month: number;
+    day: number;
 }
 
 export interface IControlState {
@@ -88,11 +94,14 @@ type INamedConfigM = INamedConfig;
 
 export interface IDatedConfig {
     programId: string;
-    timeOfYear: TimeOfYear;
+    timeOfYear: ITimeOfYear;
 }
 
 // interface for the mutable version of dated config
-type IDatedConfigM = IDatedConfig;
+export interface IDatedConfigM {
+    programId: string;
+    timeOfYear: ITimeOfYearM;
+}
 
 export interface ISensorConfig {
     id: string;

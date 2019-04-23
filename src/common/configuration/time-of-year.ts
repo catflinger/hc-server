@@ -31,4 +31,9 @@ export class TimeOfYear implements ITimeOfYear {
     public isToday(date: Date): boolean {
         return this.month === date.getMonth() + 1 && this.day === date.getDate();
     }
+
+    public isSameAs(timeOfYear: ITimeOfYear): boolean {
+        return this.month === timeOfYear.month && this.day === timeOfYear.day;
+    }
+
 }

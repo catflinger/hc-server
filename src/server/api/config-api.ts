@@ -55,7 +55,6 @@ export class ConfigApi implements IApi {
                 };
 
                 setTimeout(() => { resp.json(data); }, this.delay);
-
                 this.controller.refresh();
 
             } catch (err) {
