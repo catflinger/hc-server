@@ -9,7 +9,6 @@ import { IOverrideManager, INJECTABLES } from "../../../src/types";
 import { IOverride, ITimeOfDay } from "../../../src/common/interfaces";
 import { TimeOfDay } from "../../../src/common/types";
 import { MockClock } from "./mock-clock";
-import { BasicHeatingRule } from "../../../src/app/controller/basic-heating-rule";
 import { RuleConfig } from "../../../src/common/configuration/rule-config";
 
 const clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);

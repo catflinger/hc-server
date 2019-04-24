@@ -5,7 +5,7 @@ import { IControlState, IRuleConfig, ISensorReading, ITimeOfDay } from "../../co
 import { IRule, IRuleResult } from "../../types";
 
 @injectable()
-export class BasicHeatingRule implements IRule {
+export class HeatingRule implements IRule {
 
     constructor(private ruleConfig: IRuleConfig) {}
 
@@ -24,7 +24,24 @@ export class BasicHeatingRule implements IRule {
             }) : time;
 
         if (this.ruleConfig.startTime.isEarlierThan(now) && this.ruleConfig.endTime.isLaterThan(now)) {
-            result.heating = true;
+
+            if (!this.ruleConfig.role) {
+                result.heating = true;
+            } else {
+                const sensorReading = readings.find((s) => s.role === this.ruleConfig.role);
+
+                if (sensorReading && sensorReading.reading !== null) {
+                    const temp = sensorReading.reading;
+
+                    if (temp < this.ruleConfig.min) {
+                        result.heating = true;
+                    } else if (temp < this.ruleConfig.max && currentState.heating) {
+                        result.heating = true;
+                    } else {
+                        result.heating = false;
+                    }
+                }
+            }
         }
 
         return result;

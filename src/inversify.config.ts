@@ -32,7 +32,7 @@ import { LoggerApi } from "./server/api/logger-api";
 import { OverrideApi } from "./server/api/override-api";
 import { SensorApi } from "./server/api/sensor-api";
 
-import { BasicHeatingRule } from "./app/controller/basic-heating-rule";
+import { HeatingRule } from "./app/controller/heating-rule";
 import { IRuleConfig } from "./common/interfaces";
 import { DevLoggerApi } from "./dev/dev.logger-api";
 
@@ -80,15 +80,9 @@ container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 // bindings for debugging support
 container.bind<IApi>(INJECTABLES.DevLogApi).to(DevLoggerApi).inSingletonScope();
 
-// tagged bindings
-container.bind<interfaces.Newable<RuleConstructor>>(INJECTABLES.Rule)
-    .toConstructor(BasicHeatingRule)
-    .whenTargetTagged("kind", "BasicHeatingRule");
-
 // bindings for factories
 container.bind<interfaces.Factory<IRule>>(INJECTABLES.RuleFactory).toFactory<IRule>((context: interfaces.Context) => {
     return (ruleConfig: IRuleConfig) => {
-        const ruleConstructor = container.getTagged<RuleConstructor>(INJECTABLES.Rule, "kind", ruleConfig.kind);
-        return new ruleConstructor(ruleConfig);
+        return new HeatingRule(ruleConfig);
     };
 });

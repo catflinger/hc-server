@@ -3,7 +3,7 @@ import { TimeOfYear } from "./configuration/time-of-year";
 /*
 All these interfaces are intended for use with immutable classes.
 */
-export type RuleType = "BasicHeatingRule" | "AnotherRuleType...";
+export type RoleType = "" | "hw" | "bedroom";
 
 export interface IProgram {
     id: string;
@@ -24,10 +24,12 @@ export interface IProgramM {
 
 export interface IRuleConfig {
     id: string;
-    kind: RuleType;
-    data: any;
     startTime: ITimeOfDay;
     endTime: ITimeOfDay;
+
+    role?: RoleType;
+    max?: number;
+    min?: number;
 }
 
 export interface ITimeOfDay {
@@ -122,13 +124,6 @@ export interface IOverride {
     readonly date: Date;
     readonly rule: IRuleConfig;
 }
-
-// export interface IConfigValidation {
-//     getBoolean(val: any, message: string, defaultValue?: boolean): boolean;
-//     getString(val: any, message: string, defaultValue?: string): string;
-//     getNumber(val: any, message: string, defaultValue?: number): number;
-//     getDate(val: any, message: string, defaultValue?: Date): Date;
-// }
 
 export interface ILogEntry {
     // the date and time of the entry

@@ -19,7 +19,7 @@ import { LoggerApi } from "../../src/server/api/logger-api";
 import { MockLogger } from "./mocks/mock-logger";
 import { DevLoggerApi } from "../../src/dev/dev.logger-api";
 import { IRuleConfig } from "../../src/common/interfaces";
-import { BasicHeatingRule } from "../../src/app/controller/basic-heating-rule";
+import { HeatingRule } from "../../src/app/controller/heating-rule";
 
 export const container = new Container();
 
@@ -48,15 +48,9 @@ container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi);
 container.bind<IApi>(INJECTABLES.DevLogApi).to(DevLoggerApi).inSingletonScope();
 container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(0);
 
-// tagged bindings
-container.bind<interfaces.Newable<RuleConstructor>>(INJECTABLES.Rule)
-    .toConstructor(BasicHeatingRule)
-    .whenTargetTagged("kind", "BasicHeatingRule");
-
 // bindings for factories
 container.bind<interfaces.Factory<IRule>>(INJECTABLES.RuleFactory).toFactory<IRule>((context: interfaces.Context) => {
     return (ruleConfig: IRuleConfig) => {
-        const ruleConstructor = container.getTagged<RuleConstructor>(INJECTABLES.Rule, "kind", ruleConfig.kind); 
-        return new ruleConstructor(ruleConfig);
+        return new HeatingRule(ruleConfig);
     };
 });

@@ -1,3 +1,4 @@
+import { RoleType } from "./interfaces";
 
 export class ConfigValidation {
 
@@ -7,6 +8,14 @@ export class ConfigValidation {
 
     public static getString(val: any, message: string, defaultValue?: string): string {
         return getValue("string", val, message, defaultValue);
+    }
+
+    public static getRoleType(val: any, message: string, defaultValue?: RoleType): RoleType {
+        const role = this.getString(val, message, defaultValue);
+        if (role !== "" && role !== "hw" && role !== "bedroom") {
+            throw new Error(`Config validation, ${message} is not a valid role type`);
+        }
+        return role;
     }
 
     public static getNumber(val: any, message: string, defaultValue?: number): number {

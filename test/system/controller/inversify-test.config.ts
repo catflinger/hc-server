@@ -10,7 +10,7 @@ import { MockSystem } from "./mocks/mock-system";
 import { Clock } from "../../../src/app/controller/clock";
 import { MockOverrideManager } from "./mocks/mock-override-manager";
 import { MockLogger } from "./mocks/mock-logger";
-import { BasicHeatingRule } from "../../../src/app/controller/basic-heating-rule";
+import { HeatingRule } from "../../../src/app/controller/heating-rule";
 import { IRuleConfig } from "../../../src/common/interfaces";
 
 export const container = new Container();
@@ -26,13 +26,9 @@ container.bind<MockOverrideManager>(INJECTABLES.OverrideManager).to(MockOverride
 container.bind<ISystem>(INJECTABLES.System).to(MockSystem).inSingletonScope();
 container.bind<ILogger>(INJECTABLES.Logger).to(MockLogger).inSingletonScope();
 
-// tagged bindings
-container.bind<interfaces.Newable<RuleConstructor>>(INJECTABLES.Rule).toConstructor(BasicHeatingRule).whenTargetTagged("kind", "BasicHeatingRule");
-
 // bindings for factories
 container.bind<interfaces.Factory<IRule>>(INJECTABLES.RuleFactory).toFactory<IRule>((context: interfaces.Context) => {
     return (ruleConfig: IRuleConfig) => {
-        const ruleConstructor = container.getTagged<RuleConstructor>(INJECTABLES.Rule, "kind", ruleConfig.kind); 
-        return new ruleConstructor(ruleConfig);
+        return new HeatingRule(ruleConfig);
     };
 });
