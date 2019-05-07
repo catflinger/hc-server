@@ -13,7 +13,7 @@ export class MockSystem implements ISystem {
     }
 
     public applyControlState(cs: IControlState): Promise<void> {
-        throw new Error("applyControlState not implemented in mock");
+        return Promise.resolve();
     }
     
 }

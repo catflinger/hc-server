@@ -10,7 +10,7 @@ export class SensorConfig implements ISensorConfig {
     constructor(data: any) {
         this.id = ConfigValidation.getString(data.id, "sensorConfig:id");
         this.description = ConfigValidation.getString(data.description, "sensorConfig:description");
-        this.role = ConfigValidation.getRoleType(data.role, "sensorConfig:role", "");
+        this.role = ConfigValidation.getRoleType(data.role, "sensorConfig:role", null);
         this.reading = data.reading === null ? null : ConfigValidation.getNumber(data.reading, "sensorConfig:reading", null);
     }
 }

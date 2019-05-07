@@ -62,9 +62,9 @@ export class Controller implements IController {
             };
             return this.refresh();
         })
-        .then(() => {
-            return this.log();
-        })
+        // .then(() => {
+        //     return this.log();
+        // })
         .then(() => {
             // kick the timers off
             if (refreshIntervalSeconds !== undefined && refreshIntervalSeconds > 5) {
@@ -80,53 +80,63 @@ export class Controller implements IController {
                 },
                 logIntervalMinutes * 1000 * 60);
             }
+        })
+        .catch((error) => {
+            const msg = "Failed to start controller: " + error;
+            errorLog(msg);
+            throw new Error(msg);
         });
     }
 
-    public refresh(now?: Date): void {
-
-        if (!now) {
-            now = this.clock.now();
-        }
-        try {
-            const sensorReadings = this.sensorManager.getReadings();
-            // const config: IConfiguration = this.configManager.getConfig();
-
-            // find the active program
-            const program = this.getActiveProgram(now);
-
-            // apply the rules to get new control state
-            const newControlState: IControlState = { heating: false, hotWater: false };
-
-            // set the hot water based on the program threshold values
-            const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
-
-            if (hwReading !== undefined) {
-                if (hwReading.reading < program.minHwTemp) {
-                    newControlState.hotWater = true;
-                } else if (hwReading.reading < program.maxHwTemp && this.controlState.hotWater) {
-                    // keep the hw on until the upper threshold is reached
-                    // if the hw is off then we are on theway back down again so keep it off
-                    // this behaviour is to prevent the HW continually cycling around the upper threshold value
-                    newControlState.hotWater = true;
-                }
+    public refresh(now?: Date): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (!now) {
+                now = this.clock.now();
             }
-            program.getRules().forEach((rule: IRuleConfig) => {
-                this.applyRule(rule, sensorReadings, now, newControlState);
-            });
+            try {
+                const sensorReadings = this.sensorManager.getReadings();
+                // const config: IConfiguration = this.configManager.getConfig();
 
-            this.overideManager.getOverrides().forEach((ov: IOverride) => {
-                this.applyRule(ov.rule, sensorReadings, now, newControlState);
-            });
+                // find the active program
+                const program = this.getActiveProgram(now);
 
-            this.controlState = newControlState;
+                // apply the rules to get new control state
+                const newControlState: IControlState = { heating: false, hotWater: false };
 
-            // switch the devices based on new control state
-            this.system.applyControlState(newControlState);
+                // set the hot water based on the program threshold values
+                const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
 
-        } catch (error) {
-            errorLog("Cannot read sensors: " + error);
-        }
+                if (hwReading !== undefined) {
+                    if (hwReading.reading < program.minHwTemp) {
+                        newControlState.hotWater = true;
+                    } else if (hwReading.reading < program.maxHwTemp && this.controlState.hotWater) {
+                        // keep the hw on until the upper threshold is reached
+                        // if the hw is off then we are on theway back down again so keep it off
+                        // this behaviour is to prevent the HW continually cycling around the upper threshold value
+                        newControlState.hotWater = true;
+                    }
+                }
+                program.getRules().forEach((rule: IRuleConfig) => {
+                    this.applyRule(rule, sensorReadings, now, newControlState);
+                });
+
+                this.overideManager.getOverrides().forEach((ov: IOverride) => {
+                    this.applyRule(ov.rule, sensorReadings, now, newControlState);
+                });
+
+                this.controlState = newControlState;
+
+                // switch the devices based on new control state
+                this.system.applyControlState(newControlState);
+
+                resolve();
+
+            } catch (error) {
+                const message = "Cannot refresh controller: " + error;
+                errorLog(message);
+                reject(message);
+            }
+        });
     }
 
     public getActiveProgram(now: Date): IProgram {

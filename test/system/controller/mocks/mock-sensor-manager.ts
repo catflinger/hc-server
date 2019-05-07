@@ -1,4 +1,4 @@
-import { ISensorConfig } from "../../../../src/common/interfaces";
+import { ISensorConfig, RoleType } from "../../../../src/common/interfaces";
 import { injectable } from "inversify";
 import { ISensorManager } from "../../../../src/types";
 
@@ -18,7 +18,7 @@ export class MockSensorManager implements ISensorManager {
         {
             id: "B",
             description: "Sensor B",
-            role: "something",
+            role: "bedroom",
             reading: 30,
         }
     ];
@@ -41,7 +41,7 @@ export class MockReading implements ISensorConfig {
     constructor(
         public id: string,
         public description: string,
-        public role: string,
+        public role: RoleType,
         public reading: number,
         public logPosition: number,
     ){}

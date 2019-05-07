@@ -43,59 +43,58 @@ export class SensorManager implements ISensorManager {
         return this.readSensors()
         .then((readings: ISensorReading[]) => {
             this.cachedReadings = readings;
-            return;
         });
     }
 
-    private async readSensors(): Promise<ISensorReading[]> {
-        log("entering readAvailableSensors: 1wireRoot= " + this.oneWireRoot);
-        const sensorsIds = await fsu.listDirectoriesP(this.oneWireRoot)
-        .catch((err) => {
-            throw err;
-        });
-        const tasks: Array<Promise<ISensorReading>> = [];
+    private readSensors(): Promise<ISensorReading[]> {
+        return fsu.listDirectoriesP(this.oneWireRoot)
+        .then((sensorsIds: string[]) => {
+            const tasks: Array<Promise<ISensorReading>> = [];
 
-        log("sensorIds.length: " + sensorsIds.length);
+            sensorsIds.forEach((id: string) => {
+                if (id.startsWith("28")) {
+                    tasks.push(this.readSensor({
+                        description: "",
+                        id,
+                        reading: null,
+                        role: null,
+                    }));
+                }
+            });
 
-        sensorsIds.forEach((id: string) => {
-            log("read sensor: " + id);
-            if (id.startsWith("28")) {
-                tasks.push(this.readSensor({
-                    description: "",
-                    id,
-                    reading: null,
-                    role: "",
-                }));
-            }
-        });
+            return Promise.all(tasks);
 
-        const results: ISensorReading[] = [];
+            /*
+            // TO DO: this is too complicated, execute in parallel using Promise.all()
+            const results: ISensorReading[] = [];
 
-        // execute the promises sequentially
-        return tasks.reduce(
-            async (previousPromise: Promise<ISensorReading>, current) => {
+            // execute the promises sequentially
+            return tasks.reduce(
+                async (previousPromise: Promise<ISensorReading>, current) => {
 
-                // execute the previous promise
-                const reading = await previousPromise;
+                    // execute the previous promise
+                    const reading = await previousPromise;
 
-                // the first promise is a dummy so don't add the reading to the results
+                    // the first promise is a dummy so don't add the reading to the results
+                    if (reading !== null) {
+                        results.push(reading);
+                    }
+
+                    // return the current promise so that it will be executed in the next iteration
+                    return current;
+                },
+                Promise.resolve(null),
+            )
+
+            // this executes the final promise in the taks list
+            .then((reading) => {
                 if (reading !== null) {
                     results.push(reading);
                 }
-
-                // return the current promise so that it will be executed in the next iteration
-                return current;
-            },
-            Promise.resolve(null),
-        )
-
-        // this executes the final promise in the taks list
-        .then((reading) => {
-            if (reading !== null) {
-                results.push(reading);
-            }
-            // there are now no more promises to execute so we can return the results
-            return Promise.resolve(results);
+                // there are now no more promises to execute so we can return the results
+                return Promise.resolve(results);
+            });
+            */
         });
     }
 

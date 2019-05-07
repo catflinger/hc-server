@@ -23,19 +23,19 @@ const defaultAvailableSensors: ISensorConfig[] = [
     {
         id: "28.0",
         description: "",
-        role: "",
+        role: null,
         reading: 43.23,
     },
     {
         id: "28.1",
         description: "",
-        role: "",
+        role: null,
         reading: 19.2,
     },
     {
         id: "28.3",
         description: "",
-        role: "",
+        role: null,
         reading: 4,
     },
 ];
@@ -50,7 +50,7 @@ const defaultConfiguredSensors: ISensorConfig[] = [
     {
         id: "28.1",
         description: "bedroom",
-        role: "",
+        role: null,
         reading: 19.2,
     },
 ];

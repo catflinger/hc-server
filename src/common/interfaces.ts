@@ -3,7 +3,7 @@ import { TimeOfYear } from "./configuration/time-of-year";
 /*
 All these interfaces are intended for use with immutable classes.
 */
-export type RoleType = "" | "hw" | "bedroom";
+export type RoleType = "hw" | "bedroom";
 
 export interface IProgram {
     id: string;
@@ -28,8 +28,7 @@ export interface IRuleConfig {
     endTime: ITimeOfDay;
 
     role?: RoleType;
-    max?: number;
-    min?: number;
+    temp?: number;
 }
 
 export interface ITimeOfDay {
@@ -108,7 +107,7 @@ export interface IDatedConfigM {
 export interface ISensorConfig {
     id: string;
     description: string;
-    role: string;
+    role: RoleType;
     reading: number;
 }
 

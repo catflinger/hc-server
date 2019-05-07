@@ -15,8 +15,8 @@ const oneWireDir = container.get<string>(INJECTABLES.OneWireRootDir);
 const sensorManager: ISensorManager = container.get<ISensorManager>(INJECTABLES.SensorManager);
 
 describe("sensor-manager", () => {
-    before(() => {
-        sensorManager.start();
+    before( async () => {
+        await sensorManager.start();
     });
 
     beforeEach(async () => {
@@ -28,7 +28,6 @@ describe("sensor-manager", () => {
     describe("getReadings", () => {
         
         it("should read sensors", () => {
-
             const readings = sensorManager.getReadings(); 
             expect(readings).to.be.an.instanceOf(Array),
             expect(readings).to.have.lengthOf(2),
@@ -41,13 +40,13 @@ const expectedA: ISensorReading[] = [
     {
         id: "28.0",
         description: "",
-        role: "",
+        role: null,
         reading: 10,
     },
     {
         id: "28.1",
         description: "",
-        role: "",
+        role: null,
         reading: 11,
     },
 ];

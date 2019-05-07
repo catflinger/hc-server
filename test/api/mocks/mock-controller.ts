@@ -26,5 +26,7 @@ export class MockController implements IController {
         return this.state;
     }
     
-    public refresh() {}
+    public refresh(): Promise<void> {
+        return Promise.resolve();
+    }
 }

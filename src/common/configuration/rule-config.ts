@@ -11,8 +11,7 @@ export class RuleConfig implements IRuleConfig {
     public readonly startTime: ITimeOfDay;
     public readonly endTime: ITimeOfDay;
     public readonly role?: RoleType;
-    public readonly max?: number;
-    public readonly min?: number;
+    public readonly temp?: number;
 
     constructor(data: any) {
         this.id = data.id ?
@@ -35,8 +34,7 @@ export class RuleConfig implements IRuleConfig {
             throw new Error("start time cannot be later than end time in TimeOfDay");
         }
 
-        this.role = data.role ? ConfigValidation.getRoleType(data.role, "RuleConfig:role") : undefined;
-        this.max = data.max ? ConfigValidation.getNumber(data.max, "RuleConfig:max") : undefined;
-        this.min = data.max ? ConfigValidation.getNumber(data.min, "RuleConfig:min") : undefined;
+        this.role = data.role ? ConfigValidation.getRoleType(data.role, "RuleConfig:role") : null;
+        this.temp = data.temp ? ConfigValidation.getNumber(data.temp, "RuleConfig:temp") : NaN;
     }
 }

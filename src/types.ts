@@ -45,7 +45,7 @@ export interface IController {
     start(refreshIntervalSeconds?: number, logIntervalMinutes?: number): Promise<void>;
     getActiveProgram(now: Date): IProgram;
     getControlState(): IControlState;
-    refresh(now?: Date): void;
+    refresh(now?: Date): Promise<void>;
 }
 
 // models the physical boiler and pumps

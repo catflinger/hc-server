@@ -46,7 +46,7 @@ describe("Config API' get /api/config", () => {
                 expect(config.programConfig[0].id).to.equal("P1");
 
                 expect(config.sensorConfig.length).to.equal(2);
-                expect(config.sensorConfig[0].role).to.equal("");
+                expect(config.sensorConfig[0].role).to.be.null;
                 expect(config.sensorConfig[1].role).to.equal("hw");
             });
     });

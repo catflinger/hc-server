@@ -41,22 +41,29 @@ export class ConfigApi implements IApi {
             }
         });
 
-        router.put("/config", async (req, resp) => {
+        router.put("/config", (req, resp) => {
             try {
                 log("PUT /config");
 
                 const config: IConfiguration = new Configuration(req.body);
 
-                await this.configManager.setConfig(config);
+                this.configManager.setConfig(config)
+                .then(() => {
+                    this.controller.refresh();
+                })
+                .then(() => {
 
-                const data: IConfigApiResponse  = {
-                    config: this.configManager.getConfig(),
-                    date: this.clock.now(),
-                };
+                    const data: IConfigApiResponse  = {
+                        config: this.configManager.getConfig(),
+                        date: this.clock.now(),
+                    };
 
-                setTimeout(() => { resp.json(data); }, this.delay);
-                this.controller.refresh();
+                    setTimeout(
+                        () => resp.json(data),
+                        this.delay,
+                    );
 
+                });
             } catch (err) {
                 log("PUT /config ERROR : " +  err);
                 return resp.status(500).send(err);
