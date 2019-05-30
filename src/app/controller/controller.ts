@@ -25,6 +25,8 @@ import {
     ISystem,
 } from "../../types";
 
+import { Program } from "../../common/types";
+
 const errorLog = Debug("error");
 
 @injectable()
@@ -60,6 +62,8 @@ export class Controller implements IController {
                 heating: false,
                 hotWater: false,
             };
+        })
+        .then(() => {
             return this.refresh();
         })
         // .then(() => {
@@ -176,16 +180,13 @@ export class Controller implements IController {
 
         // if still no program found supply a default
         if (activeProgram === null) {
-            activeProgram = {
+            activeProgram = new Program({
                 id: "",
                 maxHwTemp: 50,
                 minHwTemp: 45,
                 name: "",
-
-                getRules: (): ReadonlyArray<IRuleConfig> => {
-                    return [] as ReadonlyArray<IRuleConfig>;
-                },
-            };
+                rules: [],
+            });
         }
 
         return activeProgram;

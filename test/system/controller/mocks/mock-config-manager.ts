@@ -1,6 +1,7 @@
 import { IConfigManager } from "../../../../src/types";
 import { injectable } from "inversify";
 import { IConfiguration } from "../../../../src/common/interfaces";
+import { Configuration } from "../../../../src/common/types";
 
 @injectable()
 export class MockConfigManager implements IConfigManager {

@@ -1,5 +1,3 @@
-import { TimeOfYear } from "./configuration/time-of-year";
-
 /*
 All these interfaces are intended for use with immutable classes.
 */
@@ -11,6 +9,7 @@ export interface IProgram {
     minHwTemp: number;
     maxHwTemp: number;
     getRules(): ReadonlyArray<IRuleConfig>;
+    toMutable(): IProgramM;
 }
 
 // interface for the mutable version of Program
@@ -107,7 +106,7 @@ export interface IDatedConfigM {
 export interface ISensorConfig {
     id: string;
     description: string;
-    role: RoleType;
+    role: string;
     reading: number;
 }
 

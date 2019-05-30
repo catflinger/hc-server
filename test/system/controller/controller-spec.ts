@@ -23,18 +23,12 @@ describe("Controller", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
         before(() => {
-            controller.start();
-        });
-
-        it("should start with everything off", () => {
-            const cs: IControlState = controller.getControlState();
-            expect(cs.heating).to.equal(false);
-            expect(cs.hotWater).to.equal(false);
-        });
-
-        it("should return default if nothing configured", async () => {
-
             mockConfigManager.config = new Configuration(configA);
+            return controller.start();
+        });
+
+        it("should return default program if nothing configured", async () => {
+
             let program: IProgram = await controller.getActiveProgram(new Date());
 
             expect(program.id).to.equal("");
@@ -85,6 +79,7 @@ describe("Controller", () => {
         const controller: Controller = container.get<IController>(INJECTABLES.Controller) as Controller;
 
         before(() => {
+            mockConfigManager.config = new Configuration(configA);
             return controller.start();
         });
 

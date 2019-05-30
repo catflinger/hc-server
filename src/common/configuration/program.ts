@@ -62,7 +62,7 @@ export class Program implements IProgram {
         return this.rules as ReadonlyArray<IRuleConfig>;
     }
 
-    public toMuatble(): IProgramM {
-        return JSON.parse(this.toJSON());
+    public toMutable(): IProgramM {
+        return JSON.parse(JSON.stringify(this));
     }
 }

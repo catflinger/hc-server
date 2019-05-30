@@ -14,13 +14,13 @@ export class MockController implements IController {
         return Promise.resolve();
     }
     public getActiveProgram(now: Date): IProgram {
-        return {
+        return new Program({
             id: "foo",
             name: "bar",
             maxHwTemp: 45,
             minHwTemp: 35,
-            getRules: () => [],
-        };
+            rules: [],
+        });
     }
     public getControlState(): IControlState {
         return this.state;
