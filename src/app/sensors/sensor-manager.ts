@@ -40,6 +40,8 @@ export class SensorManager implements ISensorManager {
     }
 
     public refresh(): Promise<void> {
+        log("Refreshing Sensor Readings");
+
         return this.readSensors()
         .then((readings: ISensorReading[]) => {
             this.cachedReadings = readings;
