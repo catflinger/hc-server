@@ -95,66 +95,65 @@ export class Controller implements IController {
 
     public refresh(now?: Date): Promise<void> {
         controllerLog("Refreshing Controller");
-        return new Promise((resolve, reject) => {
-            if (!now) {
-                now = this.clock.now();
-            }
-            try {
-                const newControlState: IControlState = { heating: false, hotWater: false };
-                const sensorReadings = this.sensorManager.getReadings();
-                const program = this.getActiveProgram(now);
 
-                if (program) {
+        if (!now) {
+            now = this.clock.now();
+        }
 
-                    const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
+        return this.sensorManager.refresh()
 
-                    // set the hot water based on the program threshold values
-                    if (!hwReading ||
-                        typeof hwReading.reading !== "number" ||
-                        isNaN(hwReading.reading) ||
-                        hwReading.reading === Number.POSITIVE_INFINITY ||
-                        hwReading.reading === Number.NEGATIVE_INFINITY) {
+        .then(() => {
+            const newControlState: IControlState = { heating: false, hotWater: false };
+            const sensorReadings = this.sensorManager.getReadings();
+            const program = this.getActiveProgram(now);
 
-                        newControlState.hotWater = false;
+            if (program) {
 
-                    } else {
+                const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
 
-                        if (hwReading.reading < program.minHwTemp) {
-                            newControlState.hotWater = true;
+                // set the hot water based on the program threshold values
+                if (!hwReading ||
+                    typeof hwReading.reading !== "number" ||
+                    isNaN(hwReading.reading) ||
+                    hwReading.reading === Number.POSITIVE_INFINITY ||
+                    hwReading.reading === Number.NEGATIVE_INFINITY) {
 
-                        } else if (hwReading.reading < program.maxHwTemp && this.controlState.hotWater) {
-                            // keep the hw on until the upper threshold is reached
-                            // if the hw is off then we are on theway back down again so keep it off
-                            // this behaviour is to prevent the HW continually cycling around the upper threshold value
-                            newControlState.hotWater = true;
-                        }
+                    newControlState.hotWater = false;
+
+                } else {
+
+                    if (hwReading.reading < program.minHwTemp) {
+                        newControlState.hotWater = true;
+
+                    } else if (hwReading.reading < program.maxHwTemp && this.controlState.hotWater) {
+                        // keep the hw on until the upper threshold is reached
+                        // if the hw is off then we are on theway back down again so keep it off
+                        // this behaviour is to prevent the HW continually cycling around the upper threshold value
+                        newControlState.hotWater = true;
                     }
-
-                    // set the heating based on the program rules
-                    program.getRules().forEach((rule: IRuleConfig) => {
-                        this.applyRule(rule, sensorReadings, now, newControlState);
-                    });
                 }
 
-                // we can still use the overrides even if we have no program
-                this.overideManager.getOverrides().forEach((ov: IOverride) => {
-                    this.applyRule(ov.rule, sensorReadings, now, newControlState);
+                // set the heating based on the program rules
+                program.getRules().forEach((rule: IRuleConfig) => {
+                    this.applyRule(rule, sensorReadings, now, newControlState);
                 });
-
-                // processing is now complete, remember the new control state
-                this.controlState = newControlState;
-
-                // switch the devices based on new control state
-                this.system.applyControlState(newControlState);
-
-                // all done - success
-                resolve();
-
-            } catch (error) {
-                const message = "Cannot refresh controller: " + error;
-                errorLog(message);
-                reject(message);
             }
+
+            // we can still use the overrides even if we have no program
+            this.overideManager.getOverrides().forEach((ov: IOverride) => {
+                this.applyRule(ov.rule, sensorReadings, now, newControlState);
+            });
+
+            // processing is now complete, remember the new control state
+            this.controlState = newControlState;
+
+            // switch the devices based on new control state
+            this.system.applyControlState(newControlState);
+        })
+
+        .catch((error) => {
+            const message = "Cannot refresh controller: " + error;
+            errorLog(message);
         });
     }
 

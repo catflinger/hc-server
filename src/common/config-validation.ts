@@ -11,7 +11,7 @@ export class ConfigValidation {
     }
 
     public static getRoleType(val: any, message: string, defaultValue?: RoleType): RoleType {
-        if (val === null || val === undefined) {
+        if (val === null || val === undefined || val === "") {
             return null;
         }
 
