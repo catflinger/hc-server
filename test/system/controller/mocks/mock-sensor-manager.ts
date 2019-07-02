@@ -4,6 +4,18 @@ import { ISensorManager } from "../../../../src/types";
 
 @injectable()
 export class MockSensorManager implements ISensorManager {
+
+    getReadingByRole(role: RoleType): number {
+        if (role === "hw") {
+            return this.readings[0].reading;
+        }
+        if (role === "bedroom") {
+            return this.readings[1].reading;
+        }
+
+        return null;
+    }
+
     start(): Promise<void> {
         return Promise.resolve();
     }
@@ -14,13 +26,17 @@ export class MockSensorManager implements ISensorManager {
             description: "Sensor A",
             role: "hw",
             reading: 30,
-        },
+            displayColor: "black",
+            displayOrder: 100,
+},
         {
             id: "B",
             description: "Sensor B",
             role: "bedroom",
             reading: 30,
-        }
+            displayColor: "black",
+            displayOrder: 100,
+}
     ];
 
     public setHwTemp(val: number): void {
@@ -43,6 +59,7 @@ export class MockReading implements ISensorConfig {
         public description: string,
         public role: RoleType,
         public reading: number,
-        public logPosition: number,
-    ){}
+        public displayColor: "black",
+        public displayOrder: 100,
+){}
 }

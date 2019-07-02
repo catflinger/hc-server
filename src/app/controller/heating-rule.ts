@@ -11,7 +11,10 @@ export class HeatingRule implements IRule {
 
     constructor(private ruleConfig: IRuleConfig) {}
 
-    public applyRule(currentState: IControlState, readings: ReadonlyArray<ISensorReading>, time: ITimeOfDay | Date): IRuleResult {
+    public applyRule(
+        currentState: IControlState,
+        readings: ReadonlyArray<ISensorReading>,
+        time: ITimeOfDay | Date): IRuleResult {
 
         const result: IRuleResult = {
             heating: null,

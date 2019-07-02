@@ -5,6 +5,7 @@ import * as path from "path";
 import {
     ISensorConfig,
     ISensorReading,
+    RoleType,
 } from "../../common/interfaces";
 
 import { SensorReading } from "../../common/types";
@@ -48,6 +49,19 @@ export class SensorManager implements ISensorManager {
         });
     }
 
+    public getReadingByRole(role: RoleType): number {
+        let result: number = NaN;
+
+        const config: ISensorConfig = this.configManager.getConfig().getSensorConfig().find((s) => s.role === role);
+        if (config) {
+            const reading: ISensorReading = this.cachedReadings.find((s) => s.id === config.id);
+            if (reading) {
+                result = reading.reading;
+            }
+        }
+        return result;
+    }
+
     private readSensors(): Promise<ISensorReading[]> {
         return fsu.listDirectoriesP(this.oneWireRoot)
         .then((sensorsIds: string[]) => {
@@ -57,6 +71,8 @@ export class SensorManager implements ISensorManager {
                 if (id.startsWith("28")) {
                     tasks.push(this.readSensor({
                         description: "",
+                        displayColor: "black",
+                        displayOrder: 100,
                         id,
                         reading: null,
                         role: null,

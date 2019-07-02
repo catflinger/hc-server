@@ -255,7 +255,13 @@ const configB: any = {
         }
     ],
     "sensorConfig": [
-        { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }
+        { 
+            "id": "abcde12345", 
+            "description": "hot water top of tank", 
+            "role": "hw", 
+            "displayColor": "black",
+            "displayOrder": 1
+        }
     ]
 };
 
@@ -302,7 +308,13 @@ const configC: any = {
         }
     ],
     "sensorConfig": [
-        { "id": "abcde12345", "description": "hot water top of tank", "role": "hw", "deleted": false }
+        { 
+            "id": "abcde12345", 
+            "description": "hot water top of tank", 
+            "role": "hw", 
+            "displayColor": "black",
+            "displayOrder": 1
+        }
     ]
 };
 
@@ -364,6 +376,7 @@ const configD: any = {
     ],
     "sensorConfig": []
 };
+
 const configE: any = {
     "programConfig": [
         {

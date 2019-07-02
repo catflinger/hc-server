@@ -1,6 +1,16 @@
 import { Router } from "express";
 
-import { IConfiguration, IControlState, ILogExtract, IOverride, IProgram, IRuleConfig, ISensorReading, ITimeOfDay } from "./common/interfaces";
+import {
+    IConfiguration,
+    IControlState,
+    ILogExtract,
+    IOverride,
+    IProgram,
+    IRuleConfig,
+    ISensorReading,
+    ITimeOfDay,
+    RoleType,
+} from "./common/interfaces";
 
 export const INJECTABLES = {
     // symbols for constants
@@ -71,6 +81,7 @@ export interface ISensorManager {
     start(): Promise<void>;
     getReadings(): ISensorReading[];
     refresh(): Promise<void>;
+    getReadingByRole(role: RoleType): number;
 }
 
 // manages the application configuratiom

@@ -15,6 +15,6 @@ export class MockConfigManager implements IConfigManager {
         return this.config;
     }    
     public setConfig(config: IConfiguration): Promise<any> {
-        throw new Error("Method not implemented.");
+        throw new Error("MockConfigManager.setConfig Method not implemented.");
     }
 }

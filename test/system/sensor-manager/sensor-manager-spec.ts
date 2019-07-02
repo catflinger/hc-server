@@ -42,11 +42,15 @@ const expectedA: ISensorReading[] = [
         description: "",
         role: null,
         reading: 10,
-    },
+        displayColor: "black",
+        displayOrder: 100,
+},
     {
         id: "28.1",
         description: "",
         role: null,
         reading: 11,
-    },
+        displayColor: "black",
+        displayOrder: 100,
+},
 ];

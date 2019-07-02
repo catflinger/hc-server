@@ -108,24 +108,30 @@ export class Controller implements IController {
             const program = this.getActiveProgram(now);
 
             if (program) {
+                controllerLog("Active program " + program.name);
 
-                const hwReading: ISensorReading = sensorReadings.find((r) => r.role === "hw");
+                const hwReading: number = this.sensorManager.getReadingByRole("hw");
+
+                controllerLog("hw reading " + hwReading);
 
                 // set the hot water based on the program threshold values
                 if (!hwReading ||
-                    typeof hwReading.reading !== "number" ||
-                    isNaN(hwReading.reading) ||
-                    hwReading.reading === Number.POSITIVE_INFINITY ||
-                    hwReading.reading === Number.NEGATIVE_INFINITY) {
+                    typeof hwReading !== "number" ||
+                    isNaN(hwReading) ||
+                    hwReading === Number.POSITIVE_INFINITY ||
+                    hwReading === Number.NEGATIVE_INFINITY) {
 
                     newControlState.hotWater = false;
 
                 } else {
 
-                    if (hwReading.reading < program.minHwTemp) {
+                    controllerLog(`program min ${program.minHwTemp} max ${program.maxHwTemp}`);
+                    controllerLog(`control state ${JSON.stringify(this.controlState)}`);
+
+                    if (hwReading < program.minHwTemp) {
                         newControlState.hotWater = true;
 
-                    } else if (hwReading.reading < program.maxHwTemp && this.controlState.hotWater) {
+                    } else if (hwReading < program.maxHwTemp && this.controlState.hotWater) {
                         // keep the hw on until the upper threshold is reached
                         // if the hw is off then we are on theway back down again so keep it off
                         // this behaviour is to prevent the HW continually cycling around the upper threshold value

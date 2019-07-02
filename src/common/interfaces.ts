@@ -108,6 +108,8 @@ export interface ISensorConfig {
     description: string;
     role: string;
     reading: number;
+    displayColor: string; // as html name or #RRGGBB
+    displayOrder: number;
 }
 
 // interface for the mutable version of sensor config
