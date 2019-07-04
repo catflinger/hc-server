@@ -106,7 +106,7 @@ export interface IDatedConfigM {
 export interface ISensorConfig {
     id: string;
     description: string;
-    role: string;
+    role: RoleType;
     reading: number;
     displayColor: string; // as html name or #RRGGBB
     displayOrder: number;
