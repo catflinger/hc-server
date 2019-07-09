@@ -3,10 +3,9 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 import { isArray } from "util";
 
-import { ILogApiResponse, ILogExtract, IDayOfYear } from "../../common/interfaces";
-import { ConfigValidation } from "../../common/types";
-import { IApi, IClock, ILogger, INJECTABLES } from "../../types";
 import { DayOfYear } from "../../common/configuration/day-of-year";
+import { IDayOfYear, ILogApiResponse, ILogExtract } from "../../common/interfaces";
+import { IApi, IClock, ILogger, INJECTABLES } from "../../types";
 
 const apiLog = Debug("api");
 const errorLog = Debug("error");
@@ -31,9 +30,9 @@ export class LoggerApi implements IApi {
 
             try {
                 dayOfYear = new DayOfYear({
-                    year: parseInt(req.query.year, 10), 
-                    month: parseInt(req.query.month, 10), 
                     day: parseInt(req.query.day, 10),
+                    month: parseInt(req.query.month, 10),
+                    year: parseInt(req.query.year, 10),
                 });
 
             } catch (error) {

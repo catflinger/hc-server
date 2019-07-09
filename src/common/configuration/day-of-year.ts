@@ -36,7 +36,12 @@ export class DayOfYear implements IDayOfYear {
         }
     }
 
-    public isToday(date: Date): boolean {
+    public isToday(): boolean {
+        return this.isSameDate(new Date());
+    }
+
+    public isSameDate(date: Date): boolean {
+
         return this.year === date.getFullYear() &&
             this.month === date.getMonth() + 1 &&
             this.day === date.getDate();

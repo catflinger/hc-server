@@ -39,7 +39,7 @@ export class ConfigValidation {
         } else if (val !== undefined && typeof val !== "string") {
             // value is present but not the correct type
             throw new Error(`Config validation, value for ${message} is not a string`);
-        } else if (val !== undefined && ! dateExpression.test(val)) {
+        } else if (val !== undefined && !dateExpression.test(val)) {
             // string value is present but not the correct format
             throw new Error(`Config validation, value for ${message} is not formatted yyyy-mm-ddThh:mm:ss`);
         } else if (val === undefined && defaultValue !== undefined) {
@@ -54,23 +54,29 @@ export class ConfigValidation {
         }
 
         return result;
-        }
+    }
 }
 
 function getValue(typeName: string, val: any, message: string, defaultValue?: any): any {
     let result: any;
 
-    if (val === undefined && defaultValue === undefined) {
-        // value missing but no default
-        throw new Error(`Config validation, cannot find ${message} and no default value supplied`);
-    } else if (val !== undefined && typeof val !== typeName) {
-        // value is present but not the correct type
-        throw new Error(`Config validation, value for ${message} is not ${typeName}`);
-    } else if ((val === undefined || val === null) && defaultValue !== undefined) {
+    if (val === undefined && defaultValue !== undefined) {
         // value is missing but we have got a default value
         result = defaultValue;
+    } else if (val === null && defaultValue !== undefined) {
+        // value is null but we have got a default value
+        result = defaultValue;
+    } else if (val === undefined) {
+        // value missing but no default
+        throw new Error(`Config validation, cannot find ${message} and no default value supplied`);
+    } else if (val === null) {
+        // value null but no default
+        throw new Error(`Config validation, value ${message} is null and no default value supplied`);
+    } else if (typeof val !== typeName) {
+        // value is present but not the correct type
+        throw new Error(`Config validation, value for ${message} is not ${typeName}`);
     } else {
-        // value is resent and of the correct type
+        // value is present and of the correct type
         result = val;
     }
     return result;

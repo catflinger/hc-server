@@ -54,7 +54,8 @@ export interface IDayOfYear {
     month: number;
     day: number;
 
-    isToday(date: Date): boolean;
+    isSameDate(date: Date): boolean;
+    isToday(): boolean;
     isSameAs(dayOfYear: IDayOfYear): boolean;
 
     getStartAsDate(): Date;

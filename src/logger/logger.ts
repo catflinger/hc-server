@@ -4,7 +4,7 @@ import { createPool, FieldInfo, MysqlError, Pool } from "mysql";
 import * as path from "path";
 
 import { ConfigManager } from "../app/configuration/config-manager";
-import { IControlState, ILogEntry, ILogExtract, ISensorReading, IDayOfYear } from "../common/interfaces";
+import { IControlState, IDayOfYear, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
 import { LogEntry } from "../common/log/log-entry";
 import { LogExtract } from "../common/log/log-extract";
 import { IClock, ILogger, ILoggerConfig, INJECTABLES } from "../types";
@@ -133,9 +133,9 @@ export class Logger implements ILogger {
             });
 
             return Promise.resolve(new LogExtract({
+                dayOfYear,
                 entries,
                 sensors: sensorIds,
-                dayOfYear,
             }));
         });
     }
