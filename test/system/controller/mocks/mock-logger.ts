@@ -1,12 +1,13 @@
 import { ILogger, ILoggerConfig } from "../../../../src/types";
-import { ISensorReading, IControlState, ILogExtract } from "../../../../src/common/interfaces";
+import { ISensorReading, IControlState, ILogExtract, IDayOfYear } from "../../../../src/common/interfaces";
 import { injectable } from "inversify";
+import { DayOfYear } from "../../../../src/common/configuration/day-of-year";
 
 @injectable()
 export class MockLogger implements ILogger {
     public config: ILoggerConfig;
 
-    getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract> {
+    getExtract(dayOfYear: IDayOfYear): Promise<ILogExtract> {
         return Promise.resolve(dummyResult);
     }
     log(date: Date, readings: ISensorReading[], controlState: IControlState): Promise<boolean> {
@@ -23,8 +24,10 @@ export class MockLogger implements ILogger {
 const dummyResult = {
     sensors: ["foo", "bar"],
 
-    from: new Date("2019-01-03T12:00:00"),
-    to: new Date("2019-01-03T13:00:00"),
+    // date: new Date("2019-01-03T00:00:00"),
+    // logDate: new Date("2019-01-03T00:00:00"),
+
+    dayOfYear: new DayOfYear({ year: 2019, day: 3, month: 1 }),
 
     // the data retrieved
     entries: [

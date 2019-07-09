@@ -3,7 +3,8 @@ import { inject, injectable, TargetTypeEnum } from "inversify";
 import { createPool, FieldInfo, MysqlError, Pool } from "mysql";
 import * as path from "path";
 
-import { IControlState, ILogEntry, ILogExtract, ISensorReading } from "../common/interfaces";
+import { ConfigManager } from "../app/configuration/config-manager";
+import { IControlState, ILogEntry, ILogExtract, ISensorReading, IDayOfYear } from "../common/interfaces";
 import { LogEntry } from "../common/log/log-entry";
 import { LogExtract } from "../common/log/log-extract";
 import { IClock, ILogger, ILoggerConfig, INJECTABLES } from "../types";
@@ -16,6 +17,9 @@ export class Logger implements ILogger {
 
     @inject(INJECTABLES.Clock)
     private clock: IClock;
+
+    @inject(INJECTABLES.ConfigManager)
+    private configManager: ConfigManager;
 
     constructor(
         @inject(INJECTABLES.ConfigRootDir) private configRoot: string) {
@@ -84,52 +88,37 @@ export class Logger implements ILogger {
         });
     }
 
-    public getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract> {
+    public getExtract(dayOfYear: IDayOfYear): Promise<ILogExtract> {
 
         let controlStates: any[];
+
+        const from: Date = dayOfYear.getStartAsDate();
+        const to: Date = dayOfYear.getEndAsDate();
+
+        const sensorIds = this.configManager.getConfig().getSensorConfig().map((s) => s.id);
 
         return this.selectControlState(this.pool, from.getTime(), to.getTime())
         .then((rows: any[]) => {
             controlStates = rows;
-
-            const promises: Array<Promise<any[]>> = [];
-            ids.forEach((id: string) => {
-                promises.push(this.selectReading(this.pool, from.getTime(), to.getTime(), id));
-            });
-            return Promise.all(promises);
+            return this.selectReading(this.pool, from.getTime(), to.getTime());
         })
-        .then((sensorReadings: any[][]) => {
+        .then((sensorReadings: any[]) => {
             const entries: any[] = [];
-
-            // combine all readings into one
-            let allReadings: any[] = [];
-            sensorReadings.forEach((sr) => {
-                allReadings = allReadings.concat(sr);
-            });
 
             // create a log entry for each control state (there will be one control state per log interval)
             controlStates.forEach((cs: any) => {
                 const readings: number[] = [];
 
                 // find the readings for the requested sensors
-                ids.forEach((id: string) => {
-                    const reading = allReadings.find((sr) => {
+                sensorIds.forEach((id: string) => {
+                    const reading = sensorReadings.find((sr) => {
                         return sr.sensor_id === id && sr.date === cs.date;
                     });
 
                     if (reading) {
                         readings.push(reading.reading);
                     } else {
-                        readings.push(null);
-                    }
-                });
-
-                sensorReadings.forEach((sensorData: any[]) => {
-                    const reading = sensorData.find((sd) => sd.date === cs.date);
-                    if (reading) {
-                        readings.push(reading.reading);
-                    } else {
-                        readings.push(null);
+                        readings.push(NaN);
                     }
                 });
 
@@ -145,9 +134,8 @@ export class Logger implements ILogger {
 
             return Promise.resolve(new LogExtract({
                 entries,
-                from,
-                sensors: ids,
-                to,
+                sensors: sensorIds,
+                dayOfYear,
             }));
         });
     }
@@ -255,9 +243,9 @@ export class Logger implements ILogger {
         });
     }
 
-    private selectReading(pool: Pool, from: number, to: number, id: string): Promise<any> {
+    private selectReading(pool: Pool, from: number, to: number): Promise<any> {
         return new Promise((resolve, reject) => {
-            pool.query("SELECT * FROM reading WHERE date >= ? AND date < ? AND sensor_id = ?", [from, to, id], (error, results) => {
+            pool.query("SELECT * FROM reading WHERE date >= ? AND date < ?", [from, to], (error, results) => {
                 if (error) {
                     reject(error);
                 } else {

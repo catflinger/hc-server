@@ -248,7 +248,8 @@ const configB: any = {
     "datedConfig": [
         {
             "programId": "abcde",
-            timeOfYear: {
+            dayOfYear: {
+                year: 2019,
                 month: 11,
                 day: 23
             }
@@ -301,7 +302,8 @@ const configC: any = {
     "datedConfig": [
         { 
             "programId": "foo",
-            timeOfYear: {
+            dayOfYear: {
+                year: 2019,
                 month: 1,
                 day: 6
             } 
@@ -368,7 +370,8 @@ const configD: any = {
     "datedConfig": [
         { 
             "programId": "foo", 
-            timeOfYear: {
+            dayOfYear: {
+                year: 2019,
                 month: 1,
                 day: 6
             } 
@@ -395,7 +398,8 @@ const configE: any = {
     "datedConfig": [
         { 
             "programId": "foo", 
-            timeOfYear: {
+            dayOfYear: {
+                year: 2019,
                 month: 1,
                 day: 6
             } 

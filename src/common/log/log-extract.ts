@@ -1,16 +1,17 @@
 import { ConfigValidation } from "../config-validation";
+import { DayOfYear } from "../configuration/day-of-year";
 import { ILogEntry, ILogExtract } from "../interfaces";
 import { LogEntry } from "./log-entry";
 
 export class LogExtract implements ILogExtract {
-    public readonly from: Date;
-    public readonly to: Date;
+    public readonly dayOfYear: DayOfYear;
     public readonly sensors: ReadonlyArray<string>;
     public readonly entries: ReadonlyArray<ILogEntry>;
 
     constructor(data: any) {
-        this.from = ConfigValidation.getDate(data.from, "LogExtract.from");
-        this.to = ConfigValidation.getDate(data.to, "LogExtract.to");
+
+        this.dayOfYear = new DayOfYear(data.dayOfYear);
+
         const sensors: string[] = [];
         const entries: ILogEntry[] = [];
 

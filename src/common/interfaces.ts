@@ -49,15 +49,20 @@ export interface ITimeOfDay {
     justBefore(): ITimeOfDay;
 }
 
-export interface ITimeOfYear {
+export interface IDayOfYear {
+    year: number;
     month: number;
     day: number;
 
     isToday(date: Date): boolean;
-    isSameAs(timeOfYear: ITimeOfYear): boolean;
+    isSameAs(dayOfYear: IDayOfYear): boolean;
+
+    getStartAsDate(): Date;
+    getEndAsDate(): Date;
 }
 
-export interface ITimeOfYearM {
+export interface IDayOfYearM {
+    year: number;
     month: number;
     day: number;
 }
@@ -94,13 +99,13 @@ type INamedConfigM = INamedConfig;
 
 export interface IDatedConfig {
     programId: string;
-    timeOfYear: ITimeOfYear;
+    dayOfYear: IDayOfYear;
 }
 
 // interface for the mutable version of dated config
 export interface IDatedConfigM {
     programId: string;
-    timeOfYear: ITimeOfYearM;
+    dayOfYear: IDayOfYearM;
 }
 
 export interface ISensorConfig {
@@ -126,7 +131,7 @@ export interface IOverride {
 }
 
 export interface ILogEntry {
-    // the date and time of the entry
+    // the time (and date) of this entry
     date: Date;
 
     // the control state at this time
@@ -138,13 +143,18 @@ export interface ILogEntry {
 }
 
 export interface ILogExtract {
-    // the query parameters
-    sensors: ReadonlyArray<string>;
-    from: Date;
-    to: Date;
 
-    // the data retrieved
+    dayOfYear: IDayOfYear;
+
+    // the records themselves
+    sensors: ReadonlyArray<string>;
     entries: ReadonlyArray<ILogEntry>;
+}
+
+export interface ILogApiResponse {
+    // the date and time the respose was generated
+    date: Date;
+    log: ILogExtract;
 }
 
 export interface IControlStateApiResponse {
@@ -166,8 +176,4 @@ export interface IOverrideApiResponse {
 export interface ISensorApiResponse {
     date: Date;
     sensors: ReadonlyArray<ISensorReading>;
-}
-export interface ILogApiResponse {
-    date: Date;
-    log: ILogExtract;
 }

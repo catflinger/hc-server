@@ -6,6 +6,7 @@ import { ExpressApp } from '../../src/server/express-app';
 import { INJECTABLES } from '../../src/types';
 import { MockLogger } from './mocks/mock-logger';
 import { ILogExtract } from '../../src/common/interfaces';
+import { DayOfYear } from '../../src/common/configuration/day-of-year';
 
 let mockLogger: MockLogger = container.get<MockLogger>(INJECTABLES.Logger);
 
@@ -28,8 +29,12 @@ describe("Logger API' get /api/log", () => {
         mockLogger.extract = extractA;
 
         const params: any = {
-            from: "2019-01-01T00:00:00",
-            to: "2019-12-31T23:59:59",
+            date: "2019-01-01T00:00:00",
+            dayOfYear: {
+                year: 2019,
+                month: 1,
+                day: 1,
+            },
             sensors: [ "foo", "bar"],
         };
 
@@ -53,10 +58,10 @@ describe("Logger API' get /api/log", () => {
 const extractA = {
     sensors: ["foo", "bar"],
 
-    from: new Date("2019-01-03T12:00:00"),
-    to: new Date("2019-01-03T13:00:00"),
+    // date: new Date("2019-01-03T12:00:00"),
+    
+    dayOfYear: new DayOfYear({ year: 2019, month: 1, day: 3}),
 
-    // the data retrieved
     entries: [
         {
             date: new Date("2019-01-03T12:00:00"),

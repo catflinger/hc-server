@@ -82,7 +82,8 @@ const goodConfig: any = {
     "datedConfig": [
         { 
             "programId": "abcde",
-            "timeOfYear": {
+            dayOfYear: {
+                year: 2019,
                 month: 11,
                 day: 23
             }

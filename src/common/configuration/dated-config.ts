@@ -1,13 +1,13 @@
 import { ConfigValidation } from "../config-validation";
 import { IDatedConfig } from "../interfaces";
-import { TimeOfYear } from "./time-of-year";
+import { DayOfYear } from "./day-of-year";
 
 export class DatedConfig implements IDatedConfig {
     public readonly programId: string;
-    public readonly timeOfYear: TimeOfYear;
+    public readonly dayOfYear: DayOfYear;
 
     constructor(data: any) {
         this.programId = ConfigValidation.getString(data.programId, "datedConfig:programId");
-        this.timeOfYear = new TimeOfYear(data.timeOfYear);
+        this.dayOfYear = new DayOfYear(data.dayOfYear);
     }
 }

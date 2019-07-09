@@ -173,7 +173,7 @@ export class Controller implements IController {
 
         // look for dated programs first
         datedConfig.forEach((dc) => {
-            if (dc.timeOfYear.isToday(now)) {
+            if (dc.dayOfYear.isToday(now)) {
                 const program = programs.find((p) => p.id === dc.programId);
                 if (program) {
                     activeProgram = program;

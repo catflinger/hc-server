@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
     IConfiguration,
     IControlState,
+    IDayOfYear,
     ILogExtract,
     IOverride,
     IProgram,
@@ -114,12 +115,13 @@ export interface ILogger {
     config: ILoggerConfig;
     init(): Promise<void>;
     end(): Promise<void>;
+    getExtract(dayOfYear: IDayOfYear): Promise<ILogExtract>;
+
     log(
         date: Date,
         readings: ReadonlyArray<ISensorReading>,
         controlState: IControlState,
     ): Promise<boolean>;
-    getExtract(ids: string[], from: Date, to: Date): Promise<ILogExtract>;
 }
 
 export interface ILoggerConfig {
