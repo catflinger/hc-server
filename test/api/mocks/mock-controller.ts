@@ -5,6 +5,10 @@ import { Program } from "../../../src/common/types";
 
 @injectable()
 export class MockController implements IController {
+
+    hwBoost(): void {
+        this.state.hotWater = true;
+    }
     public state: IControlState = {
         heating: false,
         hotWater: false,

@@ -204,6 +204,19 @@ describe("Controller", () => {
             expect(cs.hotWater).to.equal(true);
 
         });
+
+        it("should boost hw temperature", async () => {
+            mockSensorManager.setHwTemp(60);
+            await controller.refresh(new Date("2019-01-06T02:00:00"));
+            let cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(false);
+
+            controller.hwBoost();
+            cs = controller.getControlState();
+            expect(cs.hotWater).to.equal(true);
+
+        });
+
     });
 
 });

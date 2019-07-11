@@ -147,15 +147,17 @@ export interface ILogExtract {
 
     dayOfYear: IDayOfYear;
 
-    // the records themselves
     sensors: ReadonlyArray<string>;
     entries: ReadonlyArray<ILogEntry>;
 }
 
 export interface ILogApiResponse {
-    // the date and time the respose was generated
     date: Date;
     log: ILogExtract;
+}
+
+export interface IControlApiResponse {
+    date: Date;
 }
 
 export interface IControlStateApiResponse {

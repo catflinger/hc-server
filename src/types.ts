@@ -42,6 +42,7 @@ export const INJECTABLES = {
     // symbols for the apis
     ConfigApi: Symbol("ConfigApi"),
     ControlApi: Symbol("ControlApi"),
+    ControlStateApi: Symbol("ControlStateApi"),
     LogApi: Symbol("LogApi"),
     OverrideApi: Symbol("OverrideApi"),
     SensorApi: Symbol("SensorApi"),
@@ -57,6 +58,7 @@ export interface IController {
     getActiveProgram(now: Date): IProgram;
     getControlState(): IControlState;
     refresh(now?: Date): Promise<void>;
+    hwBoost(): void;
 }
 
 // models the physical boiler and pumps

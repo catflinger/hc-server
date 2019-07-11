@@ -27,6 +27,7 @@ import {
 
 import { Logger } from "./logger/logger";
 import { ConfigApi } from "./server/api/config-api";
+import { ControlApi } from "./server/api/control-api";
 import { ControlStateApi } from "./server/api/control-state-api";
 import { LoggerApi } from "./server/api/logger-api";
 import { OverrideApi } from "./server/api/override-api";
@@ -71,7 +72,8 @@ container.bind<interfaces.Newable<Device>>(INJECTABLES.Device).toConstructor(Dev
 container.bind<ExpressApp>(INJECTABLES.ExpressApp).to(ExpressApp).inSingletonScope();
 
 // bindings for the apis
-container.bind<IApi>(INJECTABLES.ControlApi).to(ControlStateApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.ControlApi).to(ControlApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.ControlStateApi).to(ControlStateApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.ConfigApi).to(ConfigApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();

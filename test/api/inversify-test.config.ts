@@ -9,6 +9,7 @@ import { MockConfigManager } from "./mocks/mock-config-manager";
 import { MockController } from "./mocks/mock-controller";
 
 import { ConfigApi } from "../../src/server/api/config-api";
+import { ControlApi } from "../../src/server/api/control-api";
 import { ControlStateApi } from "../../src/server/api/control-state-api";
 import { SensorApi } from "../../src/server/api/sensor-api";
 import { MockSensorManager } from "./mocks/mock-sensor-manager";
@@ -38,8 +39,9 @@ container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.jo
 container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(3000);
 
 // APIs
+container.bind<IApi>(INJECTABLES.ControlApi).to(ControlApi);
 container.bind<ConfigApi>(INJECTABLES.ConfigApi).to(ConfigApi);
-container.bind<IApi>(INJECTABLES.ControlApi).to(ControlStateApi);
+container.bind<IApi>(INJECTABLES.ControlStateApi).to(ControlStateApi);
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi);
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi);
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi);

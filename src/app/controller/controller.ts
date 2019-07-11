@@ -93,6 +93,20 @@ export class Controller implements IController {
         });
     }
 
+    public hwBoost(): void {
+        // TO DO: this is a temporary solution that might or might not prove
+        // to be a good permantnet one.
+        // It may be better to have a rule that sets the hot water on for a longer
+        // period of time, or this might just be overkill
+
+        // bump the hot water on to make the next refresh act as though the
+        // tank is still heating to its higher threshold rather than cooling
+        // to its lower threshold
+
+        this.controlState.hotWater = true;
+        this.system.applyControlState(this.controlState);
+    }
+
     public refresh(now?: Date): Promise<void> {
         controllerLog("Refreshing Controller");
 

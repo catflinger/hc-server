@@ -1,7 +1,7 @@
 import * as bodyParser from "body-parser";
 import * as Debug from "debug";
 import * as express from "express";
-import { Container, inject, injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import { IApi,  IController, INJECTABLES } from "../types";
 
@@ -15,6 +15,7 @@ export class ExpressApp {
     @inject(INJECTABLES.Controller) private controller: IController;
 
     @inject(INJECTABLES.ControlApi) private controlApi: IApi;
+    @inject(INJECTABLES.ControlStateApi) private controlStateApi: IApi;
     @inject(INJECTABLES.ConfigApi) private configApi: IApi;
     @inject(INJECTABLES.SensorApi) private sensorApi: IApi;
     @inject(INJECTABLES.OverrideApi) private overrideApi: IApi;
@@ -29,6 +30,7 @@ export class ExpressApp {
         const router: express.Router = express.Router();
 
         this.controlApi.addRoutes(router);
+        this.controlStateApi.addRoutes(router);
         this.configApi.addRoutes(router);
         this.sensorApi.addRoutes(router);
         this.overrideApi.addRoutes(router);
