@@ -1,65 +1,51 @@
 {
-    "datedConfig": [],
+    "datedConfig": [
+        {
+            "programId": "6643ac93-1d53-4245-b09b-4ad073d6d816",
+            "dayOfYear": {
+                "day": 2,
+                "month": 10,
+                "year": 2019
+            }
+        }
+    ],
     "namedConfig": {
-        "saturdayProgramId": "cd4a0640-c435-468a-aefd-d3255057a6cc",
-        "sundayProgramId": "bar",
-        "weekdayProgramId": "d734c37a-b7c1-4f85-a0fa-43ae03a755c3"
+        "saturdayProgramId": "462a35ac-a71e-4b5c-b457-e70eef378989",
+        "sundayProgramId": "462a35ac-a71e-4b5c-b457-e70eef378989",
+        "weekdayProgramId": "97b12f59-fc40-4329-82b8-5abb0fe90cf6"
     },
     "programConfig": [
         {
-            "id": "foo",
-            "maxHwTemp": 31,
-            "minHwTemp": 12,
-            "name": "Winter Sundays",
+            "id": "6643ac93-1d53-4245-b09b-4ad073d6d816",
+            "maxHwTemp": 50,
+            "minHwTemp": 40,
+            "name": "Schooldays",
             "rules": [
                 {
-                    "id": "c81b4505-f9e8-4e4e-8463-bafdb5847565",
+                    "id": "34f8974f-930a-4bc4-83ff-f9a95dec73f4",
                     "startTime": {
-                        "hour": 4,
+                        "hour": 6,
                         "minute": 30,
                         "second": 0
                     },
                     "endTime": {
                         "hour": 7,
-                        "minute": 30,
-                        "second": 0
-                    },
-                    "role": null,
-                    "temp": null
-                },
-                {
-                    "id": "4d818e2e-7db3-4987-958b-78f09a9861b7",
-                    "startTime": {
-                        "hour": 0,
                         "minute": 0,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 0,
-                        "minute": 30,
                         "second": 0
                     },
                     "role": "bedroom",
                     "temp": 18
-                }
-            ]
-        },
-        {
-            "id": "bar",
-            "maxHwTemp": 30,
-            "minHwTemp": 10,
-            "name": "Schooldays",
-            "rules": [
+                },
                 {
-                    "id": "753d0d66-dfdf-4d8f-996a-ebbe7418d3c7",
+                    "id": "af3dd7d3-1577-4b35-9398-8cbe6fb852f3",
                     "startTime": {
-                        "hour": 6,
-                        "minute": 40,
+                        "hour": 0,
+                        "minute": 0,
                         "second": 0
                     },
                     "endTime": {
-                        "hour": 7,
-                        "minute": 40,
+                        "hour": 0,
+                        "minute": 0,
                         "second": 0
                     },
                     "role": null,
@@ -68,127 +54,28 @@
             ]
         },
         {
-            "id": "d734c37a-b7c1-4f85-a0fa-43ae03a755c3",
+            "id": "462a35ac-a71e-4b5c-b457-e70eef378989",
             "maxHwTemp": 50,
             "minHwTemp": 40,
-            "name": "fishy",
+            "name": "Heating Off",
+            "rules": []
+        },
+        {
+            "id": "97b12f59-fc40-4329-82b8-5abb0fe90cf6",
+            "maxHwTemp": 50,
+            "minHwTemp": 40,
+            "name": "new program",
             "rules": [
                 {
-                    "id": "116d9a84-d659-4fcd-8730-f1455348ca6e",
+                    "id": "448e1472-611f-4a70-953d-40ca67d25c36",
                     "startTime": {
-                        "hour": 11,
+                        "hour": 0,
                         "minute": 20,
                         "second": 0
                     },
                     "endTime": {
-                        "hour": 11,
+                        "hour": 0,
                         "minute": 50,
-                        "second": 0
-                    },
-                    "role": null,
-                    "temp": null
-                },
-                {
-                    "id": "26d5d56a-3a6b-48e3-937d-387ff377a10a",
-                    "startTime": {
-                        "hour": 17,
-                        "minute": 50,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 19,
-                        "minute": 50,
-                        "second": 0
-                    },
-                    "role": "bedroom",
-                    "temp": 21
-                }
-            ]
-        },
-        {
-            "id": "cd4a0640-c435-468a-aefd-d3255057a6cc",
-            "maxHwTemp": 50,
-            "minHwTemp": 40,
-            "name": "biggy",
-            "rules": [
-                {
-                    "id": "a54d88cc-d3db-41bd-ba15-03bbdbe9c9b7",
-                    "startTime": {
-                        "hour": 18,
-                        "minute": 0,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 22,
-                        "minute": 0,
-                        "second": 0
-                    },
-                    "role": null,
-                    "temp": null
-                },
-                {
-                    "id": "46a64c7e-7ebd-4898-a21b-efe28d37d7b5",
-                    "startTime": {
-                        "hour": 5,
-                        "minute": 40,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 8,
-                        "minute": 40,
-                        "second": 0
-                    },
-                    "role": null,
-                    "temp": null
-                },
-                {
-                    "id": "4a8146c4-10ed-4ea2-8eab-672e521ee5a2",
-                    "startTime": {
-                        "hour": 12,
-                        "minute": 0,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 13,
-                        "minute": 0,
-                        "second": 0
-                    },
-                    "role": null,
-                    "temp": null
-                }
-            ]
-        },
-        {
-            "id": "5c626ae5-47e2-438c-bdef-77770222dfd0",
-            "maxHwTemp": 48,
-            "minHwTemp": 38,
-            "name": "baaaaaaa",
-            "rules": [
-                {
-                    "id": "163a6f57-8805-4407-9268-e0d09c81816d",
-                    "startTime": {
-                        "hour": 4,
-                        "minute": 10,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 8,
-                        "minute": 10,
-                        "second": 0
-                    },
-                    "role": null,
-                    "temp": null
-                },
-                {
-                    "id": "fca0b0ce-c2c7-493e-924c-75cac409c1a1",
-                    "startTime": {
-                        "hour": 15,
-                        "minute": 0,
-                        "second": 0
-                    },
-                    "endTime": {
-                        "hour": 16,
-                        "minute": 0,
                         "second": 0
                     },
                     "role": null,
@@ -199,28 +86,92 @@
     ],
     "sensorConfig": [
         {
-            "id": "28.0",
-            "description": "first",
-            "role": "hw",
-            "reading": 19.6388911,
-            "displayColor": "pink",
-            "displayOrder": 1
-        },
-        {
-            "id": "28.1",
-            "description": "last",
+            "id": "28.FEF61A060000",
+            "description": "water tank",
             "role": null,
-            "reading": 22.135678926,
+            "reading": 11.875,
             "displayColor": "black",
             "displayOrder": 100
         },
         {
-            "id": "28.2",
-            "description": "second",
-            "role": null,
-            "reading": 52.288782,
-            "displayColor": "black",
+            "id": "28.60418F060000",
+            "description": "HW 2",
+            "role": "hw",
+            "reading": 42.5,
+            "displayColor": "rebeccapurple",
             "displayOrder": 2
+        },
+        {
+            "id": "28.68A98F060000",
+            "description": "HW 3",
+            "role": null,
+            "reading": 41.6875,
+            "displayColor": "red",
+            "displayOrder": 3
+        },
+        {
+            "id": "28.71CE8F060000",
+            "description": "HW 1",
+            "role": null,
+            "reading": 45.75,
+            "displayColor": "red",
+            "displayOrder": 1
+        },
+        {
+            "id": "28.9FD18F060000",
+            "description": "HW coil feed",
+            "role": null,
+            "reading": 38.75,
+            "displayColor": "pink",
+            "displayOrder": 5
+        },
+        {
+            "id": "28.8F528F060000",
+            "description": "HW 4",
+            "role": null,
+            "reading": 31.1875,
+            "displayColor": "red",
+            "displayOrder": 4
+        },
+        {
+            "id": "28.9F5991060000",
+            "description": "HW coil return",
+            "role": null,
+            "reading": 24.375,
+            "displayColor": "pink",
+            "displayOrder": 6
+        },
+        {
+            "id": "28.5BC11A060000",
+            "description": "projector booth",
+            "role": null,
+            "reading": 22.1875,
+            "displayColor": "yellow",
+            "displayOrder": 100
+        },
+        {
+            "id": "28.E6AC8F060000",
+            "description": "Isobel's bedroom",
+            "role": "bedroom",
+            "reading": 17.3125,
+            "displayColor": "rebeccapurple",
+            "displayOrder": 100
+        },
+        {
+            "id": "28.701F1B060000",
+            "description": "loft",
+            "role": null,
+            "reading": 12.6875,
+            "displayColor": "brown",
+            "displayOrder": 100
+        },
+        {
+            "id": "28.920F1C060000",
+            "description": "outside",
+            "role": null,
+            "reading": 9.4375,
+            "displayColor": "goldenrod",
+            "displayOrder": 100
         }
     ]
 }
