@@ -49,7 +49,10 @@ export class Controller implements IController {
         return this.controlState;
     }
 
-    public start(refreshIntervalSeconds?: number, logIntervalMinutes?: number): Promise<any> {
+    public start(
+        refreshIntervalSeconds?: number,
+        logIntervalMinutes?: number,
+        housekeepIntervalMinutes?: number): Promise<any> {
 
         return this.configManager.start()
         .then(() => {
@@ -84,6 +87,13 @@ export class Controller implements IController {
                     this.log();
                 },
                 logIntervalMinutes * 1000 * 60);
+            }
+
+            if (housekeepIntervalMinutes !== undefined && housekeepIntervalMinutes > 1) {
+                setInterval(() => {
+                    this.overideManager.housekeep();
+                },
+                housekeepIntervalMinutes * 1000 * 60);
             }
         })
         .catch((error) => {

@@ -57,7 +57,7 @@ export class ExpressApp {
 
         return new Promise((resolve, reject) => {
             // start the controller: this initialises digital outputpins and starts the environment polling
-            this.controller.start(30, 10)
+            this.controller.start(30, 10, 5)
             .then(() => {
                 resolve(this.express);
             })

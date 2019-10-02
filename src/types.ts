@@ -54,7 +54,12 @@ export const INJECTABLES = {
 
 // entry point for the app
 export interface IController {
-    start(refreshIntervalSeconds?: number, logIntervalMinutes?: number): Promise<void>;
+
+    start(
+        refreshIntervalSeconds?: number,
+        logIntervalMinutes?: number,
+        housekeepIntervalMinutes?: number): Promise<void>;
+
     getActiveProgram(now: Date): IProgram;
     getControlState(): IControlState;
     refresh(now?: Date): Promise<void>;
