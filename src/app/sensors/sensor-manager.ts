@@ -59,6 +59,7 @@ export class SensorManager implements ISensorManager {
                 result = reading.reading;
             }
         }
+
         return result;
     }
 

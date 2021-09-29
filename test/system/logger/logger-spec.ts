@@ -32,9 +32,9 @@ function createDatabase(config: ILoggerConfig): Promise<void> {
 
 function clearDatabase(): Promise<void> {
     return runQuery("DELETE FROM reading")
-        .then(() => {
-            return runQuery("DELETE FROM sensor");
-        })
+        // .then(() => {
+        //     return runQuery("DELETE FROM sensor");
+        // })
         .then(() => {
             return runQuery("DELETE FROM control_state");
         })
@@ -46,7 +46,7 @@ function clearDatabase(): Promise<void> {
 function databaseExists(config: ILoggerConfig): Promise<boolean> {
     return runQuery("SELECT table_name FROM information_schema.tables WHERE table_schema = ?", config.database)
         .then((rows) => {
-            return Promise.resolve(rows.length === 3);
+            return Promise.resolve(rows.length === 2);
         });
 }
 
@@ -80,7 +80,7 @@ describe("Logger", () => {
     after(() => {
         return logger.end()
             .then(() => {
-                return new Promise((resolve) => {
+                return new Promise<void>((resolve) => {
                     connection.end(() => {
                         resolve();
                     });

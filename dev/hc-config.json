@@ -86,7 +86,7 @@
     ],
     "sensorConfig": [
         {
-            "id": "28.FEF61A060000",
+            "id": "28.0",
             "description": "water tank",
             "role": null,
             "reading": 11.875,
@@ -94,7 +94,7 @@
             "displayOrder": 100
         },
         {
-            "id": "28.60418F060000",
+            "id": "28.1",
             "description": "HW 2",
             "role": "hw",
             "reading": 42.5,
@@ -102,76 +102,12 @@
             "displayOrder": 2
         },
         {
-            "id": "28.68A98F060000",
+            "id": "28.2",
             "description": "HW 3",
             "role": null,
             "reading": 41.6875,
             "displayColor": "red",
             "displayOrder": 3
-        },
-        {
-            "id": "28.71CE8F060000",
-            "description": "HW 1",
-            "role": null,
-            "reading": 45.75,
-            "displayColor": "red",
-            "displayOrder": 1
-        },
-        {
-            "id": "28.9FD18F060000",
-            "description": "HW coil feed",
-            "role": null,
-            "reading": 38.75,
-            "displayColor": "pink",
-            "displayOrder": 5
-        },
-        {
-            "id": "28.8F528F060000",
-            "description": "HW 4",
-            "role": null,
-            "reading": 31.1875,
-            "displayColor": "red",
-            "displayOrder": 4
-        },
-        {
-            "id": "28.9F5991060000",
-            "description": "HW coil return",
-            "role": null,
-            "reading": 24.375,
-            "displayColor": "pink",
-            "displayOrder": 6
-        },
-        {
-            "id": "28.5BC11A060000",
-            "description": "projector booth",
-            "role": null,
-            "reading": 22.1875,
-            "displayColor": "yellow",
-            "displayOrder": 100
-        },
-        {
-            "id": "28.E6AC8F060000",
-            "description": "Isobel's bedroom",
-            "role": "bedroom",
-            "reading": 17.3125,
-            "displayColor": "rebeccapurple",
-            "displayOrder": 100
-        },
-        {
-            "id": "28.701F1B060000",
-            "description": "loft",
-            "role": null,
-            "reading": 12.6875,
-            "displayColor": "brown",
-            "displayOrder": 100
-        },
-        {
-            "id": "28.920F1C060000",
-            "description": "outside",
-            "role": null,
-            "reading": 9.4375,
-            "displayColor": "goldenrod",
-            "displayOrder": 100
         }
-    ]
+   ]
 }

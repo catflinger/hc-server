@@ -85,6 +85,9 @@ container.bind<IApi>(INJECTABLES.DevLogApi).to(DevLoggerApi).inSingletonScope();
 // bindings for factories
 container.bind<interfaces.Factory<IRule>>(INJECTABLES.RuleFactory).toFactory<IRule>((context: interfaces.Context) => {
     return (ruleConfig: IRuleConfig) => {
-        return new HeatingRule(ruleConfig);
+        return new HeatingRule(
+            ruleConfig,
+            container.get<ISensorManager>(INJECTABLES.SensorManager),
+        );
     };
 });

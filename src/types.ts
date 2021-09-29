@@ -101,7 +101,7 @@ export interface IConfigManager {
 
 // models a rule for controlling the devices
 export interface IRule {
-    applyRule(currentState: IControlState, readings: ReadonlyArray<ISensorReading>, time: ITimeOfDay | Date): IRuleResult;
+    applyRule(currentState: IControlState, time: ITimeOfDay | Date): IRuleResult;
 }
 
 export interface IRuleResult {

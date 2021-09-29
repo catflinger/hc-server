@@ -2,19 +2,25 @@ import { injectable } from "inversify";
 
 import { TimeOfDay } from "../../common/configuration/time-of-day";
 import { IControlState, IRuleConfig, ISensorReading, ITimeOfDay } from "../../common/interfaces";
-import { IRule, IRuleResult } from "../../types";
+import { IRule, IRuleResult, ISensorManager } from "../../types";
+
+import * as Debug from "debug";
+
+const ruleLog = Debug("controller");
 
 const hysteresis = 1;
 
 @injectable()
 export class HeatingRule implements IRule {
 
-    constructor(private ruleConfig: IRuleConfig) {}
+    constructor(
+        private ruleConfig: IRuleConfig,
+        private sensorManager: ISensorManager,
+    ) {}
 
-    public applyRule(
-        currentState: IControlState,
-        readings: ReadonlyArray<ISensorReading>,
-        time: ITimeOfDay | Date): IRuleResult {
+    public applyRule(currentState: IControlState, time: ITimeOfDay | Date): IRuleResult {
+
+        ruleLog("Applying rule");
 
         const result: IRuleResult = {
             heating: null,
@@ -34,20 +40,22 @@ export class HeatingRule implements IRule {
                 this.ruleConfig.temp === undefined ||
                 this.ruleConfig.temp === null) {
 
+                ruleLog("Executing general rule: " + this.ruleConfig.id);
                 result.heating = true;
 
             } else {
+                ruleLog(`Executing thermostat rule id: ${this.ruleConfig.id} role: [${this.ruleConfig.role}] temp: [${this.ruleConfig.temp}]`);
 
-                const sensorReading = readings.find((s) => s.role === this.ruleConfig.role);
+                const sensorReading = this.sensorManager.getReadingByRole(this.ruleConfig.role);
+                ruleLog(`Sensor reading: ${sensorReading}`);
 
-                if (sensorReading && sensorReading.reading !== null) {
-                    const temp = sensorReading.reading;
+                if (sensorReading) {
                     const min = this.ruleConfig.temp - hysteresis;
                     const max = this.ruleConfig.temp + hysteresis;
 
-                    if (temp < min) {
+                    if (sensorReading < min) {
                         result.heating = true;
-                    } else if (temp < max && currentState.heating) {
+                    } else if (sensorReading < max && currentState.heating) {
                         result.heating = true;
                     } else {
                         result.heating = false;

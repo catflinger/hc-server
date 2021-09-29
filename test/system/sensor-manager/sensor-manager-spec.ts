@@ -21,8 +21,8 @@ describe("sensor-manager", () => {
 
     beforeEach(async () => {
         // write the sensor values
-        await fsu.writeFileP(path.join(oneWireDir, "28.0", "temperature"), 10);
-        await fsu.writeFileP(path.join(oneWireDir, "28.1", "temperature"), 11);
+        await fsu.writeFileP(path.join(oneWireDir, "28.0", "temperature"), "10");
+        await fsu.writeFileP(path.join(oneWireDir, "28.1", "temperature"), "11");
     });
 
     describe("getReadings", () => {

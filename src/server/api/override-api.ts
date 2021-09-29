@@ -57,7 +57,6 @@ export class OverrideApi implements IApi {
                 const now: ITimeOfDay = this.clock.timeOfDay();
                 this.overrideManager.addOverride(new RuleConfig({
                     data: null,
-                    kind: "BasicHeatingRule",
 
                     endTime: now.addSeconds(duration * 60),
                     startTime: now.justBefore(),

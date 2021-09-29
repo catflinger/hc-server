@@ -35,7 +35,6 @@ describe("OverrideManager", () => {
 
         it("should add an override", () => {
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
                 startTime: clock.timeOfDay(),
@@ -49,7 +48,6 @@ describe("OverrideManager", () => {
         it("should replace an existing override", () => {
             const endTime: ITimeOfDay = clock.timeOfDay().addMinutes(10);
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
                 startTime: clock.timeOfDay().addMinutes(5),
@@ -81,7 +79,6 @@ describe("OverrideManager", () => {
             // EXPIRE add one day before
             clock.date = new Date("2019-04-03T00:00:00");
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
                 startTime: new TimeOfDay({ hour: 11, minute: 0, second: 0}),
@@ -99,7 +96,6 @@ describe("OverrideManager", () => {
             // EXPIRE add one day after
             clock.date = new Date("2019-04-05T00:00:00");
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
                 startTime: new TimeOfDay({ hour: 11, minute: 0, second: 0}),
@@ -117,7 +113,6 @@ describe("OverrideManager", () => {
             // EXPIRE add one early and expired
             clock.date = new Date("2019-04-04T00:00:00");
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
 
@@ -137,7 +132,6 @@ describe("OverrideManager", () => {
             // KEEP add one early but still current
             clock.date = new Date("2019-04-04T00:00:00");
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
 
@@ -157,7 +151,6 @@ describe("OverrideManager", () => {
             // KEEP add one later in day
             clock.date = new Date("2019-04-04T00:00:00");
             overrideManager.addOverride(new RuleConfig({
-                kind: "BasicHeatingRule",
                 data: null,
                 id: null,
 

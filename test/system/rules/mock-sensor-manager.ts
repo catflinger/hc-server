@@ -1,6 +1,6 @@
-import { ISensorConfig, RoleType } from "../../../../src/common/interfaces";
+import { ISensorConfig, RoleType } from "../../../src/common/interfaces";
 import { injectable } from "inversify";
-import { ISensorManager } from "../../../../src/types";
+import { ISensorManager } from "../../../src/types";
 
 @injectable()
 export class MockSensorManager implements ISensorManager {

@@ -124,6 +124,39 @@ describe("Controller", () => {
             expect(cs.heating).to.equal(true);
         });
 
+        it("should refresh with Thermostat rule configured", async () => {
+            mockConfigManager.config = new Configuration(configF);
+            let cs: IControlState = controller.getControlState();
+
+            // TO DO: thisis  very flaky, depends on result from previous test.  Fix it.
+            expect(cs.heating).to.equal(true);
+
+            // too early
+            await controller.refresh(new Date("2019-01-06T01:01:01"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+
+            // on time for 1st rule
+            await controller.refresh(new Date("2019-01-06T13:00:00"));
+
+            // 1st rule has high temp, heating needs to come on
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(true);
+
+            // between the two rules
+            await controller.refresh(new Date("2019-01-06T14:01:01"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+
+            // on time for 2nd rule, has low temp, room already warm enough
+            await controller.refresh(new Date("2019-01-06T14:55:55"));
+
+            cs = controller.getControlState();
+            expect(cs.heating).to.equal(false);
+        });
+
         it("should override program rules", async () => {
             const today: Date = new Date("2019-01-06T18:00:00");
 
@@ -137,8 +170,6 @@ describe("Controller", () => {
 
             let rule: IRuleConfig = new RuleConfig({
                 id: "",
-                kind: "BasicHeatingRule",
-                data: null,
                 startTime: {
                     hour: 17,
                     minute: 17,
@@ -343,8 +374,6 @@ const configD: any = {
             rules: [
                 {
                     id: null,
-                    kind: "BasicHeatingRule",
-                    data: null,
                     startTime: {
                         hour: 12,
                         minute: 12,
@@ -358,8 +387,6 @@ const configD: any = {
                 },
                 {
                     id: null,
-                    kind: "BasicHeatingRule",
-                    data: null,
                     startTime: {
                         hour: 14,
                         minute: 14,
@@ -421,3 +448,70 @@ const configE: any = {
     "sensorConfig": []
 };
 
+const configF: any = {
+    "programConfig": [
+        {
+            id: "foo",
+            name: "one rule",
+            minHwTemp: 12,
+            maxHwTemp: 30,
+            rules: [
+                {
+                    id: null,
+                    role: "bedroom",
+                    temp: 20,
+                    startTime: {
+                        hour: 12,
+                        minute: 12,
+                        second: 12
+                    },
+                    endTime: {
+                        hour: 13,
+                        minute: 13,
+                        second: 13
+                    },
+                },
+                {
+                    id: null,
+                    role: "bedroom",
+                    temp: 10,
+                    startTime: {
+                        hour: 14,
+                        minute: 14,
+                        second: 15
+                    },
+                    endTime: {
+                        hour: 15,
+                        minute: 15,
+                        second: 15
+                    },
+                }
+
+            ]
+        },
+    ],
+    "namedConfig": {
+        "weekdayProgramId": "",
+        "saturdayProgramId": "",
+        "sundayProgramId": ""
+    },
+    "datedConfig": [
+        { 
+            "programId": "foo", 
+            dayOfYear: {
+                year: 2019,
+                month: 1,
+                day: 6
+            } 
+        }
+    ],
+    "sensorConfig": [
+        { 
+            "id": "abcde12345", 
+            "description": "bedroom", 
+            "role": "bedroom", 
+            "displayColor": "black",
+            "displayOrder": 1
+        }
+    ]
+};

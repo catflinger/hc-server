@@ -3,7 +3,7 @@ import * as path from "path";
 import "reflect-metadata";
 
 import { ExpressApp } from "../../src/server/express-app";
-import { IApi, INJECTABLES, IController, IClock, ILogger, IRule, RuleConstructor } from "../../src/types";
+import { IApi, INJECTABLES, IController, IClock, ILogger, IRule, ISensorManager } from "../../src/types";
 
 import { MockConfigManager } from "./mocks/mock-config-manager";
 import { MockController } from "./mocks/mock-controller";
@@ -53,6 +53,7 @@ container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(0);
 // bindings for factories
 container.bind<interfaces.Factory<IRule>>(INJECTABLES.RuleFactory).toFactory<IRule>((context: interfaces.Context) => {
     return (ruleConfig: IRuleConfig) => {
-        return new HeatingRule(ruleConfig);
+        return new HeatingRule(ruleConfig,
+            container.get<ISensorManager>(INJECTABLES.SensorManager));
     };
 });

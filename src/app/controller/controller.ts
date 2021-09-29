@@ -8,7 +8,6 @@ import {
     IOverride,
     IProgram,
     IRuleConfig,
-    ISensorReading,
     ITimeOfDay,
 } from "../../common/interfaces";
 
@@ -128,7 +127,6 @@ export class Controller implements IController {
 
         .then(() => {
             const newControlState: IControlState = { heating: false, hotWater: false };
-            const sensorReadings = this.sensorManager.getReadings();
             const program = this.getActiveProgram(now);
 
             if (program) {
@@ -165,13 +163,13 @@ export class Controller implements IController {
 
                 // set the heating based on the program rules
                 program.getRules().forEach((rule: IRuleConfig) => {
-                    this.applyRule(rule, sensorReadings, now, newControlState);
+                    this.applyRule(rule, now, newControlState);
                 });
             }
 
             // we can still use the overrides even if we have no program
             this.overideManager.getOverrides().forEach((ov: IOverride) => {
-                this.applyRule(ov.rule, sensorReadings, now, newControlState);
+                this.applyRule(ov.rule, now, newControlState);
             });
 
             // processing is now complete, remember the new control state
@@ -238,14 +236,13 @@ export class Controller implements IController {
 
     private applyRule(
         ruleConfig: IRuleConfig,
-        sensorReadings: ReadonlyArray<ISensorReading>,
         now: ITimeOfDay | Date,
         newControlState: IControlState): void {
 
         // the rule factory selects the right rule to use for this config (based on the value of ruleConfig.kind)
         const rule: IRule = this.ruleFactory(ruleConfig);
 
-        const result: IRuleResult = rule.applyRule(this.controlState, sensorReadings, now);
+        const result: IRuleResult = rule.applyRule(this.controlState, now);
         if (result.heating !== null) {
             newControlState.heating =  result.heating;
         }

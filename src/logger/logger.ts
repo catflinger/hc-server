@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { inject, injectable, TargetTypeEnum } from "inversify";
+import { inject, injectable } from "inversify";
 import { createPool, FieldInfo, MysqlError, Pool } from "mysql";
 import * as path from "path";
 
@@ -147,9 +147,9 @@ export class Logger implements ILogger {
         .then(() => {
             return this.query("CREATE TABLE control_state (date BIGINT UNIQUE, heating BOOLEAN, hw BOOLEAN)");
         })
-        .then(() => {
-            return this.query("CREATE TABLE sensor (id VARCHAR(25), name VARCHAR(255))");
-        })
+        // .then(() => {
+        //     return this.query("CREATE TABLE sensor (id VARCHAR(25), name VARCHAR(255))");
+        // })
         .then(() => {
             return this.query("CREATE INDEX reading_date ON reading (date)");
         })
