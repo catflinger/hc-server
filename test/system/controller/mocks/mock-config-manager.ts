@@ -1,7 +1,6 @@
-import { IConfigManager } from "../../../../src/types";
+import { IConfigManager, SSLCredentials } from "../../../../src/types";
 import { injectable } from "inversify";
 import { IConfiguration } from "../../../../src/common/interfaces";
-import { Configuration } from "../../../../src/common/types";
 
 @injectable()
 export class MockConfigManager implements IConfigManager {
@@ -16,5 +15,8 @@ export class MockConfigManager implements IConfigManager {
     }    
     public setConfig(config: IConfiguration): Promise<any> {
         throw new Error("MockConfigManager.setConfig Method not implemented.");
+    }
+    public getSSLCredentials(): SSLCredentials {
+        return null;
     }
 }

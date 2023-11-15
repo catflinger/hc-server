@@ -36,6 +36,7 @@ import { SensorApi } from "./server/api/sensor-api";
 import { HeatingRule } from "./app/controller/heating-rule";
 import { IRuleConfig } from "./common/interfaces";
 import { DevLoggerApi } from "./dev/dev.logger-api";
+import { ExpressAppPublic } from "./server/express-app-public";
 
 export const container = new Container();
 
@@ -70,6 +71,7 @@ container.bind<interfaces.Newable<Device>>(INJECTABLES.Device).toConstructor(Dev
 
 // bindings for server
 container.bind<ExpressApp>(INJECTABLES.ExpressApp).to(ExpressApp).inSingletonScope();
+container.bind<ExpressAppPublic>(INJECTABLES.ExpressAppPublic).to(ExpressAppPublic).inSingletonScope();
 
 // bindings for the apis
 container.bind<IApi>(INJECTABLES.ControlApi).to(ControlApi).inSingletonScope();

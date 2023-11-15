@@ -4,7 +4,7 @@ import * as path from "path";
 
 import { IConfiguration } from "../../common/interfaces";
 import { Configuration } from "../../common/types";
-import { IConfigManager, INJECTABLES } from "../../types";
+import { IConfigManager, INJECTABLES, SSLCredentials } from "../../types";
 
 @injectable()
 export class ConfigManager implements IConfigManager {
@@ -36,6 +36,12 @@ export class ConfigManager implements IConfigManager {
                 }
             });
         });
+    }
+
+    public getSSLCredentials(): SSLCredentials {
+        const key = fs.readFileSync(path.join(this.rootDir, "ssl-key.txt"), "utf-8");
+        const cert = fs.readFileSync(path.join(this.rootDir, "ssl-cert.txt"), "utf-8");
+        return { key, cert };
     }
 
     private readConfig(): Promise<IConfiguration> {

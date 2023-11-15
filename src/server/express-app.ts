@@ -3,7 +3,7 @@ import * as Debug from "debug";
 import * as express from "express";
 import { inject, injectable } from "inversify";
 
-import { IApi,  IController, INJECTABLES } from "../types";
+import { IApi,  IConfigManager,  IController, INJECTABLES } from "../types";
 
 const log = Debug("app");
 

@@ -1,4 +1,6 @@
 node_modules
 lib
 dev/log-config.json
+dev/ssl-cert.txt
+dev/ssl-key.txt
 test/config/log-config.json

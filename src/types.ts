@@ -36,6 +36,7 @@ export const INJECTABLES = {
 
     // symbols for the server
     ExpressApp: Symbol("ExpressApp"),
+    ExpressAppPublic: Symbol("ExpressAppPublic"),
     ExpressPort: Symbol("ExpressPort"),
     ExpressStaticRootDir: Symbol("ExpressStaticRootDir"),
 
@@ -92,11 +93,14 @@ export interface ISensorManager {
     getReadingByRole(role: RoleType): number;
 }
 
+export type SSLCredentials = {key: string, cert: string};
+
 // manages the application configuratiom
 export interface IConfigManager {
     start(): Promise<any>;
     getConfig(): IConfiguration;
     setConfig(config: IConfiguration): Promise<any>;
+    getSSLCredentials(): SSLCredentials;
 }
 
 // models a rule for controlling the devices

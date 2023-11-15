@@ -1,32 +1,57 @@
 import * as Debug from "debug";
 import * as http from "http";
+import * as https from "https";
 
 import { container } from "./inversify.config";
 import { ExpressApp } from "./server/express-app";
-import { INJECTABLES } from "./types";
+import { ExpressAppPublic } from "./server/express-app-public";
+import { IConfigManager, INJECTABLES } from "./types";
 
 process.on("unhandledRejection", (reason, p) => {
     const message: string = `'Unhandled Promise Rejection at: Promise ${p} reason: ${reason}`;
     throw new Error(message);
-  });
+});
 
 const port = container.get<number>(INJECTABLES.ExpressPort);
+const configManager: IConfigManager = container.get<IConfigManager>(INJECTABLES.ConfigManager);
+
 const debug = Debug("app");
 
 container.get<ExpressApp>(INJECTABLES.ExpressApp).start()
-.then((app) => {
-    app.set("port", port);
-    const server = http.createServer(app);
-    server.listen(port);
-    server.on("error", onError);
-    server.on("listening", () => {
-        debug("Listening on port " + port);
+    .then((app) => {
+        app.set("port", port);
+        const server = http.createServer(app);
+        server.listen(port);
+        server.on("error", onError);
+        server.on("listening", () => {
+            debug("Listening on port " + port);
+        });
+    })
+    .catch((err) => {
+        debug(`got rejection from controller.start(): ${err}`);
+        process.exit(1);
     });
-})
-.catch((err) => {
-    debug(`got rejection from controller.start(): ${err}`);
-    process.exit(1);
-});
+
+container.get<ExpressAppPublic>(INJECTABLES.ExpressAppPublic).start()
+    .then((app) => {
+        // TODO: put this port number into the config file
+        const publicPort = 3001;
+        const credentials = configManager.getSSLCredentials();
+
+        app.set("port", publicPort);
+        const server = https.createServer(credentials, app);
+
+        server.listen(publicPort);
+        server.on("error", onError);
+        server.on("listening", () => {
+            debug("Public server listening on port " + publicPort);
+        });
+
+    })
+    .catch((err) => {
+        debug(`got rejection from controller.start(): ${err}`);
+        process.exit(1);
+    });
 
 function onError(error: NodeJS.ErrnoException): void {
     if (error.syscall !== "listen") {
@@ -45,3 +70,4 @@ function onError(error: NodeJS.ErrnoException): void {
             throw error;
     }
 }
+
