@@ -93,14 +93,17 @@ export interface ISensorManager {
     getReadingByRole(role: RoleType): number;
 }
 
-export type SSLCredentials = {key: string, cert: string};
+export interface ISSLCredentials {
+    key: string;
+    cert: string;
+}
 
 // manages the application configuratiom
 export interface IConfigManager {
     start(): Promise<any>;
     getConfig(): IConfiguration;
     setConfig(config: IConfiguration): Promise<any>;
-    getSSLCredentials(): SSLCredentials;
+    getSSLCredentials(): ISSLCredentials;
 }
 
 // models a rule for controlling the devices

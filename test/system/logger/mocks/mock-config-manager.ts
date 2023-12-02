@@ -1,4 +1,4 @@
-import { IConfigManager, SSLCredentials } from "../../../../src/types";
+import { IConfigManager, ISSLCredentials } from "../../../../src/types";
 import { injectable } from "inversify";
 import { IConfiguration, IDatedConfig, IProgram, ISensorConfig } from "../../../../src/common/interfaces";
 
@@ -42,7 +42,7 @@ export class MockConfigManager implements IConfigManager {
     public setConfig(config: IConfiguration): Promise<any> {
         throw new Error("MockConfigManager.setConfig Method not implemented.");
     }
-    public getSSLCredentials(): SSLCredentials {
+    public getSSLCredentials(): ISSLCredentials {
         throw new Error("MockConfigManager.getSSLCredentials Method not implemented.");
     }
 }

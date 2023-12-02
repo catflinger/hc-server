@@ -36,10 +36,11 @@ container.get<ExpressAppPublic>(INJECTABLES.ExpressAppPublic).start()
     .then((app) => {
         // TODO: put this port number into the config file
         const publicPort = 3001;
-        const credentials = configManager.getSSLCredentials();
-
         app.set("port", publicPort);
-        const server = https.createServer(credentials, app);
+
+        // const credentials = configManager.getSSLCredentials();
+        // const server = https.createServer(credentials, app);
+        const server = http.createServer(app);
 
         server.listen(publicPort);
         server.on("error", onError);
@@ -70,4 +71,3 @@ function onError(error: NodeJS.ErrnoException): void {
             throw error;
     }
 }
-

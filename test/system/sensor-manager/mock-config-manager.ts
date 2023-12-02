@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 
 import { IProgram, IDatedConfig, IConfiguration, IConfigurationM } from "../../../src/common/interfaces";
-import { IConfigManager, SSLCredentials } from "../../../src/types";
+import { IConfigManager, ISSLCredentials } from "../../../src/types";
 
 @injectable()
 export class MockConfigManager implements IConfigManager {
@@ -65,7 +65,7 @@ export class MockConfigManager implements IConfigManager {
         throw new Error("setConfig not implemented in MockConfigManager");
     }
 
-    getSSLCredentials(): SSLCredentials {
+    getSSLCredentials(): ISSLCredentials {
         return null;
     }
 }

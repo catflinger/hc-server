@@ -1,12 +1,11 @@
 import * as bodyParser from "body-parser";
 import * as Debug from "debug";
 import * as express from "express";
-// import { Router } from "express;
 import { inject, injectable } from "inversify";
 
-import { IClock, IConfigManager, IController, ILogger, INJECTABLES, IOverrideManager, ISensorManager } from "../types";
-import { IDayOfYear, ILogApiResponse, ILogExtract } from "../common/interfaces";
 import { DayOfYear } from "../common/configuration/day-of-year";
+import { IDayOfYear, ILogApiResponse, ILogExtract } from "../common/interfaces";
+import { IClock, IConfigManager, IController, ILogger, INJECTABLES, IOverrideManager, ISensorManager } from "../types";
 
 const log = Debug("app");
 
@@ -61,8 +60,10 @@ export class ExpressAppPublic {
         }));
 
         // tell express to use the wwwroot folder for serving staic files
-        this.express.use(express.static(this.wwwRoot));
-        log("Serving public static content from " + this.wwwRoot);
+        // this.express.use(express.static(this.wwwRoot));
+        // log("Serving public static content from " + this.wwwRoot);
+        this.express.use(express.static(this.wwwRoot + "2"));
+        log("Serving public static content from " + this.wwwRoot + 2);
 
         return Promise.resolve(this.express);
     }
@@ -71,25 +72,18 @@ export class ExpressAppPublic {
 
         router.get("/info", (req, res) => {
             log("GET PUBLIC /info");
+
             try {
-                setTimeout(() => {
-                    res.json({
-                        date : this.clock.now(),
-
-                        config : this.configManager.getConfig(),
-
-                        override: this.overrideManager.getOverrides(),
-
-                        sensor : this.sensorManager.getReadings(),
-
-                        activeProgram: this.controller.getActiveProgram(this.clock.now()),
-
-                        controlState: this.controller.getControlState(),
-                    });
-                }, this.delay);
-
+                res.json({
+                    activeProgram: this.controller.getActiveProgram(this.clock.now()),
+                    config : this.configManager.getConfig(),
+                    controlState: this.controller.getControlState(),
+                    date : this.clock.now(),
+                    override: this.overrideManager.getOverrides(),
+                    sensor : this.sensorManager.getReadings(),
+                });
             } catch (err) {
-                    res.status(500).send(err);
+                res.status(500).send(err);
             }
         });
 
@@ -104,28 +98,26 @@ export class ExpressAppPublic {
                     year: parseInt(req.query.year, 10),
                 });
 
+                try {
+                    this.logger.getExtract(dayOfYear)
+                    .then((extract: ILogExtract) => {
+
+                        const data: ILogApiResponse = {
+                            date: this.clock.now(),
+                            log: extract,
+                        };
+                        res.json(data);
+                    })
+                    .catch((err) => {
+                        res.status(500).send(err);
+                    });
+                } catch (err) {
+                    res.status(500).send(err);
+                }
             } catch (error) {
                 return res.status(400).send("Bad request " + error);
             }
 
-            try {
-                this.logger.getExtract(dayOfYear)
-                .then((extract: ILogExtract) => {
-                    const data: ILogApiResponse = {
-                        date: this.clock.now(),
-                        log: extract,
-                    };
-
-                    setTimeout(() => res.json(data), this.delay);
-                })
-                .catch((err) => {
-                    res.status(500).send(err);
-                });
-            } catch (err) {
-                res.status(500).send(err);
-            }
         });
     }
-
-
 }
