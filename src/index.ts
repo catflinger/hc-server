@@ -1,6 +1,7 @@
+import axios, { AxiosRequestConfig } from "axios";
 import * as Debug from "debug";
 import * as http from "http";
-import * as https from "https";
+// import * as https from "https";
 
 import { container } from "./inversify.config";
 import { ExpressApp } from "./server/express-app";
@@ -71,3 +72,12 @@ function onError(error: NodeJS.ErrnoException): void {
             throw error;
     }
 }
+
+function callHome(): void {
+    axios.get("http://heating.drurys.org/api/ping")
+    .then()
+    .catch()
+}
+
+callHome();
+setInterval(callHome, 10*60*1000);
