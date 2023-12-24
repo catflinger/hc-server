@@ -1,0 +1,183 @@
+Setup fot Raspberry Pi Zero W with 1Wire Plus board (Updated 24-12-2023 by Jessica)
+
+1.  Download raspberry pi os lite image onto SD card
+
+Note: alternatively steps 2-4,6(a) can be completed using the raspberry pi os installer
+
+2.  Create empty file ssh in root
+
+3. Create wpa_supplicant.conf in root
+
+country=GB
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+   ssid="NETWORK-NAME"
+   psk="NETWORK-PASSWORD"
+}
+
+4. Find new IP on router and set IP as fixed
+
+5. boot and login via putty SSH
+
+6. sudo raspi-config
+
+	a) change root password
+
+	b) extend partition
+	   - Advanced Options -> Expand Filesystem
+
+	c) enable 1wire
+	   - Interface Options -> 1-wire
+
+	d) enable i2c
+	   - Interface Options -> I2C
+
+	e) Reboot
+
+
+7. Update apt-get
+sudo apt-get update
+sudo apt-get dist-upgrade
+
+8. Install node 
+NOTE: armv7l is with lowercase L not a numeric character 1
+
+wget https://nodejs.org/dist/v20.10.0/node-v20.10.0-linux-armv7l.tar.gz
+tar -xzf node-v20.10.0-linux-armv7l.tar.gz
+
+cd node-v20.10.0-linux-armv7l/
+sudo cp -R * /usr/local/
+
+node -v
+npm -v
+
+update npm to latest version
+sudo npm i -g npm
+
+9. Install git
+sudo apt-get install git
+
+10.  Set up I2C - copied from  https://www.abelectronics.co.uk/kb/article/1/i2c--smbus-and-raspbian-linux
+
+sudo apt install python3-smbus python3-dev i2c-tools
+
+Note: test i2c bus is working
+sudo i2cdetect -y 1
+
+
+Note: following may not be necessary, delete if not needed
+sudo nano /boot/config.txt - add at end: dtparam=i2c1=on
+
+
+Note: if user, pi, not created when installing raspberry pi os then run following commands
+sudo adduser pi 
+sudo reboot
+
+11. Set the I2C speed
+
+sudo nano /boot/config.txt
+  dtparam=i2c_baudrate=200000
+  core_freq=250
+sudo reboot
+
+12.  Connect the 1-Wire Plus board and test i2c connectivity with 
+ 
+sudo i2cdetect -y 1
+
+12. Install owfs
+sudo apt-get install owfs
+
+13. Configure owfs
+sudo nano /etc/owfs.conf
+
+comment out line:
+# server: FAKE = DS18S20,DS2405
+
+add lines:
+server: device = /dev/i2c-1
+mountpoint = /mnt/1wire
+allow_other
+
+Note: create a mount point
+sudo mkdir /mnt/1wire
+
+14. Start owfs file system client
+
+sudo nano /etc/rc.local
+
+add lines:
+# Start the 1-wire file system on i2c bus 1 looking for all 1-wire busmasters
+owfs --i2c=/dev/i2c-1:ALL /var/1wire
+
+sudo reboot
+
+plug a sensor in and test owfs working: 
+ls /mnt/1wire
+
+15. Install MariaDB
+
+set root user password
+sudo mysql_secure_installation
+
+remove sudo from login for root
+
+sudo mysql -u root -p
+[(none)]> use mysql;
+[mysql]> update user set plugin='' where User='root';
+[mysql]> flush privileges;
+
+>>>>>>>>>>>>>>>>>> 14.04.2019 continue from here >>>>>>>>>>>>>>>>>>>
+
+CREATE DATABASE hc_log;
+
+CREATE USER 'hc_logger'@'localhost' IDENTIFIED BY 'xxxxxxxx';
+
+GRANT ALL PRIVILEGES ON hc_log.* TO 'hc_logger'@'localhost';
+
+16. Create image of SD card and store safely
+
+17. Prepare for installing hc-server
+
+mkdir /home/pi/hc
+mkdir /home/pi/hc/src
+mkdir /home/pi/hc/log
+mkdir /home/pi/hc/data
+mkdir /home/pi/hc/debug
+mkdir /home/pi/hc/wwwroot
+
+
+18. Install hc-server
+copy hc-config.json to /home/pi/hc/data
+copy log-config.json to /home/pi/hc/data
+copy package.json to /home/pi/hc
+copy lib/src/*.* to /home/pi/hc/src
+
+npm install --only=prod
+
+19. Install hc-webapp
+copy dist/*.* to /home/pi/hc/wwwroot
+
+20. Configure gpio setup and hc-server to run on boot
+
+sudo nano /etc/rc.local
+
+Add the following lines:
+
+# Set up the GPIO ports for writing
+
+echo 16 > /sys/class/gpio/export
+echo 20 > /sys/class/gpio/export
+echo 21 > /sys/class/gpio/export
+
+echo 'out' > /sys/class/gpio/gpio16/direction
+echo 'out' > /sys/class/gpio/gpio20/direction
+echo 'out' > /sys/class/gpio/gpio21/direction
+
+# start the heating controller app
+_HC_DIR=/home/pi/hc
+
+echo "Starting heating controller in $_HC_DIR" > "$_HC_DIR/temp"
+
+NODE_ENV=production node "$_HC_DIR/src/index.js"  >> "$_HC_DIR/temp" 2>&1 &
