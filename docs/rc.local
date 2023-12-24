@@ -1,0 +1,18 @@
+=== pste this to the bottom of rc.local
+
+owfs --i2c=/dev/i2c-1:ALL /var/1wire
+
+echo 16 > /sys/class/gpio/export
+echo 20 > /sys/class/gpio/export
+echo 21 > /sys/class/gpio/export
+
+echo 'out' > /sys/class/gpio/gpio16/direction
+echo 'out' > /sys/class/gpio/gpio20/direction
+echo 'out' > /sys/class/gpio/gpio21/direction
+
+#_HC_DIR=/home/pi/heating
+_HC_DIR=/home/pi/hc
+
+echo "Starting heating controller in $_HC_DIR" > "$_HC_DIR/temp"
+
+NODE_ENV=production node "$_HC_DIR/src/index.js"  >> "$_HC_DIR/temp" 2>&1 &
