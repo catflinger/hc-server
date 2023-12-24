@@ -26,7 +26,7 @@ export class DevLoggerApi implements IApi {
             apiLog("GET /dev/log");
             try {
                 sensors.length = 0;
-                const params: any = JSON.parse(req.query.params);
+                const params: any = JSON.parse(req.query.params as string);
 
                 from = ConfigValidation.getDate(params.from, "GET /dev/log: from");
                 to = ConfigValidation.getDate(params.to, "GET /dev/log: to");

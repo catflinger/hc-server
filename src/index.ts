@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import get from "axios";
 import * as Debug from "debug";
 import * as http from "http";
 // import * as https from "https";
@@ -74,10 +74,10 @@ function onError(error: NodeJS.ErrnoException): void {
 }
 
 function callHome(): void {
-    axios.get("http://heating.drurys.org/api/ping")
+    get("http://heating.drurys.org/api/ping")
     .then()
-    .catch()
+    .catch();
 }
 
 callHome();
-setInterval(callHome, 10*60*1000);
+setInterval(callHome, 10 * 60 * 1000);

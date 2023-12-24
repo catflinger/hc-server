@@ -30,9 +30,9 @@ export class LoggerApi implements IApi {
 
             try {
                 dayOfYear = new DayOfYear({
-                    day: parseInt(req.query.day, 10),
-                    month: parseInt(req.query.month, 10),
-                    year: parseInt(req.query.year, 10),
+                    day: parseInt(req.query.day as string, 10),
+                    month: parseInt(req.query.month as string, 10),
+                    year: parseInt(req.query.year as string, 10),
                 });
 
             } catch (error) {
