@@ -39,6 +39,7 @@ export const INJECTABLES = {
     ExpressAppPublic: Symbol("ExpressAppPublic"),
     ExpressPort: Symbol("ExpressPort"),
     ExpressStaticRootDir: Symbol("ExpressStaticRootDir"),
+    ExpressStaticRootDirPublic: Symbol("ExpressStaticRootDirPublic"),
 
     // symbols for the apis
     ConfigApi: Symbol("ConfigApi"),

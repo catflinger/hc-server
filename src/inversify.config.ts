@@ -46,6 +46,7 @@ if (process.env.NODE_ENV === "production") {
     container.bind<string>(INJECTABLES.OneWireRootDir).toConstantValue(path.join("/", "mnt", "1wire"));
     container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join("/", "sys", "class", "gpio"));
     container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.join(__dirname, "..", "wwwroot"));
+    container.bind<string>(INJECTABLES.ExpressStaticRootDirPublic).toConstantValue(path.join(__dirname, "..", "wwwroot2"));
     container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(80);
     container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(0);
 } else {
@@ -53,6 +54,7 @@ if (process.env.NODE_ENV === "production") {
     container.bind<string>(INJECTABLES.OneWireRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "onewire"));
     container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "gpio"));
     container.bind<string>(INJECTABLES.ExpressStaticRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "wwwroot"));
+    container.bind<string>(INJECTABLES.ExpressStaticRootDirPublic).toConstantValue(path.join(__dirname, "..", "..", "dev", "wwwroot2"));
     container.bind<number>(INJECTABLES.ExpressPort).toConstantValue(3000);
     container.bind<number>(INJECTABLES.DevApiDelayMs).toConstantValue(500);
 }

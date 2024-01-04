@@ -13,7 +13,7 @@ const log = Debug("app");
 export class ExpressAppPublic {
     private express: express.Application;
 
-    @inject(INJECTABLES.ExpressStaticRootDir) private wwwRoot: string;
+    @inject(INJECTABLES.ExpressStaticRootDirPublic) private wwwRoot: string;
 
     @inject(INJECTABLES.SensorManager)
     private sensorManager: ISensorManager;
@@ -60,10 +60,8 @@ export class ExpressAppPublic {
         }));
 
         // tell express to use the wwwroot folder for serving staic files
-        // this.express.use(express.static(this.wwwRoot));
-        // log("Serving public static content from " + this.wwwRoot);
-        this.express.use(express.static(this.wwwRoot + "2"));
-        log("Serving public static content from " + this.wwwRoot + 2);
+        this.express.use(express.static(this.wwwRoot));
+        log("Serving public static content from " + this.wwwRoot);
 
         return Promise.resolve(this.express);
     }

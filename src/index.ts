@@ -1,7 +1,7 @@
 import get from "axios";
 import * as Debug from "debug";
 import * as http from "http";
-// import * as https from "https";
+import * as https from "https";
 
 import { container } from "./inversify.config";
 import { ExpressApp } from "./server/express-app";
@@ -39,9 +39,8 @@ container.get<ExpressAppPublic>(INJECTABLES.ExpressAppPublic).start()
         const publicPort = 3001;
         app.set("port", publicPort);
 
-        // const credentials = configManager.getSSLCredentials();
-        // const server = https.createServer(credentials, app);
-        const server = http.createServer(app);
+        const credentials = configManager.getSSLCredentials();
+        const server = https.createServer(credentials, app);
 
         server.listen(publicPort);
         server.on("error", onError);
@@ -76,8 +75,11 @@ function onError(error: NodeJS.ErrnoException): void {
 function callHome(): void {
     get("http://heating.drurys.org/api/ping")
     .then()
-    .catch();
+    .catch((e) => null);
 }
 
-callHome();
-setInterval(callHome, 10 * 60 * 1000);
+try {
+    callHome();
+    setInterval(callHome, 10 * 60 * 1000);
+} catch (e) {
+}
